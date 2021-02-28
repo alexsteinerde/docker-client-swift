@@ -1,0 +1,30 @@
+import Foundation
+
+struct Status: Codable {
+    let status: String
+}
+
+public struct MessageResponse: Codable {
+    let message: String
+}
+
+public struct Digest {
+    public var rawValue: String
+    
+    init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+extension Digest: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.rawValue = value
+    }
+}
+
+
+enum DockerError: Error {
+    case message(String)
+    case unknownResponse(String)
+}
+
