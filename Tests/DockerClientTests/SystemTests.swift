@@ -1,5 +1,5 @@
 import XCTest
-@testable import DockerClient
+@testable import DockerClientSwift
 import Logging
 
 final class SystemTests: XCTestCase {

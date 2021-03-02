@@ -7,7 +7,7 @@ let package = Package(
     name: "docker-client-swift",
     platforms: [.macOS(.v10_15)],
     products: [
-        .library(name: "DockerClient", targets: ["DockerClient"]),
+        .library(name: "DockerClientSwift", targets: ["DockerClientSwift"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
@@ -15,14 +15,14 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "DockerClient",
+            name: "DockerClientSwift",
             dependencies: [
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
             ]),
         .testTarget(
             name: "DockerClientTests",
-            dependencies: ["DockerClient"]
+            dependencies: ["DockerClientSwift"]
         ),
     ]
 )

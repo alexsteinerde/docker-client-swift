@@ -1,4 +1,4 @@
-import DockerClient
+import DockerClientSwift
 import Logging
 
 extension DockerClient {
