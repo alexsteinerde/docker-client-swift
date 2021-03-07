@@ -15,7 +15,15 @@ extension DockerClient {
             try client.run(ListContainersEndpoint(all: all))
                 .map({ containers in
                     containers.map { container in
-                        Container(id: .init(container.Id), image: Image(id: .init(container.Image), digest: nil), createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)))
+                        var digest: Digest?
+                        var repositoryTag: Image.RepositoryTag?
+                        if let value =  Image.parseNameTagDigest(container.Image) {
+                            (digest, repositoryTag) = value
+                        } else if let repoTag = Image.RepositoryTag(container.Image) {
+                            repositoryTag = repoTag
+                        }
+                        let image = Image(id: .init(container.ImageID), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
+                        return Container(id: .init(container.Id), image: image, createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)), names: container.Names, state: container.State, command: container.Command)
                     }
                 })
         }
@@ -30,7 +38,8 @@ extension DockerClient {
             }
             return try client.run(CreateContainerEndpoint(imageName: id, commands: commands))
                 .map({ response in
-                    Container(id: .init(response.Id), image: image, createdAt: .init())
+                    // TODO: Load real data before returning
+                    Container(id: .init(response.Id), image: image, createdAt: .init(), names: [], state: "created", command: "")
                 })
         }
         
@@ -62,5 +71,16 @@ extension Container {
     
     public func logs(on client: DockerClient) throws -> EventLoopFuture<String> {
         try client.containers.logs(container: self)
+    }
+}
+
+extension Image {
+    static func parseNameTagDigest(_ value: String) -> (Digest, RepositoryTag)? {
+        let components = value.split(separator: "@").map(String.init)
+        if components.count == 2, let nameTag = RepositoryTag(components[0]) {
+            return (.init(components[1]), nameTag)
+        } else {
+            return nil
+        }
     }
 }

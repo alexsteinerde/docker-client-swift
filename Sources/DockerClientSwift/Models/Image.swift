@@ -1,23 +1,7 @@
 import Foundation
 
 public struct Image {
-    internal init(id: Identifier<Image>, digest: Digest? = nil, repoTags: [String]?=nil, createdAt: Date?=nil) {
-        self.id = id
-        self.digest = digest
-        self.createdAt = createdAt
-        
-        repositoryTags = repoTags.map({ repoTags in
-            repoTags.compactMap { repoTag in
-                let components = repoTag.split(separator: ":").map(String.init)
-                if components.count == 2 {
-                    return RepositoryTag(repository: components[0], tag: components[1])
-                } else {
-                    return nil
-                }
-            }
-        }) ?? []
-    }
-    
+
     /// Local ID of the image. This can vary from instant to instant.
     public var id: Identifier<Image>
     
@@ -31,7 +15,38 @@ public struct Image {
     public var createdAt: Date?
     
     public struct RepositoryTag {
-        var repository: String
-        var tag: String
+        public var repository: String
+        public var tag: String?
+    }
+    
+    internal init(id: Identifier<Image>, digest: Digest? = nil, repoTags: [String]?=nil, createdAt: Date?=nil) {
+        let repositoryTags = repoTags.map({ repoTags in
+            repoTags.compactMap { repoTag in
+                return RepositoryTag(repoTag)
+            }
+        }) ?? []
+        
+        self.init(id: id, digest: digest, repositoryTags: repositoryTags, createdAt: createdAt)
+    }
+    
+    internal init(id: Identifier<Image>, digest: Digest? = nil, repositoryTags: [RepositoryTag]?=nil, createdAt: Date?=nil) {
+        self.id = id
+        self.digest = digest
+        self.createdAt = createdAt
+        self.repositoryTags = repositoryTags ?? []
+    }
+}
+
+extension Image.RepositoryTag {
+    init?(_ value: String) {
+        let components = value.split(separator: ":").map(String.init)
+        if components.count == 2 {
+            self.repository =  components[0]
+            self.tag = components[1]
+        } else if components.count == 1 {
+            self.repository = value
+        } else {
+            return nil
+        }
     }
 }
