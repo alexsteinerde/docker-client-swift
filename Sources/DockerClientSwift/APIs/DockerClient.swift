@@ -21,14 +21,15 @@ public class DockerClient {
     }
 
     func run<T: Endpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
-        logger.info("Execute: \(endpoint.path)")
+        logger.info("Execute Endpoint: \(endpoint.path)")
         return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())}, logger: logger, headers: HTTPHeaders([("Content-Type", "application/json")]))
             .logResponseBody(logger)
             .decode(as: T.Response.self)
     }
     
     func run<T: PipelineEndpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
-        client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: try endpoint.body.map({ HTTPClient.Body.data( try $0.encode()) }))
+        logger.info("Execute PipelineEndpoint: \(endpoint.path)")
+        return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: try endpoint.body.map({ HTTPClient.Body.data( try $0.encode()) }))
             .logResponseBody(logger)
             .mapString(map: endpoint.map(data: ))
     }
