@@ -31,4 +31,10 @@ final class ImageTests: XCTestCase {
         XCTAssertEqual(rt?.repository, "hello-world")
         XCTAssertNil(rt?.tag)
     }
+    
+    func testParsingRepositoryTagWithDigest() {
+        let rt = Image.RepositoryTag("sha256:89b647c604b2a436fc3aa56ab1ec515c26b085ac0c15b0d105bc475be15738fb")
+        
+        XCTAssertNil(rt)
+    }
 }

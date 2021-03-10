@@ -39,6 +39,7 @@ public struct Image {
 
 extension Image.RepositoryTag {
     init?(_ value: String) {
+        guard !value.hasPrefix("sha256") else { return nil }
         let components = value.split(separator: ":").map(String.init)
         if components.count == 2 {
             self.repository =  components[0]
