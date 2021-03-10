@@ -33,5 +33,16 @@ extension DockerClient {
                     }
                 })
         }
+        
+        public func remove(image: Image, force: Bool=false) throws -> EventLoopFuture<Void> {
+            try client.run(RemoveImageEndpoint(imageId: image.id.value, force: force))
+                .map({ _ in Void() })
+        }
+    }
+}
+
+extension Image {
+    public func remove(on client: DockerClient, force: Bool=false) throws -> EventLoopFuture<Void> {
+        try client.images.remove(image: self, force: force)
     }
 }
