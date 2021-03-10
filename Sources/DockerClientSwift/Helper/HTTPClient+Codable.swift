@@ -55,7 +55,7 @@ extension EventLoopFuture where Value == HTTPClient.Response {
     /// - throws: BodyError.noBodyData when no body is found in reponse.
     public func decode<T : Decodable>(as type: T.Type, decoder: Decoder = JSONDecoder()) -> EventLoopFuture<T> {
         flatMapThrowing { response -> T in
-            
+            try response.checkStatusCode()
             if T.self == NoBody.self || T.self == NoBody?.self {
                 return NoBody() as! T
             }
@@ -72,6 +72,7 @@ extension EventLoopFuture where Value == HTTPClient.Response {
     
     public func mapString<T>(map: @escaping (String) throws -> T) -> EventLoopFuture<T> {
         flatMapThrowing { (response) -> T in
+            try response.checkStatusCode()
             guard let bodyData = response.bodyData else {
                 throw BodyError.noBodyData
             }
@@ -90,7 +91,7 @@ extension EventLoopFuture where Value == HTTPClient.Response {
     /// - returns: A future optional decoded type.  The future value will be nil when no body is present in the response.
     public func decode<T : Decodable>(as type: T.Type, decoder: Decoder = JSONDecoder()) -> EventLoopFuture<T?> {
         flatMapThrowing { response -> T? in
-            
+            try response.checkStatusCode()
             guard let bodyData = response.bodyData else {
                 return nil
             }
@@ -98,10 +99,15 @@ extension EventLoopFuture where Value == HTTPClient.Response {
             return try decoder.decode(type, from: bodyData)
         }
     }
-    
 }
 
 extension HTTPClient.Response {
+    
+    fileprivate func checkStatusCode() throws {
+        guard 200...299 ~= self.status.code else {
+            throw DockerError.errorCode(Int(self.status.code), self.bodyData.map({ String(data: $0, encoding: .utf8) ?? "" }))
+        }
+    }
     
     public var bodyData : Data? {
         guard let bodyBuffer = body,

@@ -26,5 +26,6 @@ extension Digest: ExpressibleByStringLiteral {
 enum DockerError: Error {
     case message(String)
     case unknownResponse(String)
+    case errorCode(Int, String?)
 }
 
