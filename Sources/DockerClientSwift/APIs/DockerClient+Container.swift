@@ -61,12 +61,30 @@ extension DockerClient {
                         .joined(separator: "\n")
                 })
         }
+        
+        public func remove(container: Container) throws -> EventLoopFuture<Void> {
+            return try client.run(RemoveContainerEndpoint(containerId: container.id.value))
+                .map({ _ in Void() })
+        }
+        
+        public func stop(container: Container) throws -> EventLoopFuture<Void> {
+            return try client.run(StopContainerEndpoint(containerId: container.id.value))
+                .map({ _ in Void() })
+        }
     }
 }
 
 extension Container {
     public func start(on client: DockerClient) throws -> EventLoopFuture<Void> {
         try client.containers.start(container: self)
+    }
+   
+    public func stop(on client: DockerClient) throws -> EventLoopFuture<Void> {
+        try client.containers.stop(container: self)
+    }
+    
+    public func remove(on client: DockerClient) throws -> EventLoopFuture<Void> {
+        try client.containers.remove(container: self)
     }
     
     public func logs(on client: DockerClient) throws -> EventLoopFuture<String> {
