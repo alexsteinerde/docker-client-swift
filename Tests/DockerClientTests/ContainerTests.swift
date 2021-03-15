@@ -3,20 +3,40 @@ import XCTest
 import Logging
 
 final class ContainerTests: XCTestCase {
+    
+    func testCreateContainers() throws {
+        let client = DockerClient.testable()
+        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let container = try client.containers.createContainer(image: image).wait()
+
+        XCTAssertEqual(container.command, "/hello")
+    }
+    
     func testListContainers() throws {
         let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let _ = try! client.containers.createContainer(image: image).wait()
+        let _ = try client.containers.createContainer(image: image).wait()
         
         let containers = try client.containers.list(all: true).wait()
     
         XCTAssert(containers.count >= 1)
     }
     
+    func testInspectContainer() throws {
+        let client = DockerClient.testable()
+        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let container = try client.containers.createContainer(image: image).wait()
+        
+        let inspectedContainer = try client.containers.get(containerByNameOrId: container.id.value).wait()
+        
+        XCTAssertEqual(inspectedContainer.id, container.id)
+        XCTAssertEqual(inspectedContainer.command, "/hello")
+    }
+    
     func testStartingContainerAndRetrievingLogs() throws {
         let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let container = try! client.containers.createContainer(image: image).wait()
+        let container = try client.containers.createContainer(image: image).wait()
         try container.start(on: client).wait()
         let output = try container.logs(on: client).wait()
         

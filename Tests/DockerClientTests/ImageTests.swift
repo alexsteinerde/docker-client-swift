@@ -3,6 +3,13 @@ import XCTest
 import Logging
 
 final class ImageTests: XCTestCase {
+    func testPullImage() throws {
+        let client = DockerClient.testable()
+        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        
+        XCTAssertTrue(image.repositoryTags.contains(where: { $0.repository == "hello-world" && $0.tag == "latest"}))
+    }
+    
     func testListImage() throws {
         let client = DockerClient.testable()
         let _ = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
@@ -36,5 +43,11 @@ final class ImageTests: XCTestCase {
         let rt = Image.RepositoryTag("sha256:89b647c604b2a436fc3aa56ab1ec515c26b085ac0c15b0d105bc475be15738fb")
         
         XCTAssertNil(rt)
+    }
+    
+    func testInspectImage() throws {
+        let client = DockerClient.testable()
+    
+        XCTAssertNoThrow(try client.images.get(imageByNameOrId: "nginx:latest").wait())
     }
 }

@@ -5,7 +5,7 @@ extension DockerClient {
     
     /// APIs related to containers.
     public var containers: ContainersAPI {
-        ContainersAPI(client: self)
+        .init(client: self)
     }
     
     public struct ContainersAPI {
@@ -29,17 +29,9 @@ extension DockerClient {
         }
         
         public func createContainer(image: Image, commands: [String]?=nil) throws -> EventLoopFuture<Container> {
-            var id = image.id.value
-            if let tag = image.repositoryTags.first?.tag {
-                id += ":\(tag)"
-            }
-            if let digest = image.digest {
-                id += "@\(digest.rawValue)"
-            }
-            return try client.run(CreateContainerEndpoint(imageName: id, commands: commands))
-                .map({ response in
-                    // TODO: Load real data before returning
-                    Container(id: .init(response.Id), image: image, createdAt: .init(), names: [], state: "created", command: "")
+            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
+                .flatMap({ response in
+                    try self.get(containerByNameOrId: response.Id)
                 })
         }
         
@@ -71,6 +63,21 @@ extension DockerClient {
             return try client.run(StopContainerEndpoint(containerId: container.id.value))
                 .map({ _ in Void() })
         }
+        
+        public func get(containerByNameOrId nameOrId: String) throws -> EventLoopFuture<Container> {
+            try client.run(InspectContainerEndpoint(nameOrId: nameOrId))
+                .map { response in
+                    var digest: Digest?
+                    var repositoryTag: Image.RepositoryTag?
+                    if let value =  Image.parseNameTagDigest(response.Image) {
+                        (digest, repositoryTag) = value
+                    } else if let repoTag = Image.RepositoryTag(response.Image) {
+                        repositoryTag = repoTag
+                    }
+                    let image = Image(id: .init(response.Image), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
+                    return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: response.Config.Cmd.joined(separator: " "))
+                }
+        }
     }
 }
 
@@ -89,16 +96,5 @@ extension Container {
     
     public func logs(on client: DockerClient) throws -> EventLoopFuture<String> {
         try client.containers.logs(container: self)
-    }
-}
-
-extension Image {
-    static func parseNameTagDigest(_ value: String) -> (Digest, RepositoryTag)? {
-        let components = value.split(separator: "@").map(String.init)
-        if components.count == 2, let nameTag = RepositoryTag(components[0]) {
-            return (.init(components[1]), nameTag)
-        } else {
-            return nil
-        }
     }
 }

@@ -13,3 +13,5 @@ extension Identifier: ExpressibleByStringLiteral {
         self.value = value
     }
 }
+
+extension Identifier: Equatable { }

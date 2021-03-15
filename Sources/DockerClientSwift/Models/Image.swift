@@ -35,6 +35,11 @@ public struct Image {
         self.createdAt = createdAt
         self.repositoryTags = repositoryTags ?? []
     }
+    
+    internal init(id: Identifier<Image>) {
+        self.id = id
+        self.repositoryTags = []
+    }
 }
 
 extension Image.RepositoryTag {
