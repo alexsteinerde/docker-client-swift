@@ -21,6 +21,7 @@ This is a Docker Client written in Swift. It's using the NIO Framework to commun
 
 
 ## Installation
+### Package.swift 
 ```Swift
 import PackageDescription
 
@@ -34,6 +35,10 @@ let package = Package(
     ]
 )
 ```
+
+### Xcode Project
+To add DockerClientSwift to your existing Xcode project, select File -> Swift Packages -> Add Package Depedancy. 
+Enter `https://github.com/alexsteinerde/docker-client-swift.git` for the URL.
 
 ## Usage Example
 ```swift
