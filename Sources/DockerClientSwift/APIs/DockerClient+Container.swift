@@ -78,6 +78,21 @@ extension DockerClient {
                     return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: response.Config.Cmd.joined(separator: " "))
                 }
         }
+        
+        /// Delete stopped containers
+        public func prune() throws -> EventLoopFuture<PrunedContainers> {
+            return try client.run(PruneContainersEndpoint())
+                .map({ response in
+                    return PrunedContainers(containersIds: response.ContainersDeleted?.map({ .init($0)}) ?? [], reclaimedSpace: response.SpaceReclaimed)
+                })
+        }
+        
+        public struct PrunedContainers {
+            let containersIds: [Identifier<Container>]
+            
+            /// Disk space reclaimed in bytes
+            let reclaimedSpace: Int
+        }
     }
 }
 

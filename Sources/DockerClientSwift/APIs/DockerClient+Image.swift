@@ -49,6 +49,22 @@ extension DockerClient {
                     Image(id: .init(image.Id), digest: image.RepoDigests?.first.map({ Digest.init($0) }), repoTags: image.RepoTags, createdAt: Date.parseDockerDate(image.Created)!)
                 }
         }
+        
+        
+        /// Delete unused images
+        public func prune(all: Bool=false) throws -> EventLoopFuture<PrunedImages> {
+            return try client.run(PruneImagesEndpoint(dangling: !all))
+                .map({ response in
+                    return PrunedImages(imageIds: response.ImagesDeleted?.compactMap(\.Deleted).map({ .init($0)}) ?? [], reclaimedSpace: response.SpaceReclaimed)
+                })
+        }
+        
+        public struct PrunedImages {
+            let imageIds: [Identifier<Image>]
+            
+            /// Disk space reclaimed in bytes
+            let reclaimedSpace: Int
+        }
     }
 }
 

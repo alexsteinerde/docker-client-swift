@@ -50,4 +50,17 @@ final class ImageTests: XCTestCase {
     
         XCTAssertNoThrow(try client.images.get(imageByNameOrId: "nginx:latest").wait())
     }
+    
+    func testPruneContainers() throws {
+        let client = DockerClient.testable()
+        
+        let image = try client.images.pullImage(byName: "nginx", tag: "1.18-alpine").wait()
+        
+        let pruned = try client.images.prune(all: true).wait()
+        
+        let images = try client.images.list().wait()
+        XCTAssert(!images.map(\.id).contains(image.id))
+        XCTAssert(pruned.reclaimedSpace > 0)
+        XCTAssert(pruned.imageIds.contains(image.id))
+    }
 }

@@ -68,4 +68,20 @@ final class ContainerTests: XCTestCase {
             """
         )
     }
+    
+    func testPruneContainers() throws {
+        let client = DockerClient.testable()
+        
+        let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
+        let container = try client.containers.createContainer(image: image).wait()
+        try container.start(on: client).wait()
+        try container.stop(on: client).wait()
+        
+        let pruned = try client.containers.prune().wait()
+        
+        let containers = try client.containers.list(all: true).wait()
+        XCTAssert(!containers.map(\.id).contains(container.id))
+        XCTAssert(pruned.reclaimedSpace > 0)
+        XCTAssert(pruned.containersIds.contains(container.id))
+    }
 }
