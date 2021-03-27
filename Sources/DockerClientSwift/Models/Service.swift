@@ -1,5 +1,7 @@
 import Foundation
 
+/// Representation of a service.
+/// Some actions can be performed on an instance.
 public struct Service {
     public let id: Identifier<Service>
     public let name: String

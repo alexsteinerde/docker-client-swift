@@ -12,8 +12,8 @@ This is a Docker Client written in Swift. It's using the NIO Framework to commun
 - [x] Start a container
 - [x] Get the stdOut and stdErr output of a container
 - [x] Get the docker version information
-- [] Manage the container state
-- [] Create and manage services
+- [x] Manage the container state
+- [x] Create and manage services
 - [x] Update services
 - [x] List services
 - [x] Clean the system (prune containers and images)

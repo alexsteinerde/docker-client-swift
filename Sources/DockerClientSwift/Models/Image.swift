@@ -1,5 +1,7 @@
 import Foundation
 
+/// Representation of an image.
+/// Some actions can be performed on an instance.
 public struct Image {
 
     /// Local ID of the image. This can vary from instant to instant.
