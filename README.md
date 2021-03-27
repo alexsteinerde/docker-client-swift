@@ -51,8 +51,11 @@ print(output)
 
 For further usage examples, please consider looking at the provided test cases.
 
+## Demo
+There are two demo applications. One for the usage as a [Mac app](https://github.com/alexsteinerde/docker-client-swift-mac-app) and one in an [Vapor environment on the server](https://github.com/alexsteinerde/docker-client-vapor-demo).
+
 ## Security Advice
-When using this in production, make sure you secure your appclication so no others can execute code. Otherwise the attacker could access your Docker environment and so all of the containers running in it.
+When using this in production, make sure you secure your application so no others can execute code. Otherwise, the attacker could access your Docker environment and so all of the containers running in it.
 
 ## License
 This project is released under the MIT license. See [LICENSE](LICENSE) for details.
