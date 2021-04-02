@@ -22,7 +22,8 @@ public class DockerClient {
     }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
-    func syncShutdown() throws {
+    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    public func syncShutdown() throws {
         try client.syncShutdown()
     }
     
