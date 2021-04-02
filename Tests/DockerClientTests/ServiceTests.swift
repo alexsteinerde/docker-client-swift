@@ -3,10 +3,18 @@ import XCTest
 import Logging
 
 final class ServiceTests: XCTestCase {
+    
+    var client: DockerClient!
+    
+    override func setUp() {
+        client = DockerClient.testable()
+    }
+    
+    override func tearDownWithError() throws {
+        try! client.syncShutdown()
+    }
+    
     func testListingServices() throws {
-        let client = DockerClient.testable()
-        
-        // TODO: Create specific service first
         let name = UUID().uuidString
         let _ = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
         let services = try client.services.list().wait()
@@ -15,8 +23,6 @@ final class ServiceTests: XCTestCase {
     }
     
     func testUpdateService() throws {
-        let client = DockerClient.testable()
-        
         let name = UUID().uuidString
         let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
         let updatedService = try client.services.update(service: service, newImage: Image(id: "nginx:latest")).wait()
@@ -25,8 +31,6 @@ final class ServiceTests: XCTestCase {
     }
     
     func testInspectService() throws {
-        let client = DockerClient.testable()
-        
         let name = UUID().uuidString
         let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
         XCTAssertNoThrow(try client.services.get(serviceByNameOrId: service.id.value))
@@ -34,8 +38,6 @@ final class ServiceTests: XCTestCase {
     }
     
     func testCreateService() throws {
-        let client = DockerClient.testable()
-        
         let name = UUID().uuidString
         let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:latest"))).wait()
         

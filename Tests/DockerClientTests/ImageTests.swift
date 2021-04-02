@@ -3,15 +3,24 @@ import XCTest
 import Logging
 
 final class ImageTests: XCTestCase {
+    
+    var client: DockerClient!
+    
+    override func setUp() {
+        client = DockerClient.testable()
+    }
+    
+    override func tearDownWithError() throws {
+        try! client.syncShutdown()
+    }
+    
     func testPullImage() throws {
-        let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         
         XCTAssertTrue(image.repositoryTags.contains(where: { $0.repository == "hello-world" && $0.tag == "latest"}))
     }
     
     func testListImage() throws {
-        let client = DockerClient.testable()
         let _ = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         
         let images = try client.images.list().wait()
@@ -46,14 +55,10 @@ final class ImageTests: XCTestCase {
     }
     
     func testInspectImage() throws {
-        let client = DockerClient.testable()
-    
         XCTAssertNoThrow(try client.images.get(imageByNameOrId: "nginx:latest").wait())
     }
     
     func testPruneContainers() throws {
-        let client = DockerClient.testable()
-        
         let image = try client.images.pullImage(byName: "nginx", tag: "1.18-alpine").wait()
         
         let pruned = try client.images.prune(all: true).wait()

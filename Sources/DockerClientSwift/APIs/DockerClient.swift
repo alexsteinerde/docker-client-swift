@@ -21,12 +21,10 @@ public class DockerClient {
         self.logger = logger
     }
     
-    
     /// The client needs to be shutdown otherwise it can crash on exit.
-    deinit {
-        try? client.syncShutdown()
+    func syncShutdown() throws {
+        try client.syncShutdown()
     }
-
     
     /// Executes a request to a specific endpoint. The `Endpoint` struct provides all necessary data and parameters for the request.
     /// - Parameter endpoint: `Endpoint` instance with all necessary data and parameters.

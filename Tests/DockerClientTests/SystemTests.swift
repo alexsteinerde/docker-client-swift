@@ -3,9 +3,17 @@ import XCTest
 import Logging
 
 final class SystemTests: XCTestCase {
+    var client: DockerClient!
+    
+    override func setUp() {
+        client = DockerClient.testable()
+    }
+    
+    override func tearDownWithError() throws {
+        try! client.syncShutdown()
+    }
+    
     func testDockerVersion() throws {
-        let client = DockerClient.testable()
-
         XCTAssertNoThrow(try client.version().wait())
     }
 }

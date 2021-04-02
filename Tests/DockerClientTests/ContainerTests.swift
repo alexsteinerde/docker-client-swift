@@ -4,8 +4,17 @@ import Logging
 
 final class ContainerTests: XCTestCase {
     
+    var client: DockerClient!
+    
+    override func setUp() {
+        client = DockerClient.testable()
+    }
+    
+    override func tearDownWithError() throws {
+        try! client.syncShutdown()
+    }
+    
     func testCreateContainers() throws {
-        let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
 
@@ -13,7 +22,6 @@ final class ContainerTests: XCTestCase {
     }
     
     func testListContainers() throws {
-        let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let _ = try client.containers.createContainer(image: image).wait()
         
@@ -23,7 +31,6 @@ final class ContainerTests: XCTestCase {
     }
     
     func testInspectContainer() throws {
-        let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
         
@@ -34,7 +41,6 @@ final class ContainerTests: XCTestCase {
     }
     
     func testStartingContainerAndRetrievingLogs() throws {
-        let client = DockerClient.testable()
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
         try container.start(on: client).wait()
@@ -70,8 +76,6 @@ final class ContainerTests: XCTestCase {
     }
     
     func testPruneContainers() throws {
-        let client = DockerClient.testable()
-        
         let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
         try container.start(on: client).wait()
