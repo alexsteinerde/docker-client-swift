@@ -12,6 +12,7 @@ final class ServiceTests: XCTestCase {
     
     override func tearDownWithError() throws {
         try! client.syncShutdown()
+        // Remove all services in a Docker system `docker service ls -q | xargs echo`
     }
     
     func testListingServices() throws {
