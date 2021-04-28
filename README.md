@@ -57,10 +57,10 @@ If you want to read more about this package, feel free to read my [blog article]
 ## Demo
 There are two demo applications.
 
-|Project|Link|
---- | --- | ---
-|Mac App|[https://github.com/alexsteinerde/docker-client-swift-mac-app](https://github.com/alexsteinerde/docker-client-swift-mac-app)|
-|Vapor App|[https://github.com/alexsteinerde/docker-client-vapor-demo](https://github.com/alexsteinerde/docker-client-vapor-demo)|
+Project | Link
+--- | ---
+Mac App | [https://github.com/alexsteinerde/docker-client-swift-mac-app](https://github.com/alexsteinerde/docker-client-swift-mac-app)
+Vapor App | [https://github.com/alexsteinerde/docker-client-vapor-demo](https://github.com/alexsteinerde/docker-client-vapor-demo)
 
 
 ## Security Advice
