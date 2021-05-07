@@ -10,3 +10,5 @@ public struct Container {
     public var state: String
     public var command: String
 }
+
+extension Container: Codable {}

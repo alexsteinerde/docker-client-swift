@@ -11,7 +11,7 @@ public struct MessageResponse: Codable {
 /// Representation of an image digest.
 public struct Digest {
     public var rawValue: String
-    
+
     init(_ rawValue: String) {
         self.rawValue = rawValue
     }
@@ -22,6 +22,8 @@ extension Digest: ExpressibleByStringLiteral {
         self.rawValue = value
     }
 }
+
+extension Digest: Codable {}
 
 public enum DockerError: Error {
     case message(String)

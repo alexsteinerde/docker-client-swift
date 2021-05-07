@@ -10,3 +10,5 @@ public struct Service {
     public var version: Int
     public var image: Image
 }
+
+extension Service: Codable {}

@@ -5,3 +5,5 @@ public struct DockerVersion {
     public let minAPIVersion: String
     public let os: String
 }
+
+extension DockerVersion: Codable {}
