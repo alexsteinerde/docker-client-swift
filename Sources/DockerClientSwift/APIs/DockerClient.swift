@@ -33,7 +33,7 @@ public class DockerClient {
     /// - Returns: Returns an `EventLoopFuture` of the expected result definied by the `Endpoint`.
     internal func run<T: Endpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
         logger.info("Execute Endpoint: \(endpoint.path)")
-        return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())}, logger: logger, headers: HTTPHeaders([("Content-Type", "application/json")]))
+        return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())}, logger: logger, headers: HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")]))
             .logResponseBody(logger)
             .decode(as: T.Response.self)
     }
@@ -44,7 +44,7 @@ public class DockerClient {
     /// - Returns: Returns an `EventLoopFuture` of the expected result definied and transformed by the `PipelineEndpoint`.
     internal func run<T: PipelineEndpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
         logger.info("Execute PipelineEndpoint: \(endpoint.path)")
-        return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())}, logger: logger, headers: HTTPHeaders([("Content-Type", "application/json")]))
+        return client.execute(endpoint.method, socketPath: daemonSocket, urlPath: "/v1.40/\(endpoint.path)", body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())}, logger: logger, headers: HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")]))
             .logResponseBody(logger)
             .mapString(map: endpoint.map(data: ))
     }
