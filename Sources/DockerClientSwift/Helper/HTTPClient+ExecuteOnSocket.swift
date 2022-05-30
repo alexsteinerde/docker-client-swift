@@ -28,7 +28,7 @@ extension HTTPClient {
             else {
                 url = daemonURL.appendingPathComponent(urlPath)
             }*/
-            guard let url = URL(string: daemonURL.absoluteString + urlPath) else {
+            guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
                 throw HTTPClientError.invalidURL
             }
             
