@@ -28,7 +28,7 @@ public class DockerClient {
     }*/
     
     public init(client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
-        self.deamonURL = URL(string: "file:///var/run/docker.sock")!
+        self.deamonURL = URL(string: "unix:///var/run/docker.sock")!
         self.daemonSocket = ""
         self.tlsConfig = tlsConfig
         self.client = client
