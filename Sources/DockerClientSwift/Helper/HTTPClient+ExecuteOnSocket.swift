@@ -18,7 +18,7 @@ extension HTTPClient {
     /// - Returns: Returns an `EventLoopFuture` with the `Response` of the request
     public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) -> EventLoopFuture<Response> {
         do {
-            let url = daemonURL.appendingPathExtension(urlPath)
+            let url = daemonURL.appendingPathComponent(urlPath)
             print("••• URL=\(url.description)\n")
             let request = try Request(url: url, method: method, headers: headers, body: body, tlsConfiguration: tlsConfig)
             return self.execute(request: request, deadline: deadline, logger: logger)
