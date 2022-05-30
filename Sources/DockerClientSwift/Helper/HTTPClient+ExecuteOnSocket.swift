@@ -19,7 +19,7 @@ extension HTTPClient {
     public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) -> EventLoopFuture<Response> {
         do {
             var url: URL //(httpURLWithSocketPath: daemonURL.absoluteString, uri: urlPath)
-            if daemonURL.scheme == "unix" {
+            if daemonURL.scheme == "http+unix" {
                 guard let socketURL = URL(httpURLWithSocketPath: daemonURL.absoluteString, uri: urlPath) else {
                     throw HTTPClientError.invalidURL
                 }
