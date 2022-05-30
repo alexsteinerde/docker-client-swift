@@ -7,7 +7,7 @@ import Logging
 
 /// The entry point for docker client commands. 
 public class DockerClient {
-    private let apiVersion = "v1.41"
+    private let apiVersion = "v1.40"
     //private let daemonSocket: String
     private let deamonURL: URL
     private let tlsConfig: TLSConfiguration?
