@@ -9,7 +9,7 @@ import Logging
 public class DockerClient {
     private let apiVersion = "v1.41"
     private let daemonSocket: String
-    private let deamonURL: URL?
+    private let deamonURL: URL
     private let tlsConfig: TLSConfiguration?
     private let client: HTTPClient
     private let logger: Logger
@@ -19,9 +19,17 @@ public class DockerClient {
     ///   - daemonSocket: The socket path where the Docker API is listening on. Default is `/var/run/docker.sock`.
     ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
     ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
-    public init(daemonSocket: String = "/var/run/docker.sock", client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
+    /*public init(daemonSocket: String = "/var/run/docker.sock", client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
         self.daemonSocket = daemonSocket
         self.deamonURL = nil
+        self.tlsConfig = tlsConfig
+        self.client = client
+        self.logger = logger
+    }*/
+    
+    public init(client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
+        self.deamonURL = URL(string: "file:///var/run/docker.sock")!
+        self.daemonSocket = ""
         self.tlsConfig = tlsConfig
         self.client = client
         self.logger = logger
@@ -49,7 +57,8 @@ public class DockerClient {
         logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
         return client.execute(
             endpoint.method,
-            socketPath: daemonSocket,
+            daemonURL: self.deamonURL,
+            //socketPath: daemonSocket,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
@@ -68,7 +77,8 @@ public class DockerClient {
         logger.trace("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
         return client.execute(
             endpoint.method,
-            socketPath: daemonSocket,
+            daemonURL: self.deamonURL,
+            //socketPath: daemonSocket,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
