@@ -18,21 +18,11 @@ extension HTTPClient {
     /// - Returns: Returns an `EventLoopFuture` with the `Response` of the request
     public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) -> EventLoopFuture<Response> {
         do {
-            /*var url: URL //(httpURLWithSocketPath: daemonURL.absoluteString, uri: urlPath)
-            if daemonURL.scheme == "http+unix" {
-                guard let socketURL = URL(httpURLWithSocketPath: daemonURL.absoluteString, uri: urlPath) else {
-                    throw HTTPClientError.invalidURL
-                }
-                url = socketURL
-            }
-            else {
-                url = daemonURL.appendingPathComponent(urlPath)
-            }*/
             guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
                 throw HTTPClientError.invalidURL
             }
             
-            print("••• URL=\(url)\n")
+            //print("••• URL=\(url)\n")
             let request = try Request(url: url, method: method, headers: headers, body: body, tlsConfiguration: tlsConfig)
             return self.execute(request: request, deadline: deadline, logger: logger)
         } catch {
