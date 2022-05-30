@@ -54,7 +54,7 @@ internal extension Service {
         
         struct TaskTemplateResponse: Codable {
             let ContainerSpec: ContainerSpecResponse
-            let RestartPolicy: ServiceRestartPolicy
+            let RestartPolicy: ServiceRestartPolicy?
         }
         
         enum DeployFailureAction: String, Codable {
