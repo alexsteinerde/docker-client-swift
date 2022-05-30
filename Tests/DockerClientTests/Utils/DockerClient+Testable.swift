@@ -9,6 +9,6 @@ extension DockerClient {
         var logger = Logger(label: "docker-client-tests")
         logger.logLevel = .debug
         //return DockerClient(logger: logger)
-        return DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375"), logger: logger)
+        return DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375")!, logger: logger)
     }
 }
