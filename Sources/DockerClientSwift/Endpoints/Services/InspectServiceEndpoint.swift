@@ -31,8 +31,8 @@ internal extension Service {
         struct ServiceSpecResponse: Codable {
             let Name: String
             let TaskTemplate: TaskTemplateResponse
-            let UpdateConfig: DeployConfig
-            let RollbackConfig: DeployConfig
+            let UpdateConfig: DeployConfig?
+            let RollbackConfig: DeployConfig?
         }
         
         enum ServiceRestartCondition: String, Codable {
