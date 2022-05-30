@@ -1,4 +1,5 @@
 import NIOHTTP1
+import Foundation
 
 struct PullImageEndpoint: PipelineEndpoint {
     typealias Body = NoBody
@@ -9,7 +10,7 @@ struct PullImageEndpoint: PipelineEndpoint {
     var path: String {
         "images/create?fromImage=\(imageName)"
     }
-    
+
     typealias Response = PullImageResponse
     
     struct PullImageResponse: Codable {
