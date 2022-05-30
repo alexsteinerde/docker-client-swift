@@ -71,6 +71,13 @@ extension Service.ServiceResponse {
     /// Internal function that converts the response from Docker to the DockerClient representation.
     /// - Returns: Returns an instance of `Service` with the values of the current response.
     internal func toService() -> Service {
-        Service(id: .init(self.ID), name: self.Spec.Name, createdAt: Date.parseDockerDate(self.CreatedAt), updatedAt: Date.parseDockerDate(self.UpdatedAt), version: self.Version.Index, image: Image(id: Identifier(self.Spec.TaskTemplate.ContainerSpec.Image)))
+        Service(
+            id: .init(self.ID),
+            name: self.Spec.Name,
+            createdAt: Date.parseDockerDate(self.CreatedAt),
+            updatedAt: Date.parseDockerDate(self.UpdatedAt),
+            version: self.Version.Index,
+            image: Image(id: Identifier(self.Spec.TaskTemplate.ContainerSpec.Image))
+        )
     }
 }
