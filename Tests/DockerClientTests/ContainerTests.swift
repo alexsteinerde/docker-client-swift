@@ -43,7 +43,7 @@ final class ContainerTests: XCTestCase {
     func testStartingContainerAndRetrievingLogs() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try await client.containers.createContainer(image: image)
-        try container.start(on: client).wait()
+        try await container.start(on: client)
         let output = try container.logs(on: client).wait()
         
         XCTAssertEqual(
@@ -78,8 +78,8 @@ final class ContainerTests: XCTestCase {
     func testPruneContainers() async throws {
         let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
         let container = try await client.containers.createContainer(image: image)
-        try await container.start(on: client).wait()
-        try await container.stop(on: client).wait()
+        try await container.start(on: client)
+        try await container.stop(on: client)
         
         let pruned = try await client.containers.prune()
         
