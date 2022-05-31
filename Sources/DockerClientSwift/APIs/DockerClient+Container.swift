@@ -58,28 +58,24 @@ extension DockerClient {
         /// Removes an existing container.
         /// - Parameter container: Instance of an existing `Container`.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns an `EventLoopFuture` when the container is removed.
-        public func remove(container: Container) throws -> EventLoopFuture<Void> {
-            return try client.run(RemoveContainerEndpoint(containerId: container.id.value))
-                .map({ _ in Void() })
+        public func remove(container: Container) async throws {
+            try await client.run(RemoveContainerEndpoint(containerId: container.id.value))
         }
         
         /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
         /// - Parameter container: Instance of a `Container` you want to get the logs for.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Return an `EventLoopFuture` with the logs as a plain text `String`.
-        public func logs(container: Container) throws -> EventLoopFuture<String> {
-            try client.run(GetContainerLogsEndpoint(containerId: container.id.value))
-                .map({ response in
-                    // Removing the first character of each line because random characters went there.
-                    response.split(separator: "\n")
-                        .map({ originalLine in
-                            var line = originalLine
-                            line.removeFirst(8)
-                            return String(line)
-                        })
-                        .joined(separator: "\n")
+        public func logs(container: Container) async throws -> String {
+            let response = try await client.run(GetContainerLogsEndpoint(containerId: container.id.value))
+            // Removing the first character of each line because random characters went there.
+            // TODO: first char is the stream (stdout/stderr). Return structured messages instead of a string
+            return response.split(separator: "\n")
+                .map({ originalLine in
+                    var line = originalLine
+                    line.removeFirst(8)
+                    return String(line)
                 })
+                .joined(separator: "\n")
         }
         
         /// Fetches the latest information about a container by a given name or id..
@@ -141,15 +137,15 @@ extension Container {
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Returns an `EventLoopFuture` when the container is removed.
-    public func remove(on client: DockerClient) throws -> EventLoopFuture<Void> {
-        try client.containers.remove(container: self)
+    public func remove(on client: DockerClient) async throws {
+        try await client.containers.remove(container: self)
     }
     
     /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Return an `EventLoopFuture` with the logs as a plain text `String`.
-    public func logs(on client: DockerClient) throws -> EventLoopFuture<String> {
-        try client.containers.logs(container: self)
+    public func logs(on client: DockerClient) async throws {
+        try await client.containers.logs(container: self)
     }
 }

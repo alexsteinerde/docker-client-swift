@@ -44,7 +44,7 @@ final class ContainerTests: XCTestCase {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try await client.containers.createContainer(image: image)
         try await container.start(on: client)
-        let output = try container.logs(on: client).wait()
+        let output = try await container.logs(on: client)
         
         XCTAssertEqual(
             output,
