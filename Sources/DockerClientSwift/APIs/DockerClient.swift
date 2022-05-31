@@ -7,8 +7,8 @@ import Logging
 
 /// The entry point for docker client commands. 
 public class DockerClient {
-    private let apiVersion = "v1.40"
-    //private let daemonSocket: String
+    private let apiVersion = "v1.41"
+    private let headers = HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")])
     private let deamonURL: URL
     private let tlsConfig: TLSConfiguration?
     private let client: HTTPClient
@@ -16,28 +16,24 @@ public class DockerClient {
     
     /// Initialize the `DockerClient`.
     /// - Parameters:
-    ///   - daemonSocket: The socket path where the Docker API is listening on. Default is `/var/run/docker.sock`.
     ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
+    ///   - tlsConfig: `TLSConfiguration` for a Docker daemon requiring TLS authentication. Default is `nil`.
     ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
-    /*public init(daemonSocket: String = "/var/run/docker.sock", client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
-        self.daemonSocket = daemonSocket
-        self.deamonURL = nil
-        self.tlsConfig = tlsConfig
-        self.client = client
-        self.logger = logger
-    }*/
-    
     public init(client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
         self.deamonURL = URL(httpURLWithSocketPath: "/var/run/docker.sock")!
-        //self.daemonSocket = ""
         self.tlsConfig = tlsConfig
         self.client = client
         self.logger = logger
     }
     
+    /// Initialize the `DockerClient`.
+    /// - Parameters:
+    ///   - daemonURL: The URL where the Docker API is listening on. Default is `http+unix:///var/run/docker.sock`.
+    ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
+    ///   - tlsConfig: `TLSConfiguration` for a Docker daemon requiring TLS authentication. Default is `nil`.
+    ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
     public init(deamonURL: URL, client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
         self.deamonURL = deamonURL
-        //self.daemonSocket = ""
         self.tlsConfig = tlsConfig
         self.client = client
         self.logger = logger
@@ -58,12 +54,11 @@ public class DockerClient {
         return client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
-            //socketPath: daemonSocket,
-            urlPath: "/\(apiVersion)/\(endpoint.path)",
+            urlPath: "\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
             logger: logger,
-            headers: HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")])
+            headers: self.headers
         )
         .logResponseBody(logger)
         .decode(as: T.Response.self)
@@ -78,12 +73,11 @@ public class DockerClient {
         return client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
-            //socketPath: daemonSocket,
-            urlPath: "/\(apiVersion)/\(endpoint.path)",
+            urlPath: "\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
             logger: logger,
-            headers: HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")])
+            headers: self.headers
         )
         .logResponseBody(logger)
         .mapString(map: endpoint.map(data: ))
