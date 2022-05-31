@@ -40,29 +40,19 @@ extension DockerClient {
             let response = try await client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
             return try await self.get(containerByNameOrId: response.Id)
         }
-        /*public func createContainer(image: Image, commands: [String]?=nil) throws -> EventLoopFuture<Container> {
-            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
-                .flatMap({ response in
-                    try self.get(containerByNameOrId: response.Id)
-                })
-        }*/
         
         /// Starts a container. Before starting it needs to be created.
         /// - Parameter container: Instance of a created `Container`.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns an `EventLoopFuture` when the container is started.
-        public func start(container: Container) throws -> EventLoopFuture<Void> {
-            return try client.run(StartContainerEndpoint(containerId: container.id.value))
-                .map({ _ in Void() })
+        public func start(container: Container) async throws {
+            try await client.run(StartContainerEndpoint(containerId: container.id.value))
         }
         
         /// Stops a container. Before stopping it needs to be created and started..
         /// - Parameter container: Instance of a started `Container`.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns an `EventLoopFuture` when the container is stopped.
-        public func stop(container: Container) throws -> EventLoopFuture<Void> {
-            return try client.run(StopContainerEndpoint(containerId: container.id.value))
-                .map({ _ in Void() })
+        public func stop(container: Container) async throws {
+            try await client.run(StopContainerEndpoint(containerId: container.id.value))
         }
         
         /// Removes an existing container.
@@ -113,11 +103,12 @@ extension DockerClient {
         /// Deletes all stopped containers.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` with a list of deleted `Container` and the reclaimed space.
-        public func prune() throws -> EventLoopFuture<PrunedContainers> {
-            return try client.run(PruneContainersEndpoint())
-                .map({ response in
-                    return PrunedContainers(containersIds: response.ContainersDeleted?.map({ .init($0)}) ?? [], reclaimedSpace: response.SpaceReclaimed)
-                })
+        public func prune() async throws -> PrunedContainers {
+            let response =  try await client.run(PruneContainersEndpoint())
+            return PrunedContainers(
+                containersIds: response.ContainersDeleted?.map({ .init($0)}) ?? [],
+                reclaimedSpace: response.SpaceReclaimed
+            )
         }
         
         public struct PrunedContainers {
@@ -134,16 +125,16 @@ extension Container {
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Returns an `EventLoopFuture` when the container is started.
-    public func start(on client: DockerClient) throws -> EventLoopFuture<Void> {
-        try client.containers.start(container: self)
+    public func start(on client: DockerClient) async throws {
+        try await client.containers.start(container: self)
     }
     
     /// Stops a container.
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Returns an `EventLoopFuture` when the container is stopped.
-    public func stop(on client: DockerClient) throws -> EventLoopFuture<Void> {
-        try client.containers.stop(container: self)
+    public func stop(on client: DockerClient) async throws {
+        try await client.containers.stop(container: self)
     }
     
     /// Removes a container

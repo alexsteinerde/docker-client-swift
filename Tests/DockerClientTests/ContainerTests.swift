@@ -78,10 +78,10 @@ final class ContainerTests: XCTestCase {
     func testPruneContainers() async throws {
         let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
         let container = try await client.containers.createContainer(image: image)
-        try container.start(on: client).wait()
-        try container.stop(on: client).wait()
+        try await container.start(on: client).wait()
+        try await container.stop(on: client).wait()
         
-        let pruned = try client.containers.prune().wait()
+        let pruned = try await client.containers.prune()
         
         let containers = try await client.containers.list(all: true)
         XCTAssert(!containers.map(\.id).contains(container.id))
