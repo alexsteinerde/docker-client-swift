@@ -29,4 +29,15 @@ extension HTTPClient {
             return self.eventLoopGroup.next().makeFailedFuture(error)
         }
     }
+    
+    public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) async throws-> Response {
+        guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
+            throw HTTPClientError.invalidURL
+        }
+        
+        //print("••• URL=\(url)\n")
+        let request = try Request(url: url, method: method, headers: headers, body: body, tlsConfiguration: tlsConfig)
+        return try await self.execute(request: request, deadline: deadline, logger: logger).get()
+        
+    }
 }

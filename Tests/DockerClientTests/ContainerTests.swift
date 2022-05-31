@@ -21,11 +21,11 @@ final class ContainerTests: XCTestCase {
         XCTAssertEqual(container.command, "/hello")
     }
     
-    func testListContainers() throws {
+    func testListContainers() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let _ = try client.containers.createContainer(image: image).wait()
         
-        let containers = try client.containers.list(all: true).wait()
+        let containers = try await client.containers.list(all: true).wait()
     
         XCTAssert(containers.count >= 1)
     }

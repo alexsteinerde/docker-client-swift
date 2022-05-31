@@ -15,7 +15,7 @@ extension DockerClient {
         /// - Parameter all: If `true` all containers are fetched, otherwise only running containers.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` with a list of `Container`.
-        public func list(all: Bool=false) throws -> EventLoopFuture<[Container]> {
+        /*public func list(all: Bool=false) throws -> EventLoopFuture<[Container]> {
             try client.run(ListContainersEndpoint(all: all))
                 .map({ containers in
                     containers.map { container in
@@ -29,6 +29,21 @@ extension DockerClient {
                         let image = Image(id: .init(container.ImageID), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
                         return Container(id: .init(container.Id), image: image, createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)), names: container.Names, state: container.State, command: container.Command)
                     }
+                })
+        }*/
+        
+        public func list(all: Bool=false) async throws -> [Container] {
+            try await client.run(ListContainersEndpoint(all: all))
+                .map({ container in
+                    var digest: Digest?
+                    var repositoryTag: Image.RepositoryTag?
+                    if let value =  Image.parseNameTagDigest(container.Image) {
+                        (digest, repositoryTag) = value
+                    } else if let repoTag = Image.RepositoryTag(container.Image) {
+                        repositoryTag = repoTag
+                    }
+                    let image = Image(id: .init(container.ImageID), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
+                    return Container(id: .init(container.Id), image: image, createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)), names: container.Names, state: container.State, command: container.Command)
                 })
         }
         
