@@ -54,7 +54,7 @@ public class DockerClient {
         return client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
-            urlPath: "\(apiVersion)/\(endpoint.path)",
+            urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
             logger: logger,
@@ -73,7 +73,7 @@ public class DockerClient {
         return client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
-            urlPath: "\(apiVersion)/\(endpoint.path)",
+            urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
             logger: logger,
