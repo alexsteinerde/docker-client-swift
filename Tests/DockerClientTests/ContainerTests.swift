@@ -14,35 +14,35 @@ final class ContainerTests: XCTestCase {
         try! client.syncShutdown()
     }
     
-    func testCreateContainers() throws {
+    func testCreateContainers() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let container = try client.containers.createContainer(image: image).wait()
+        let container = try await client.containers.createContainer(image: image)
 
         XCTAssertEqual(container.command, "/hello")
     }
     
     func testListContainers() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let _ = try client.containers.createContainer(image: image).wait()
+        let _ = try await client.containers.createContainer(image: image)
         
         let containers = try await client.containers.list(all: true)
     
         XCTAssert(containers.count >= 1)
     }
     
-    func testInspectContainer() throws {
+    func testInspectContainer() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let container = try client.containers.createContainer(image: image).wait()
+        let container = try await client.containers.createContainer(image: image)
         
-        let inspectedContainer = try client.containers.get(containerByNameOrId: container.id.value).wait()
+        let inspectedContainer = try await client.containers.get(containerByNameOrId: container.id.value)
         
         XCTAssertEqual(inspectedContainer.id, container.id)
         XCTAssertEqual(inspectedContainer.command, "/hello")
     }
     
-    func testStartingContainerAndRetrievingLogs() throws {
+    func testStartingContainerAndRetrievingLogs() async throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
-        let container = try client.containers.createContainer(image: image).wait()
+        let container = try await client.containers.createContainer(image: image)
         try container.start(on: client).wait()
         let output = try container.logs(on: client).wait()
         
@@ -77,7 +77,7 @@ final class ContainerTests: XCTestCase {
     
     func testPruneContainers() async throws {
         let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
-        let container = try client.containers.createContainer(image: image).wait()
+        let container = try await client.containers.createContainer(image: image)
         try container.start(on: client).wait()
         try container.stop(on: client).wait()
         
