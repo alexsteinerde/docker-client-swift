@@ -15,32 +15,32 @@ final class ServiceTests: XCTestCase {
         // Remove all services in a Docker system `docker service ls -q | xargs echo`
     }
     
-    func testListingServices() throws {
+    func testListingServices() async throws {
         let name = UUID().uuidString
-        let _ = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
-        let services = try client.services.list().wait()
+        let _ = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
+        let services = try await client.services.list()
         
         XCTAssert(services.count >= 1)
     }
     
-    func testUpdateService() throws {
+    func testUpdateService() async throws {
         let name = UUID().uuidString
-        let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
-        let updatedService = try client.services.update(service: service, newImage: Image(id: "nginx:latest")).wait()
+        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
+        let updatedService = try await client.services.update(service: service, newImage: Image(id: "nginx:latest"))
         
         XCTAssertTrue(updatedService.version > service.version)
     }
     
-    func testInspectService() throws {
+    func testInspectService() async throws {
         let name = UUID().uuidString
-        let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine"))).wait()
-        XCTAssertNoThrow(try client.services.get(serviceByNameOrId: service.id.value))
+        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
+        XCTAssertNoThrow(Task(priority: .medium) {try await client.services.get(serviceByNameOrId: service.id.value) })
         XCTAssertEqual(service.name, name)
     }
     
-    func testCreateService() throws {
+    func testCreateService() async throws {
         let name = UUID().uuidString
-        let service = try client.services.create(serviceName: name, image: Image(id: .init("nginx:latest"))).wait()
+        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
         
         XCTAssertEqual(service.name, name)
     }

@@ -64,6 +64,7 @@ public class DockerClient {
         .decode(as: T.Response.self)
     }
     
+    @discardableResult
     internal func run<T: Endpoint>(_ endpoint: T) async throws -> T.Response {
         logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
         return try await client.execute(

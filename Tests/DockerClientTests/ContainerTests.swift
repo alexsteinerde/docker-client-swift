@@ -15,14 +15,14 @@ final class ContainerTests: XCTestCase {
     }
     
     func testCreateContainers() async throws {
-        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
 
         XCTAssertEqual(container.command, "/hello")
     }
     
     func testListContainers() async throws {
-        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let _ = try await client.containers.createContainer(image: image)
         
         let containers = try await client.containers.list(all: true)
@@ -31,7 +31,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testInspectContainer() async throws {
-        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
         
         let inspectedContainer = try await client.containers.get(containerByNameOrId: container.id.value)
@@ -41,7 +41,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testStartingContainerAndRetrievingLogs() async throws {
-        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
         try await container.start(on: client)
         let output = try await container.logs(on: client)
@@ -76,7 +76,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testPruneContainers() async throws {
-        let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
+        let image = try await client.images.pullImage(byName: "nginx", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
         try await container.start(on: client)
         try await container.stop(on: client)

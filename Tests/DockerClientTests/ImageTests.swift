@@ -14,16 +14,16 @@ final class ImageTests: XCTestCase {
         try! client.syncShutdown()
     }
     
-    func testPullImage() throws {
-        let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+    func testPullImage() async throws {
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         
         XCTAssertTrue(image.repositoryTags.contains(where: { $0.repository == "hello-world" && $0.tag == "latest"}))
     }
     
-    func testListImage() throws {
-        let _ = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
+    func testListImage() async throws {
+        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         
-        let images = try client.images.list().wait()
+        let images = try await client.images.list()
         
         XCTAssert(images.count >= 1)
     }
@@ -54,16 +54,16 @@ final class ImageTests: XCTestCase {
         XCTAssertNil(rt)
     }
     
-    func testInspectImage() throws {
-        XCTAssertNoThrow(try client.images.get(imageByNameOrId: "nginx:latest").wait())
+    func testInspectImage() async throws {
+        XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get(imageByNameOrId: "nginx:latest") })
     }
     
-    func testPruneContainers() throws {
-        let image = try client.images.pullImage(byName: "nginx", tag: "1.18-alpine").wait()
+    func testPruneContainers() async throws {
+        let image = try await client.images.pullImage(byName: "nginx", tag: "1.18-alpine")
         
-        let pruned = try client.images.prune(all: true).wait()
+        let pruned = try await client.images.prune(all: true)
         
-        let images = try client.images.list().wait()
+        let images = try await client.images.list()
         XCTAssert(!images.map(\.id).contains(image.id))
         XCTAssert(pruned.reclaimedSpace > 0)
         XCTAssert(pruned.imageIds.contains(image.id))

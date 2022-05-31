@@ -13,7 +13,7 @@ final class SystemTests: XCTestCase {
         try! client.syncShutdown()
     }
     
-    func testDockerVersion() throws {
-        XCTAssertNoThrow(try client.version().wait())
+    func testDockerVersion() async throws {
+        XCTAssertNoThrow(Task(priority: .medium) { try await client.version() })
     }
 }

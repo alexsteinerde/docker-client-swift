@@ -145,7 +145,7 @@ extension Container {
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Return an `EventLoopFuture` with the logs as a plain text `String`.
-    public func logs(on client: DockerClient) async throws -> String{
+    public func logs(on client: DockerClient) async throws -> String {
         return try await client.containers.logs(container: self)
     }
 }
