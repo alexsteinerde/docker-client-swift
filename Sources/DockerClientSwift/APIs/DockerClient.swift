@@ -8,7 +8,12 @@ import Logging
 /// The entry point for docker client commands. 
 public class DockerClient {
     private let apiVersion = "v1.41"
-    private let headers = HTTPHeaders([("Content-Type", "application/json"), ("Host", "localhost")])
+    private let headers = HTTPHeaders([
+        ("Accept", "application/json;charset=utf-8"),
+        ("Content-Type", "application/json"),
+        ("Host", "localhost")
+    ])
+    
     private let deamonURL: URL
     private let tlsConfig: TLSConfiguration?
     private let client: HTTPClient
@@ -48,22 +53,7 @@ public class DockerClient {
     /// Executes a request to a specific endpoint. The `Endpoint` struct provides all necessary data and parameters for the request.
     /// - Parameter endpoint: `Endpoint` instance with all necessary data and parameters.
     /// - Throws: It can throw an error when encoding the body of the `Endpoint` request to JSON.
-    /// - Returns: Returns an `EventLoopFuture` of the expected result definied by the `Endpoint`.
-    internal func run<T: Endpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
-        logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
-        return client.execute(
-            endpoint.method,
-            daemonURL: self.deamonURL,
-            urlPath: "/\(apiVersion)/\(endpoint.path)",
-            body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
-            tlsConfig: self.tlsConfig,
-            logger: logger,
-            headers: self.headers
-        )
-        .logResponseBody(logger)
-        .decode(as: T.Response.self)
-    }
-    
+    /// - Returns: Returns the expected result definied by the `Endpoint`.
     @discardableResult
     internal func run<T: Endpoint>(_ endpoint: T) async throws -> T.Response {
         logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
@@ -81,8 +71,13 @@ public class DockerClient {
         .get()
     }
     
-    /*internal func run<T: Endpoint>(_ endpoint: T) async throws -> T.Response {
-        logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
+    /// Executes a request to a specific endpoint. The `PipelineEndpoint` struct provides all necessary data and parameters for the request.
+    /// The difference for between `Endpoint` and `EndpointPipeline` is that the second one needs to provide a function that transforms the response as a `String` to the expected result.
+    /// - Parameter endpoint: `PipelineEndpoint` instance with all necessary data and parameters.
+    /// - Throws: It can throw an error when encoding the body of the `PipelineEndpoint` request to JSON.
+    /// - Returns: Returns the expected result definied and transformed by the `PipelineEndpoint`.
+    internal func run<T: PipelineEndpoint>(_ endpoint: T) async throws -> T.Response {
+        logger.trace("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
         return try await client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
@@ -93,25 +88,7 @@ public class DockerClient {
             headers: self.headers
         )
         .logResponseBody(logger)
-        .decode(as: T.Response.self)
-    }*/
-    
-    /// Executes a request to a specific endpoint. The `PipelineEndpoint` struct provides all necessary data and parameters for the request. The difference for between `Endpoint` and `EndpointPipeline` is that the second one needs to provide a function that transforms the response as a `String` to the expected result.
-    /// - Parameter endpoint: `PipelineEndpoint` instance with all necessary data and parameters.
-    /// - Throws: It can throw an error when encoding the body of the `PipelineEndpoint` request to JSON.
-    /// - Returns: Returns an `EventLoopFuture` of the expected result definied and transformed by the `PipelineEndpoint`.
-    internal func run<T: PipelineEndpoint>(_ endpoint: T) throws -> EventLoopFuture<T.Response> {
-        logger.trace("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
-        return client.execute(
-            endpoint.method,
-            daemonURL: self.deamonURL,
-            urlPath: "/\(apiVersion)/\(endpoint.path)",
-            body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
-            tlsConfig: self.tlsConfig,
-            logger: logger,
-            headers: self.headers
-        )
-        .logResponseBody(logger)
         .mapString(map: endpoint.map(data: ))
+        .get()
     }
 }

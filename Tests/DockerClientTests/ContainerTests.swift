@@ -46,6 +46,12 @@ final class ContainerTests: XCTestCase {
         try await container.start(on: client)
         let output = try await container.logs(on: client)
         
+        // arm64v8
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        
+        print("••••••• utsname.machine=\(systemInfo.machine)")
         XCTAssertEqual(
             output,
             """
