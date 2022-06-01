@@ -10,7 +10,7 @@ final class SystemTests: XCTestCase {
     }
     
     override func tearDownWithError() throws {
-        try! client.syncShutdown()
+        try client.syncShutdown()
     }
     
     func testDockerVersion() async throws {

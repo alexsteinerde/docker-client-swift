@@ -11,7 +11,7 @@ final class ImageTests: XCTestCase {
     }
     
     override func tearDownWithError() throws {
-        try! client.syncShutdown()
+        try client.syncShutdown()
     }
     
     func testPullImage() async throws {
