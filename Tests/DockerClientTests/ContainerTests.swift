@@ -11,7 +11,7 @@ final class ContainerTests: XCTestCase {
     }
     
     override func tearDownWithError() throws {
-        try! client.syncShutdown()
+        try client.syncShutdown()
     }
     
     func testCreateContainers() async throws {
@@ -47,11 +47,6 @@ final class ContainerTests: XCTestCase {
         let output = try await container.logs(on: client)
         
         // arm64v8
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        
-        
-        print("••••••• utsname.machine=\(systemInfo.machine)")
         XCTAssertEqual(
             output,
             """
