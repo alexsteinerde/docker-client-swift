@@ -76,6 +76,7 @@ public class DockerClient {
     /// - Parameter endpoint: `PipelineEndpoint` instance with all necessary data and parameters.
     /// - Throws: It can throw an error when encoding the body of the `PipelineEndpoint` request to JSON.
     /// - Returns: Returns the expected result definied and transformed by the `PipelineEndpoint`.
+    @discardableResult
     internal func run<T: PipelineEndpoint>(_ endpoint: T) async throws -> T.Response {
         logger.trace("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
         return try await client.execute(

@@ -92,7 +92,14 @@ extension DockerClient {
                 repositoryTag = repoTag
             }
             let image = Image(id: .init(response.Image), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
-            return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: response.Config.Cmd.joined(separator: " "))
+            return Container(
+                id: .init(response.Id),
+                image: image,
+                createdAt: Date.parseDockerDate(response.Created)!,
+                names: [response.Name],
+                state: response.State.Status,
+                command: response.Config.Cmd.joined(separator: " ")
+            )
         }
         
         
