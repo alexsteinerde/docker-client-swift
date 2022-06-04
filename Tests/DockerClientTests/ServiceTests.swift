@@ -6,8 +6,10 @@ final class ServiceTests: XCTestCase {
     
     var client: DockerClient!
     
-    override func setUp() {
+    override func setUp() async throws {
         client = DockerClient.testable()
+        try? await client.swarm.leave(force: true)
+        let _ = try! await client.swarm.initSwarm(config: SwarmCreate())
     }
     
     override func tearDownWithError() throws {
@@ -47,5 +49,9 @@ final class ServiceTests: XCTestCase {
     
     func testParsingDate() {
         XCTAssertNotNil(Date.parseDockerDate("2021-03-12T12:34:10.239624085Z"))
+    }
+    
+    func textZzzLeaveSwarm() async throws {
+        try await client.swarm.leave()
     }
 }
