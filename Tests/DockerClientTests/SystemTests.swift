@@ -14,6 +14,8 @@ final class SystemTests: XCTestCase {
     }
     
     func testDockerVersion() async throws {
+        let version = try await client.version()
+        print("\n•••••• API Version: \(version.apiVersion)")
         XCTAssertNoThrow(Task(priority: .medium) { try await client.version() })
     }
 }

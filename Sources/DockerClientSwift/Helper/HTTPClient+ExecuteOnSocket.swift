@@ -35,7 +35,6 @@ extension HTTPClient {
             throw HTTPClientError.invalidURL
         }
         
-        //print("••• URL=\(url)\n")
         let request = try Request(url: url, method: method, headers: headers, body: body, tlsConfiguration: tlsConfig)
         return try await self.execute(request: request, deadline: deadline, logger: logger).get()
         

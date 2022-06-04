@@ -207,6 +207,7 @@ struct InspectContainerEndpoint: Endpoint {
             // var VolumeOptions
             // var TmpfsOptions
         }
+        
         struct HostConfigResponse: Codable {
             
             /// A list of volume bindings for this container. Each volume binding is a string in one of these forms:
