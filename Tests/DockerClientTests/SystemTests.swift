@@ -15,7 +15,19 @@ final class SystemTests: XCTestCase {
     
     func testDockerVersion() async throws {
         let version = try await client.version()
-        print("\n•••••• API Version: \(version.apiVersion)")
-        XCTAssertNoThrow(Task(priority: .medium) { try await client.version() })
+        XCTAssert(version.version != "", "Ensure Version field is set")
+    }
+    
+    func testSystemInfo() async throws {
+        let info = try await client.info()
+        XCTAssert(info.id != "", "Ensure id is set")
+    }
+    
+    func testSystemInfoWithSwarm() async throws {
+        try? await client.swarm.leave(force: true)
+        let _ = try! await client.swarm.initSwarm(config: SwarmCreate())
+        let info = try await client.info()
+        try? await client.swarm.leave(force: true)
+        print("\n••••••••• DOCKER system info=\(info)")
     }
 }

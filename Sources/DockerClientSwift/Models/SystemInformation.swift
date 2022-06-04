@@ -35,7 +35,7 @@ public struct SystemInformation: Codable {
     let isolation, initBinary: String
     let containerdCommit, runcCommit, initCommit: Commit
     let securityOptions: [String]
-    let productLicense: String
+    let productLicense: String?
     let defaultAddressPools: [DefaultAddressPool]?
     let warnings: [String]?
     
@@ -252,7 +252,7 @@ struct Cluster: Codable {
     let tlsInfo: TLSInfo
     let rootRotationInProgress: Bool
     let dataPathPort: Int
-    let defaultAddrPool: [[String]]?
+    let defaultAddrPool: [String]?
     let subnetSize: Int
     
     enum CodingKeys: String, CodingKey {
@@ -272,7 +272,7 @@ struct Cluster: Codable {
 // MARK: - Spec
 struct Spec: Codable {
     let name: String
-    let labels: Labels
+    let labels: [String:String]
     let orchestration: Orchestration
     let raft: Raft
     let dispatcher: Dispatcher
@@ -295,9 +295,9 @@ struct Spec: Codable {
 // MARK: - CAConfig
 struct CAConfig: Codable {
     let nodeCERTExpiry: Int
-    let externalCAs: [ExternalCA]
-    let signingCACERT, signingCAKey: String
-    let forceRotate: Int
+    let externalCAs: [ExternalCA]?
+    let signingCACERT, signingCAKey: String?
+    let forceRotate: Int?
     
     enum CodingKeys: String, CodingKey {
         case nodeCERTExpiry = "NodeCertExpiry"
@@ -345,15 +345,6 @@ struct EncryptionConfig: Codable {
     }
 }
 
-// MARK: - Labels
-struct Labels: Codable {
-    let comExampleCorpType, comExampleCorpDepartment: String
-    
-    enum CodingKeys: String, CodingKey {
-        case comExampleCorpType = "com.example.corp.type"
-        case comExampleCorpDepartment = "com.example.corp.department"
-    }
-}
 
 // MARK: - Orchestration
 struct Orchestration: Codable {
@@ -380,7 +371,7 @@ struct Raft: Codable {
 
 // MARK: - TaskDefaults
 struct TaskDefaults: Codable {
-    let logDriver: LogDriver
+    let logDriver: LogDriver?
     
     enum CodingKeys: String, CodingKey {
         case logDriver = "LogDriver"
@@ -436,4 +427,4 @@ struct RemoteManager: Codable {
         case nodeID = "NodeID"
         case addr = "Addr"
     }
-    }
+}

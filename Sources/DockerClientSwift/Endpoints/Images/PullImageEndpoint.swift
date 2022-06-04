@@ -3,15 +3,14 @@ import Foundation
 
 struct PullImageEndpoint: PipelineEndpoint {
     typealias Body = NoBody
+    typealias Response = PullImageResponse
+    var method: HTTPMethod = .POST
     
     let imageName: String
     
-    var method: HTTPMethod = .POST
     var path: String {
         "images/create?fromImage=\(imageName)"
     }
-
-    typealias Response = PullImageResponse
     
     struct PullImageResponse: Codable {
         let digest: String
