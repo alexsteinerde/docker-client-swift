@@ -1,11 +1,42 @@
 import Foundation
 
 public struct DockerVersion: Codable {
+    
     public let platform: DockerPlatform
+    
+    /// Information about system components
     public let components: [DockerVersionComponent]
-    public let version, apiVersion, minAPIVersion, gitCommit: String
-    public let goVersion, os, arch, kernelVersion: String
-    public let buildTime: String
+    
+    /// The version of the daemon
+    public let version: String
+    
+    /// The default (and highest) API version that is supported by the daemon
+    public let apiVersion: String
+    
+    /// The minimum API version that is supported by the daemon
+    public let minAPIVersion: String
+    
+    /// The Git commit of the source code that was used to build the daemon
+    public let gitCommit: String
+    
+    /// The version Go used to compile the daemon, and the version of the Go runtime in use.
+    public let goVersion: String
+    
+    /// The operating system that the daemon is running on ("linux" or "windows")
+    public let os: String
+    
+    /// The CPU  architecture that the daemon is running on
+    public let arch: String
+    
+    /// The kernel version (uname -r) that the daemon is running on.
+    public let kernelVersion: String?
+    
+    /// The date and time that the daemon was compiled.
+    public let buildTime: Date
+    
+    /// Indicates if the daemon is started with experimental features enabled.
+    /// This field is omitted when empty / false.
+    public let experimental: Bool?
     
     enum CodingKeys: String, CodingKey {
         case platform = "Platform"
@@ -19,13 +50,14 @@ public struct DockerVersion: Codable {
         case arch = "Arch"
         case kernelVersion = "KernelVersion"
         case buildTime = "BuildTime"
+        case experimental = "Experimental"
     }
 }
 
 // MARK: - Component
 public struct DockerVersionComponent: Codable {
     public let name, version: String
-    public let details: DockerVersionComponentDetails
+    public let details: DockerVersionComponentDetails?
     
     enum CodingKeys: String, CodingKey {
         case name = "Name"

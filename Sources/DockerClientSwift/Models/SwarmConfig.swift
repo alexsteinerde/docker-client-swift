@@ -153,6 +153,20 @@ public struct SwarmSpec: Codable {
         case encryptionConfig = "EncryptionConfig"
         case taskDefaults = "TaskDefaults"
     }
+    
+    public init(){}
+    
+    internal init(caConfig: SwarmCAConfig? = nil, dispatcher: SwarmDispatcher? = nil, encryptionConfig: SwarmEncryptionConfig? = nil, name: String = "default", labels: [String : String]? = nil, orchestration: SwarmOrchestration? = nil, raft: Raft? = nil, taskDefaults: SwarmTaskDefaults? = nil) {
+        self.caConfig = caConfig
+        self.dispatcher = dispatcher
+        self.encryptionConfig = encryptionConfig
+        self.name = name
+        self.labels = labels
+        self.orchestration = orchestration
+        self.raft = raft
+        self.taskDefaults = taskDefaults
+    }
+    
 }
 
 // MARK: - SwarmConfig
@@ -201,8 +215,19 @@ public struct SwarmConfig : Codable {
         case subnetSize = "SubnetSize"
     }
     
-    public init() {
-        
+    public init() {}
+    
+    public init(advertiseAddr: String? = nil, dataPathAddr: String? = nil, dataPathPort: UInt16 = 0, defaultAddrPool: [String]? = nil, forceNewCluster: Bool = false, listenAddr: String = "0.0.0.0", spec: SwarmSpec = .init(), subnetSize: UInt8? = nil) {
+        self.advertiseAddr = advertiseAddr
+        self.dataPathAddr = dataPathAddr
+        self.dataPathPort = dataPathPort
+        self.defaultAddrPool = defaultAddrPool
+        self.forceNewCluster = forceNewCluster
+        self.listenAddr = listenAddr
+        self.spec = spec
+        self.subnetSize = subnetSize
     }
+    
+    
 
 }
