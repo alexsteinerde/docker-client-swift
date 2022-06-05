@@ -24,9 +24,13 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Get logs                | 🚧       | refactoring |
+|                             | Exec                    | ❌       |             |
+|                             | Prune                   | ✅       |             |
 | Images                      | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       |             |
+|                             | Build                   | ❌       |             |
+|                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
