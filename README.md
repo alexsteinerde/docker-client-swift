@@ -98,8 +98,14 @@ print(output)
 ### Connect to a Docker deamon
 
 Local socket:
+```swift
+let docker = DockerClient()
+```
 
 Remote daemon via HTTP:
+```swift
+let docker = DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375")!)
+```
 
 Remote daemon via HTTPS and client certificate:
 
@@ -111,6 +117,16 @@ Remote daemon via HTTPS and client certificate:
 
 
 ### Swarm
+
+<details>
+  <summary>Initialize Swarm mode</summary>
+  
+  ```swift
+  let swarmId = try await docker.swarm.initSwarm()
+  ``
+</details>
+
+
 
 ### Services
 
