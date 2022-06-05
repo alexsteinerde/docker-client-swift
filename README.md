@@ -70,7 +70,10 @@ let package = Package(
     .package(url: "https://github.com/nuw-run/docker-client-swift.git", .branch("main")),
     ],
     targets: [
-    .target(name: "App", dependencies: ["DockerClient"]),
+    .target(name: "App", dependencies: [
+        ...
+        .product(name: "DockerClientSwift", package: "docker-client-swift")
+    ]),
     ...
     ]
 )

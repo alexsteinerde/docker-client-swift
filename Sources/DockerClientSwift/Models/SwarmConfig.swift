@@ -200,4 +200,9 @@ public struct SwarmConfig : Codable {
         case spec = "Spec"
         case subnetSize = "SubnetSize"
     }
+    
+    public init() {
+        
+    }
+
 }

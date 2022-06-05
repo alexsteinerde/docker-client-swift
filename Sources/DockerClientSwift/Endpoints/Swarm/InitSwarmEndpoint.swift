@@ -12,7 +12,7 @@ public struct InitSwarmEndpoint: Endpoint {
         "swarm/init"
     }
  
-    init(config: SwarmConfig) {
+    init(config: SwarmConfig = .init()) {
         self.body = config
     }
 }
