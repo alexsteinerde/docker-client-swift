@@ -95,7 +95,7 @@ extension DockerClient {
             return Container(
                 id: .init(response.Id),
                 image: image,
-                createdAt: Date.parseDockerDate(response.Created)!,
+                createdAt: response.Created,
                 names: [response.Name],
                 state: response.State.Status,
                 command: response.Config.Cmd.joined(separator: " ")

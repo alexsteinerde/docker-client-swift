@@ -13,6 +13,7 @@ public class DockerClient {
         ("Content-Type", "application/json"),
         ("Host", "localhost")
     ])
+    private let decoder: JSONDecoder
     
     private let deamonURL: URL
     private let tlsConfig: TLSConfiguration?
@@ -21,27 +22,28 @@ public class DockerClient {
     
     /// Initialize the `DockerClient`.
     /// - Parameters:
-    ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
-    ///   - tlsConfig: `TLSConfiguration` for a Docker daemon requiring TLS authentication. Default is `nil`.
-    ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
-    public init(client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
-        self.deamonURL = URL(httpURLWithSocketPath: "/var/run/docker.sock")!
-        self.tlsConfig = tlsConfig
-        self.client = client
-        self.logger = logger
-    }
-    
-    /// Initialize the `DockerClient`.
-    /// - Parameters:
     ///   - daemonURL: The URL where the Docker API is listening on. Default is `http+unix:///var/run/docker.sock`.
     ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
     ///   - tlsConfig: `TLSConfiguration` for a Docker daemon requiring TLS authentication. Default is `nil`.
     ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
-    public init(deamonURL: URL, client: HTTPClient = .init(eventLoopGroupProvider: .createNew), tlsConfig: TLSConfiguration? = nil, logger: Logger = .init(label: "docker-client")) {
+    public init(
+        deamonURL: URL = URL(httpURLWithSocketPath: "/var/run/docker.sock")!,
+        client: HTTPClient = .init(eventLoopGroupProvider: .createNew),
+        tlsConfig: TLSConfiguration? = nil,
+        logger: Logger = .init(label: "docker-client")) {
+            
         self.deamonURL = deamonURL
         self.tlsConfig = tlsConfig
         self.client = client
         self.logger = logger
+        
+        let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        self.decoder = decoder
     }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
@@ -67,7 +69,7 @@ public class DockerClient {
             headers: self.headers
         )
         .logResponseBody(logger)
-        .decode(as: T.Response.self)
+        .decode(as: T.Response.self, decoder: self.decoder)
         .get()
     }
     

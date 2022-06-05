@@ -70,7 +70,7 @@ extension DockerClient {
                 id: .init(image.Id),
                 digest: image.RepoDigests?.first.map({ Digest.init($0) }),
                 repoTags: image.RepoTags,
-                createdAt: Date.parseDockerDate(image.Created)!
+                createdAt: image.Created
             )
         }
         

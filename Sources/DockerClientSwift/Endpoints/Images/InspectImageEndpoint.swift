@@ -1,3 +1,4 @@
+import Foundation
 import NIOHTTP1
 
 struct InspectImagesEndpoint: Endpoint {
@@ -20,7 +21,7 @@ struct InspectImagesEndpoint: Endpoint {
         let Parent: String
         let Os: String
         let Architecture: String
-        let Created: String
+        let Created: Date
         let RepoTags: [String]?
         let RepoDigests: [String]?
         let Size: Int

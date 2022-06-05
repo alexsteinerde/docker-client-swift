@@ -47,10 +47,6 @@ final class ServiceTests: XCTestCase {
         XCTAssertEqual(service.name, name)
     }
     
-    func testParsingDate() {
-        XCTAssertNotNil(Date.parseDockerDate("2021-03-12T12:34:10.239624085Z"))
-    }
-    
     func textZzzLeaveSwarm() async throws {
         try await client.swarm.leave()
     }

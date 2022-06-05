@@ -1,3 +1,4 @@
+import Foundation
 import NIOHTTP1
 
 struct InspectContainerEndpoint: Endpoint {
@@ -23,7 +24,7 @@ struct InspectContainerEndpoint: Endpoint {
         let Config: ConfigResponse
         
         /// The time the container was created
-        let Created: String
+        let Created: Date
         let Driver: String
         let ExecIDs: [String]?
         // let GraphDriver

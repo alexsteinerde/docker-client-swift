@@ -379,7 +379,7 @@ struct SwarmInfo: Codable {
 struct ClusterInfo: Codable {
     let id: String
     let version: SwarmVersion
-    let createdAt, updatedAt: String
+    let createdAt, updatedAt: Date
     let spec: SwarmSpec
     let tlsInfo: SwarmTLSInfo
     let rootRotationInProgress: Bool
@@ -413,7 +413,7 @@ struct SwarmTLSInfo: Codable {
 }
 
 // MARK: - SwarmVersion
-struct SwarmVersion: Codable {
+public struct SwarmVersion: Codable {
     let index: Int
     
     enum CodingKeys: String, CodingKey {

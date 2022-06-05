@@ -64,8 +64,8 @@ extension Service.ServiceResponse {
         Service(
             id: .init(self.ID),
             name: self.Spec.Name,
-            createdAt: Date.parseDockerDate(self.CreatedAt),
-            updatedAt: Date.parseDockerDate(self.UpdatedAt),
+            createdAt: self.CreatedAt,
+            updatedAt: self.UpdatedAt,
             version: self.Version.Index,
             image: Image(id: Identifier(self.Spec.TaskTemplate.ContainerSpec.Image))
         )

@@ -20,8 +20,8 @@ internal extension Service {
     struct ServiceResponse: Codable {
         let ID: String
         let Version: ServiceVersionResponse
-        let CreatedAt: String
-        let UpdatedAt: String
+        let CreatedAt: Date
+        let UpdatedAt: Date
         let Spec: ServiceSpecResponse
         
         struct ServiceVersionResponse: Codable {
