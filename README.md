@@ -84,16 +84,7 @@ To add DockerClientSwift to your existing Xcode project, select File -> Swift Pa
 Enter `https://github.com/nuw-run/docker-client-swift.git` for the URL.
 
 
-## Usage Example
-```swift
-let client = DockerClient()
-let image = try await client.images.pullImage(byIdentifier: "hello-world:latest")
-let container = try await client.containers.createContainer(image: image)
-try await container.start(on: client)
-let output = try await container.logs(on: client)
-try client.syncShutdown()
-print(output)
-```
+## Usage Examples
 
 ### Connect to a Docker deamon
 
@@ -115,6 +106,13 @@ Remote daemon via HTTPS and client certificate:
 
 ### Images
 
+<details>
+  <summary>Pull an image</summary>
+  
+  ```swift
+  let image = try await docker.images.pullImage(byIdentifier: "hello-world:latest")
+  ```
+</details>
 
 ### Swarm
 
