@@ -1,11 +1,11 @@
 import Foundation
 
 public struct DockerVersion: Codable {
-    let platform: Platform
-    let components: [Component]
-    let version, apiVersion, minAPIVersion, gitCommit: String
-    let goVersion, os, arch, kernelVersion: String
-    let buildTime: String
+    public let platform: DockerPlatform
+    public let components: [DockerVersionComponent]
+    public let version, apiVersion, minAPIVersion, gitCommit: String
+    public let goVersion, os, arch, kernelVersion: String
+    public let buildTime: String
     
     enum CodingKeys: String, CodingKey {
         case platform = "Platform"
@@ -23,9 +23,9 @@ public struct DockerVersion: Codable {
 }
 
 // MARK: - Component
-struct Component: Codable {
-    let name, version: String
-    let details: Details
+public struct DockerVersionComponent: Codable {
+    public let name, version: String
+    public let details: DockerVersionComponentDetails
     
     enum CodingKeys: String, CodingKey {
         case name = "Name"
@@ -35,10 +35,10 @@ struct Component: Codable {
 }
 
 // MARK: - Details
-struct Details: Codable {
-    let apiVersion, arch, buildTime, experimental: String?
-    let gitCommit: String
-    let goVersion, kernelVersion, minAPIVersion, os: String?
+public struct DockerVersionComponentDetails: Codable {
+    public let apiVersion, arch, buildTime, experimental: String?
+    public let gitCommit: String
+    public let goVersion, kernelVersion, minAPIVersion, os: String?
     
     enum CodingKeys: String, CodingKey {
         case apiVersion = "ApiVersion"
@@ -54,8 +54,8 @@ struct Details: Codable {
 }
 
 // MARK: - Platform
-struct Platform: Codable {
-    let name: String
+public struct DockerPlatform: Codable {
+    public let name: String
     
     enum CodingKeys: String, CodingKey {
         case name = "Name"

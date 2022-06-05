@@ -376,16 +376,16 @@ struct SwarmInfo: Codable {
 }
 
 // MARK: - Cluster
-struct ClusterInfo: Codable {
-    let id: String
-    let version: SwarmVersion
-    let createdAt, updatedAt: Date
-    let spec: SwarmSpec
-    let tlsInfo: SwarmTLSInfo
-    let rootRotationInProgress: Bool
-    let dataPathPort: Int
-    let defaultAddrPool: [String]?
-    let subnetSize: Int
+public struct ClusterInfo: Codable {
+    public let id: String
+    public let version: SwarmVersion
+    public let createdAt, updatedAt: Date
+    public let spec: SwarmSpec
+    public let tlsInfo: SwarmTLSInfo
+    public let rootRotationInProgress: Bool
+    public let dataPathPort: Int
+    public let defaultAddrPool: [String]?
+    public let subnetSize: Int
     
     enum CodingKeys: String, CodingKey {
         case id = "ID"
@@ -403,7 +403,7 @@ struct ClusterInfo: Codable {
 
 // MARK: - SwarmTLSInfo
 public struct SwarmTLSInfo: Codable {
-    let trustRoot, certIssuerSubject, certIssuerPublicKey: String
+    public let trustRoot, certIssuerSubject, certIssuerPublicKey: String
     
     enum CodingKeys: String, CodingKey {
         case trustRoot = "TrustRoot"
@@ -414,7 +414,7 @@ public struct SwarmTLSInfo: Codable {
 
 // MARK: - SwarmVersion
 public struct SwarmVersion: Codable {
-    let index: Int
+    public let index: Int
     
     enum CodingKeys: String, CodingKey {
         case index = "Index"
@@ -423,7 +423,7 @@ public struct SwarmVersion: Codable {
 
 // MARK: - RemoteManager
 struct RemoteManager: Codable {
-    let nodeID, addr: String
+    public let nodeID, addr: String
     
     enum CodingKeys: String, CodingKey {
         case nodeID = "NodeID"

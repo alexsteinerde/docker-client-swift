@@ -92,7 +92,7 @@ Enter `https://github.com/nuw-run/docker-client-swift.git` for the URL.
 
 ### Connect to a Docker deamon
 
-Local socket:
+Local socket (defaults to `/var/run/docker.sock`):
 ```swift
 let docker = DockerClient()
 ```
@@ -116,6 +116,15 @@ Remote daemon via HTTPS and client certificate:
   ```
 </details>
 
+<details>
+  <summary>Get versions information about the Docker daemon</summary>
+  
+  ```swift
+  let version = try await docker.version()
+  ```
+</details>
+
+ 
 ### Containers
 
 

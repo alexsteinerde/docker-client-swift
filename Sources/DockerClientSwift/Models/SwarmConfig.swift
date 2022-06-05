@@ -105,8 +105,8 @@ public struct SwarmCAConfig: Codable {
 
 // MARK: - Raft
 public struct Raft: Codable {
-    let snapshotInterval, keepOldSnapshots, logEntriesForSlowFollowers, electionTick: Int
-    let heartbeatTick: Int
+    public let snapshotInterval, keepOldSnapshots, logEntriesForSlowFollowers, electionTick: Int
+    public let heartbeatTick: Int
     
     enum CodingKeys: String, CodingKey {
         case snapshotInterval = "SnapshotInterval"
