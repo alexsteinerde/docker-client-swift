@@ -3,6 +3,7 @@
 [![Docker Engine API](https://img.shields.io/badge/Docker%20Engine%20API-%20%201.41-blue)](https://docs.docker.com/engine/api/v1.41/)
 
 This is a low-level Docker Client written in Swift. It very closely follows the Docker API.
+
 It fully uses the Swift concurrency features introduced with Swift 5.5 (`async`/`await`).
 
 ## Docker API version support
@@ -103,6 +104,17 @@ let docker = DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375")!)
 
 Remote daemon via HTTPS and client certificate:
 
+
+### Docker system info
+
+<details>
+  <summary>Get detailed information about the Docker daemon</summary>
+  
+  ```swift
+  let info = try await docker.info()
+  print("• Docker daemin info: \(info)")
+  ```
+</details>
 
 ### Containers
 
