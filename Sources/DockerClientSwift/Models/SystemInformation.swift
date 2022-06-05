@@ -2,41 +2,172 @@ import Foundation
 
 // MARK: - SystemInformationResponse
 public struct SystemInformation: Codable {
+    /// Unique identifier of the daemon.
     let id: String
-    let containers, containersRunning, containersPaused, containersStopped: Int
-    let images: Int
+    
+    /// Total number of containers on the host.
+    let containers: UInt
+    
+    /// Number of containers with status "running".
+    let containersRunning: UInt
+    
+    /// Number of containers with status "paused".
+    let containersPaused: UInt
+    
+    /// Number of containers with status "stopped".
+    let containersStopped: UInt
+    
+    /// Total number of images on the host. Both tagged and untagged (dangling) images are counted.
+    let images: UInt
+    
+    /// Name of the storage driver in use.
     let driver: String
+    
+    /// Information specific to the storage driver, provided as "label" / "value" pairs.
     let driverStatus: [[String]]
+    
+    /// Root directory of persistent Docker state. Defaults to `/var/lib/docker` on Linux, and `C:\ProgramData\docker` on Windows.
     let dockerRootDir: String
+    
+    /// Available plugins per type.
+    /// Note: Only unmanaged (V1) plugins are included in this list. V1 plugins are "lazily" loaded, and are not returned in this list if there is no resource using the plugin.
     let plugins: Plugins?
-    let memoryLimit, swapLimit, kernelMemory, cpuCfsPeriod: Bool
-    let cpuCfsQuota, cpuShares, cpuSet, pidsLimit: Bool
-    let oomKillDisable, iPv4Forwarding, bridgeNfIptables, bridgeNfIp6Tables: Bool
+    
+    /// Indicates if the host has memory limit support enabled.
+    let memoryLimit: Bool
+    
+    /// Indicates if the host has memory swap limit support enabled.
+    let swapLimit: Bool
+    
+    /// Indicates if the host has kernel memory limit support enabled.
+    @available(*, deprecated, message: "This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`")
+    let kernelMemory: Bool
+    
+    /// Indicates if the host has kernel memory TCP limit support enabled.
+    /// Kernel memory TCP limits are not supported when using cgroups v2, which does not support the corresponding memory.kmem.tcp.limit_in_bytes cgroup.
+    let kernelMemoryTCP: Bool
+    
+    /// Indicates if CPU CFS (Completely Fair Scheduler) period is supported by the host.
+    let cpuCfsPeriod: Bool
+    
+    /// Indicates if CPU CFS (Completely Fair Scheduler) quota is supported by the host.
+    let cpuCfsQuota: Bool
+    
+    /// Indicates if CPU Shares limiting is supported by the host.
+    let cpuShares: Bool
+    
+    /// Indicates if CPUsets (cpuset.cpus, cpuset.mems) are supported by the host.
+    let cpuSet: Bool
+    
+    /// Indicates if the host kernel has PID limit support enabled.
+    let pidsLimit: Bool
+    
+    /// Indicates if disabling the OOM killer is supported on the host.
+    let oomKillDisable: Bool
+    
+    /// Indicates IPv4 forwarding is enabled.
+    let iPv4Forwarding: Bool
+    
+    /// Indicates if `bridge-nf-call-iptables` is available on the host.
+    let bridgeNfIptables: Bool
+    let bridgeNfIp6Tables: Bool
+    
+    /// Indicates if the daemon is running in debug-mode / with debug-level logging enabled.
     let debug: Bool
-    let nFd, nGoroutines: Int
-    let systemTime, loggingDriver, cgroupDriver, cgroupVersion: String
+    
+    /// The total number of file Descriptors in use by the daemon process.
+    /// This information is only returned if debug-mode is enabled.
+    let nFD: UInt
+    
+    /// The number of goroutines that currently exist.
+    /// This information is only returned if debug-mode is enabled.
+    let nGoroutines: UInt
+    
+    /// Current system-time in RFC 3339 format with nano-seconds.
+    let systemTime: String
+    
+    /// The logging driver to use as a default for new containers.
+    let loggingDriver: String
+    
+    let cgroupDriver, cgroupVersion: String
     let nEventsListener: Int
     let kernelVersion, operatingSystem, osVersion, osType: String
+    
+    /// Hardware architecture of the host, as returned by the Go runtime (GOARCH).
     let architecture: String
-    let ncpu, memTotal: Int
+    
+    let ncpu: UInt16
+    let memTotal: UInt64
+    
+    /// Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
+    /// Default: "https://index.docker.io/v1/"
     let indexServerAddress: String
+    
     let registryConfig: RegistryConfig
+    
+    /// User-defined resources can be either Integer resources (e.g, SSD=3) or String resources (e.g, GPU=UUID1).
     let genericResources: [GenericResource]?
+    
+    /// HTTP proxy configured for the daemon. This value is obtained from the `HTTP_PROXY` environment variable. Credentials (user info component) in the proxy URL are masked in the API response.
+    /// Note: Containers do not automatically inherit this configuration.
     let httpProxy: String
+    
+    /// HTTPS proxy configured for the daemon. This value is obtained from the `HTTPS_PROXY` environment variable. Credentials (user info component) in the proxy URL are masked in the API response.
+    /// Note: Containers do not automatically inherit this configuration.
     let httpsProxy: String
-    let noProxy, name: String
+    
+    /// Comma-separated list of domain extensions for which no proxy should be used. This value is obtained from the `NO_PROXY` environment variable.
+    /// Note: Containers do not automatically inherit this configuration.
+    let noProxy: String
+    
+    /// Hostname of the host.
+    let name: String
+    
     let labels: [String]
+    
+    /// Indicates if experimental features are enabled on the daemon.
     let experimentalBuild: Bool
-    let serverVersion, clusterStore, clusterAdvertise: String?
+    
+    /// Version string of the daemon.
+    let serverVersion: String?
+    
+    /// URL of the distributed storage backend.
+    /// Deprecated: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store.
+    /// Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+    @available(*, deprecated, message: "This field was only propagated when using standalone Swarm mode")
+    let clusterStore: String?
+    
+    /// The network endpoint that the Engine advertises for the purpose of node discovery. `clusterAdvertise` is a host:port combination on which the daemon is reachable by other hosts.
+    /// Deprecated: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store.
+    /// Overlay networks with Swarm mode enabled use the built-in raft store, and this field will be empty.
+    @available(*, deprecated, message: "This field was only propagated when using standalone Swarm mode")
+    let clusterAdvertise: String?
+    
     let runtimes: Runtimes?
+    
+    /// Name of the default OCI runtime that is used when starting containers.
+    /// The default can be overridden per-container at create time.
     let defaultRuntime: String
-    let swarm: Swarm?
+    
+    let swarm: SwarmInfo?
+    
+    /// Indicates if live restore is enabled.
+    /// If enabled, containers are kept running when the daemon is shutdown or upon daemon start if running containers are detected.
     let liveRestoreEnabled: Bool
+    
     let isolation, initBinary: String
     let containerdCommit, runcCommit, initCommit: Commit
     let securityOptions: [String]
+    
+    /// Reports a summary of the product license on the daemon.
+    /// If a commercial license has been applied to the daemon, information such as number of nodes, and expiration are included.
     let productLicense: String?
+    
+    /// List of custom default address pools for local networks, which can be specified in the daemon.json file or dockerd option.
+    /// Example: a Base "10.10.0.0/16" with Size 24 will define the set of 256 10.10.[0-255].0/24 address pools.
     let defaultAddressPools: [DefaultAddressPool]?
+    
+    /// List of warnings / informational messages about missing features, or issues related to the daemon configuration.
     let warnings: [String]?
     
     enum CodingKeys: String, CodingKey {
@@ -53,6 +184,7 @@ public struct SystemInformation: Codable {
         case memoryLimit = "MemoryLimit"
         case swapLimit = "SwapLimit"
         case kernelMemory = "KernelMemory"
+        case kernelMemoryTCP = "KernelMemoryTCP"
         case cpuCfsPeriod = "CpuCfsPeriod"
         case cpuCfsQuota = "CpuCfsQuota"
         case cpuShares = "CPUShares"
@@ -63,7 +195,7 @@ public struct SystemInformation: Codable {
         case bridgeNfIptables = "BridgeNfIptables"
         case bridgeNfIp6Tables = "BridgeNfIp6tables"
         case debug = "Debug"
-        case nFd = "NFd"
+        case nFD = "NFd"
         case nGoroutines = "NGoroutines"
         case systemTime = "SystemTime"
         case loggingDriver = "LoggingDriver"
@@ -222,13 +354,13 @@ struct Runc: Codable {
 }
 
 // MARK: - Swarm
-struct Swarm: Codable {
+struct SwarmInfo: Codable {
     let nodeID, nodeAddr, localNodeState: String
     let controlAvailable: Bool
     let error: String
     let remoteManagers: [RemoteManager]?
     let nodes, managers: Int?
-    let cluster: Cluster?
+    let cluster: ClusterInfo?
     
     enum CodingKeys: String, CodingKey {
         case nodeID = "NodeID"
@@ -244,12 +376,12 @@ struct Swarm: Codable {
 }
 
 // MARK: - Cluster
-struct Cluster: Codable {
+struct ClusterInfo: Codable {
     let id: String
-    let version: Version
+    let version: SwarmVersion
     let createdAt, updatedAt: String
-    let spec: Spec
-    let tlsInfo: TLSInfo
+    let spec: SwarmSpec
+    let tlsInfo: SwarmTLSInfo
     let rootRotationInProgress: Bool
     let dataPathPort: Int
     let defaultAddrPool: [String]?
@@ -269,138 +401,8 @@ struct Cluster: Codable {
     }
 }
 
-// MARK: - Spec
-struct Spec: Codable {
-    let name: String
-    let labels: [String:String]
-    let orchestration: Orchestration
-    let raft: Raft
-    let dispatcher: Dispatcher
-    let caConfig: CAConfig
-    let encryptionConfig: EncryptionConfig
-    let taskDefaults: TaskDefaults
-    
-    enum CodingKeys: String, CodingKey {
-        case name = "Name"
-        case labels = "Labels"
-        case orchestration = "Orchestration"
-        case raft = "Raft"
-        case dispatcher = "Dispatcher"
-        case caConfig = "CAConfig"
-        case encryptionConfig = "EncryptionConfig"
-        case taskDefaults = "TaskDefaults"
-    }
-}
-
-// MARK: - CAConfig
-struct CAConfig: Codable {
-    let nodeCERTExpiry: Int
-    let externalCAs: [ExternalCA]?
-    let signingCACERT, signingCAKey: String?
-    let forceRotate: Int?
-    
-    enum CodingKeys: String, CodingKey {
-        case nodeCERTExpiry = "NodeCertExpiry"
-        case externalCAs = "ExternalCAs"
-        case signingCACERT = "SigningCACert"
-        case signingCAKey = "SigningCAKey"
-        case forceRotate = "ForceRotate"
-    }
-}
-
-// MARK: - ExternalCA
-struct ExternalCA: Codable {
-    let externalCAProtocol, url: String
-    let options: ExternalCAOptions
-    let caCERT: String
-    
-    enum CodingKeys: String, CodingKey {
-        case externalCAProtocol = "Protocol"
-        case url = "URL"
-        case options = "Options"
-        case caCERT = "CACert"
-    }
-}
-
-// MARK: - ExternalCAOptions
-struct ExternalCAOptions: Codable {
-    let property1, property2: String
-}
-
-// MARK: - Dispatcher
-struct Dispatcher: Codable {
-    let heartbeatPeriod: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case heartbeatPeriod = "HeartbeatPeriod"
-    }
-}
-
-// MARK: - EncryptionConfig
-struct EncryptionConfig: Codable {
-    let autoLockManagers: Bool
-    
-    enum CodingKeys: String, CodingKey {
-        case autoLockManagers = "AutoLockManagers"
-    }
-}
-
-
-// MARK: - Orchestration
-struct Orchestration: Codable {
-    let taskHistoryRetentionLimit: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case taskHistoryRetentionLimit = "TaskHistoryRetentionLimit"
-    }
-}
-
-// MARK: - Raft
-struct Raft: Codable {
-    let snapshotInterval, keepOldSnapshots, logEntriesForSlowFollowers, electionTick: Int
-    let heartbeatTick: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case snapshotInterval = "SnapshotInterval"
-        case keepOldSnapshots = "KeepOldSnapshots"
-        case logEntriesForSlowFollowers = "LogEntriesForSlowFollowers"
-        case electionTick = "ElectionTick"
-        case heartbeatTick = "HeartbeatTick"
-    }
-}
-
-// MARK: - TaskDefaults
-struct TaskDefaults: Codable {
-    let logDriver: LogDriver?
-    
-    enum CodingKeys: String, CodingKey {
-        case logDriver = "LogDriver"
-    }
-}
-
-// MARK: - LogDriver
-struct LogDriver: Codable {
-    let name: String
-    let options: LogDriverOptions
-    
-    enum CodingKeys: String, CodingKey {
-        case name = "Name"
-        case options = "Options"
-    }
-}
-
-// MARK: - LogDriverOptions
-struct LogDriverOptions: Codable {
-    let maxFile, maxSize: String
-    
-    enum CodingKeys: String, CodingKey {
-        case maxFile = "max-file"
-        case maxSize = "max-size"
-    }
-}
-
-// MARK: - TLSInfo
-struct TLSInfo: Codable {
+// MARK: - SwarmTLSInfo
+struct SwarmTLSInfo: Codable {
     let trustRoot, certIssuerSubject, certIssuerPublicKey: String
     
     enum CodingKeys: String, CodingKey {
@@ -410,8 +412,8 @@ struct TLSInfo: Codable {
     }
 }
 
-// MARK: - Version
-struct Version: Codable {
+// MARK: - SwarmVersion
+struct SwarmVersion: Codable {
     let index: Int
     
     enum CodingKeys: String, CodingKey {

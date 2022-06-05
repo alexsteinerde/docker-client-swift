@@ -4,7 +4,7 @@ import Foundation
 public struct InitSwarmEndpoint: Endpoint {
     var body: Body?
     
-    typealias Body = SwarmCreate
+    typealias Body = SwarmConfig
     typealias Response = String
     var method: HTTPMethod = .POST
     
@@ -12,7 +12,7 @@ public struct InitSwarmEndpoint: Endpoint {
         "swarm/init"
     }
  
-    init(config: SwarmCreate) {
+    init(config: SwarmConfig) {
         self.body = config
     }
 }

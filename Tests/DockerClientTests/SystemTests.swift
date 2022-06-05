@@ -25,7 +25,7 @@ final class SystemTests: XCTestCase {
     
     func testSystemInfoWithSwarm() async throws {
         try? await client.swarm.leave(force: true)
-        let _ = try! await client.swarm.initSwarm(config: SwarmCreate())
+        let _ = try! await client.swarm.initSwarm(config: SwarmConfig())
         let info = try await client.info()
         try? await client.swarm.leave(force: true)
         print("\n••••••••• DOCKER system info=\(info)")

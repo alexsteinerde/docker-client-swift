@@ -19,7 +19,7 @@ extension DockerClient {
             return response
         }
         
-        public func initSwarm(config: SwarmCreate) async throws -> String {
+        public func initSwarm(config: SwarmConfig) async throws -> String {
             let response = try await client.run(InitSwarmEndpoint(config: config))
             return response
         }

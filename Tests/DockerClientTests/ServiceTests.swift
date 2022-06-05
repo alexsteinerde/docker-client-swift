@@ -9,7 +9,7 @@ final class ServiceTests: XCTestCase {
     override func setUp() async throws {
         client = DockerClient.testable()
         try? await client.swarm.leave(force: true)
-        let _ = try! await client.swarm.initSwarm(config: SwarmCreate())
+        let _ = try! await client.swarm.initSwarm(config: SwarmConfig())
     }
     
     override func tearDownWithError() throws {
