@@ -121,6 +121,7 @@ Remote daemon via HTTPS and client certificate:
   
   ```swift
   let version = try await docker.version()
+  print("• Docker API version: \(version.apiVersion)")
   ```
 </details>
 
