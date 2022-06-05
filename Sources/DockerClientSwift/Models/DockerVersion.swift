@@ -32,7 +32,8 @@ public struct DockerVersion: Codable {
     public let kernelVersion: String?
     
     /// The date and time that the daemon was compiled.
-    public let buildTime: Date
+    /// /Note: this is a Date but is not encoded using the format used elsewhere in the Docker API.
+    public let buildTime: String
     
     /// Indicates if the daemon is started with experimental features enabled.
     /// This field is omitted when empty / false.
@@ -68,8 +69,15 @@ public struct DockerVersionComponent: Codable {
 
 // MARK: - Details
 public struct DockerVersionComponentDetails: Codable {
-    public let apiVersion, arch, buildTime, experimental: String?
-    public let gitCommit: String
+    public let apiVersion, arch: String?
+    
+    /// This is a boolean, but encoded as a String
+    public let experimental: String?
+    
+    // This is a Date but is not encoded using the format used elsewhere in the Docker API.
+    public let buildTime: String?
+    
+    public let gitCommit: String?
     public let goVersion, kernelVersion, minAPIVersion, os: String?
     
     enum CodingKeys: String, CodingKey {
