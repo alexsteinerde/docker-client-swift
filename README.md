@@ -123,7 +123,7 @@ Remote daemon via HTTPS and client certificate:
   
   ```swift
   let swarmId = try await docker.swarm.initSwarm()
-  ``
+  ```
 </details>
 
 
