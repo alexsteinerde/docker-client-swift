@@ -21,10 +21,10 @@ public struct SystemInformation: Codable {
     let images: UInt
     
     /// Name of the storage driver in use.
-    let driver: String
+    let storageDriver: String
     
     /// Information specific to the storage driver, provided as "label" / "value" pairs.
-    let driverStatus: [[String]]
+    let storageDriverStatus: [[String]]
     
     /// Root directory of persistent Docker state. Defaults to `/var/lib/docker` on Linux, and `C:\ProgramData\docker` on Windows.
     let dockerRootDir: String
@@ -177,8 +177,8 @@ public struct SystemInformation: Codable {
         case containersPaused = "ContainersPaused"
         case containersStopped = "ContainersStopped"
         case images = "Images"
-        case driver = "Driver"
-        case driverStatus = "DriverStatus"
+        case storageDriver = "Driver"
+        case storageDriverStatus = "DriverStatus"
         case dockerRootDir = "DockerRootDir"
         case plugins = "Plugins"
         case memoryLimit = "MemoryLimit"
