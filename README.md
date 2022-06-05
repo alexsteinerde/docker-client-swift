@@ -112,7 +112,7 @@ Remote daemon via HTTPS and client certificate:
   
   ```swift
   let info = try await docker.info()
-  print("• Docker daemin info: \(info)")
+  print("• Docker daemon info: \(info)")
   ```
 </details>
 
