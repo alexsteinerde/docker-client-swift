@@ -28,8 +28,11 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Prune                   | ✅       |             |
 | Images                      | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
-|                             | Pull                    | ✅       |             |
+|                             | Pull                    | ✅       | refactoring |
 |                             | Build                   | ❌       |             |
+|                             | Tag                     | ❌       |             |
+|                             | Push                    | ❌       |             |
+|                             | Create from container (commit)   | ❌       |             |
 |                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |
@@ -125,10 +128,19 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 <details>
+  <summary>Get Swarm cluster details (inspect)</summary>
+  
+  Note: Must be connected to a manager node.
+  ```swift
+  let swarm = try await docker.swarm.get()
+  ```
+</details>
+
+<details>
   <summary>Remove the current Node from the Swarm</summary>
   
+  Note: `force` is needed if the node is a manager
   ```swift
-  // `force` is needed if the node is a manager
   try await docker.swarm.leave(force: true)
   ```
 </details>
