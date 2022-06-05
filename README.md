@@ -1,5 +1,5 @@
 # Docker Client
-[![Language](https://img.shields.io/badge/Swift-5.4-brightgreen.svg)](http://swift.org)
+[![Language](https://img.shields.io/badge/Swift-5.5-brightgreen.svg)](http://swift.org)
 [![Docker Engine API](https://img.shields.io/badge/Docker%20Engine%20API-%20%201.4.1-blue)](https://docs.docker.com/engine/api/v1.41/)
 
 This is a low-level Docker Client written in Swift. It very closely follows the Docker API.
@@ -43,7 +43,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Services                    | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
-|                             | Get logs                | ❌       | refactoring |
+|                             | Get logs                | ❌       |             |
 |                             | Update                  | 🚧       | refactoring |
 |                             | Delete                  | ✅       |             |
 | Networks                    |                         | ❌       |             |
