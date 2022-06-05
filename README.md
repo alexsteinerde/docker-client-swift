@@ -126,6 +126,14 @@ Remote daemon via HTTPS and client certificate:
   ```
 </details>
 
+<details>
+  <summary>Remove the current Daemon from the Swarm</summary>
+  
+  ```swift
+  // `force=true` is needed if the node is a manager
+  try await docker.swarm.leave(force: true)
+  ```
+</details>
 
 
 ### Services
