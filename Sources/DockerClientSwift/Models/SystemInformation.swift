@@ -402,7 +402,7 @@ struct ClusterInfo: Codable {
 }
 
 // MARK: - SwarmTLSInfo
-struct SwarmTLSInfo: Codable {
+public struct SwarmTLSInfo: Codable {
     let trustRoot, certIssuerSubject, certIssuerPublicKey: String
     
     enum CodingKeys: String, CodingKey {
