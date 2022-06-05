@@ -34,7 +34,7 @@ final class ContainerTests: XCTestCase {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
         
-        let inspectedContainer = try await client.containers.get(containerByNameOrId: container.id.value)
+        let inspectedContainer = try await client.containers.get(container.id.value)
         
         XCTAssertEqual(inspectedContainer.id, container.id)
         XCTAssertEqual(inspectedContainer.command, "/hello")

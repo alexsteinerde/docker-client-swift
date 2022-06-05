@@ -37,6 +37,7 @@ public class DockerClient {
         self.client = client
         self.logger = logger
         
+        // Docker uses a slightly custom format for returning dates
         let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
         let formatter = DateFormatter()
         formatter.dateFormat = format

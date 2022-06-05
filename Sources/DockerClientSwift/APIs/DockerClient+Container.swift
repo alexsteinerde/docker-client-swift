@@ -38,7 +38,7 @@ extension DockerClient {
         /// - Returns: Returns  a `Container`.
         public func createContainer(image: Image, commands: [String]?=nil) async throws -> Container {
             let response = try await client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
-            return try await self.get(containerByNameOrId: response.Id)
+            return try await self.get(response.Id)
         }
         
         /// Starts a container. Before starting it needs to be created.
@@ -82,7 +82,7 @@ extension DockerClient {
         /// - Parameter nameOrId: Name or id of a container.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the `Container` and its information.
-        public func get(containerByNameOrId nameOrId: String) async throws -> Container {
+        public func get(_ nameOrId: String) async throws -> Container {
             let response = try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
             var digest: Digest?
             var repositoryTag: Image.RepositoryTag?

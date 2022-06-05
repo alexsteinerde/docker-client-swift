@@ -1,12 +1,11 @@
 import NIOHTTP1
 
 struct UpdateSwarmEndpoint: Endpoint {
-    var body: Body?
-    
     typealias Response = NoBody
     typealias Body = SwarmSpec
     var method: HTTPMethod = .POST
     
+    var body: Body?
     private let version: UInt64
     private let rotateWorkerToken: Bool
     private let rotateManagerToken: Bool
