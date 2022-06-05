@@ -21,7 +21,7 @@ extension DockerClient {
         
         /// Enable Swarm mode on the Docker daemon we are connected to
         /// - Returns: Returns the Swarm ID.
-        public func initSwarm(config: SwarmConfig) async throws -> String {
+        public func initSwarm(config: SwarmConfig = .init()) async throws -> String {
             let response = try await client.run(InitSwarmEndpoint(config: config))
             return response
         }
