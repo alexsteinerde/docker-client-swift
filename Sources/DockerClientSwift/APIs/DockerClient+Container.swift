@@ -17,8 +17,8 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `Container`.
         public func list(all: Bool=false) async throws -> [Container] {
-            try await client.run(ListContainersEndpoint(all: all))
-                .map({ container in
+            return try await client.run(ListContainersEndpoint(all: all))
+               /* .map({ container in
                     var digest: Digest?
                     var repositoryTag: Image.RepositoryTag?
                     if let value =  Image.parseNameTagDigest(container.Image) {
@@ -28,7 +28,7 @@ extension DockerClient {
                     }
                     let image = Image(id: .init(container.ImageID), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
                     return Container(id: .init(container.Id), image: image, createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)), names: container.Names, state: container.State, command: container.Command)
-                })
+                })*/
         }
         
         /// Creates a new container from a given image. If specified the commands override the default commands from the image.
@@ -46,21 +46,21 @@ extension DockerClient {
         /// - Parameter container: Instance of a created `Container`.
         /// - Throws: Errors that can occur when executing the request.
         public func start(container: Container) async throws {
-            try await client.run(StartContainerEndpoint(containerId: container.id.value))
+            try await client.run(StartContainerEndpoint(containerId: container.id))
         }
         
         /// Stops a container. Before stopping it needs to be created and started..
         /// - Parameter container: Instance of a started `Container`.
         /// - Throws: Errors that can occur when executing the request.
         public func stop(container: Container) async throws {
-            try await client.run(StopContainerEndpoint(containerId: container.id.value))
+            try await client.run(StopContainerEndpoint(containerId: container.id))
         }
         
         /// Removes an existing container.
         /// - Parameter container: Instance of an existing `Container`.
         /// - Throws: Errors that can occur when executing the request.
         public func remove(container: Container) async throws {
-            try await client.run(RemoveContainerEndpoint(containerId: container.id.value))
+            try await client.run(RemoveContainerEndpoint(containerId: container.id))
         }
         
         /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
@@ -128,7 +128,7 @@ extension DockerClient {
         public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil) async throws -> AsyncThrowingStream<LogEntry, Error> {
             let response = try await client.run(
                 GetContainerLogsEndpoint(
-                    containerId: container.id.value,
+                    containerId: container.id,
                     stdout: stdOut,
                     stderr: stdErr,
                     timestamps: timestamps,
@@ -146,22 +146,23 @@ extension DockerClient {
             return AsyncThrowingStream<LogEntry, Error> { continuation in
                 Task {
                     for try await buffer in try await response {
-                        let data = Data(buffer: buffer)
-                        for line in data.split(separator: 10 /*\n*/) {
-                            let slice = line.dropFirst(8)
-                            let message = Data(slice)
+                        var data = Data(buffer: buffer)
+                        for var line in data.split(separator: 10 /* ascii 10 = \n */) {
+                            if !container.config.Tty {
+                                line = line.dropFirst(8)
+                            }
+                            let message = Data(line)
                             guard let string = String(data: message, encoding: .utf8) else {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
-                            print("\n•••rawLine='\(string)'")
                             //let splat = string.split(separator: " ")
+                            
                             
                             let timestampRaw = string.prefix(timestampLen - 1) /*else {
                                 continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
                                 return
                             }*/
-                            print("\n•••timestampRaw='\(timestampRaw)'")
                             guard let timestamp = formatter.date(from: String(timestampRaw)) else {
                                 continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
                                 return
@@ -181,8 +182,9 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the `Container` and its information.
         public func get(_ nameOrId: String) async throws -> Container {
-            let response = try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
-            var digest: Digest?
+            let container = try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
+            return container
+            /*var digest: Digest?
             var repositoryTag: Image.RepositoryTag?
             if let value =  Image.parseNameTagDigest(response.Image) {
                 (digest, repositoryTag) = value
@@ -197,7 +199,7 @@ extension DockerClient {
                 names: [response.Name],
                 state: response.State.Status,
                 command: response.Config.Cmd.joined(separator: " ")
-            )
+            )*/
         }
         
         
@@ -213,7 +215,7 @@ extension DockerClient {
         }
         
         public struct PrunedContainers {
-            let containersIds: [Identifier<Container>]
+            let containersIds: [String]
             
             /// Disk space reclaimed in bytes
             let reclaimedSpace: Int
