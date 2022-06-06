@@ -156,16 +156,16 @@ extension DockerClient {
                             }
                             //let splat = string.split(separator: " ")
                             
-                            let timestampRaw = string.prefix(timestampLen-1) /*else {
+                            let timestampRaw = string.prefix(timestampLen - 1) /*else {
                                 continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
                                 return
                             }*/
+                            print("\n•••timestampRaw='\(timestampRaw)'")
                             guard let timestamp = formatter.date(from: String(timestampRaw)) else {
                                 continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
                                 return
                             }
                             let logMessage = String(string.suffix(string.count - timestampLen))
-                            
                             
                             continuation.yield(LogEntry(source: .stdout, timestamp: timestamp, message: logMessage))
                         }
