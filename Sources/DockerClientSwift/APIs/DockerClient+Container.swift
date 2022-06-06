@@ -79,11 +79,11 @@ extension DockerClient {
                 .joined(separator: "\n")
         }*/
         
-        public enum LogEntrysource: String, Codable {
+        public enum DockerLogEntrysource: String, Codable {
             case stdout, stderr
         }
         public struct LogEntry: Codable {
-            public let source: LogEntrysource
+            public let source: DockerLogEntrysource
             public let timestamp: Date
             public let message: String
             public var eof: Bool = false

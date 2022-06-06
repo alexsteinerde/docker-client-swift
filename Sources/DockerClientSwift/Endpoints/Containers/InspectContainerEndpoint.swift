@@ -331,7 +331,7 @@ struct InspectContainerEndpoint: Endpoint {
             let NetworkMode: String
             
             /// Disable OOM Killer for the container.
-            let OomKillDisable: Bool
+            let OomKillDisable: Bool?
             
             /// An integer value containing the score given to the container in order to tune OOM killer preferences.
             let OomScoreAdj: Int
