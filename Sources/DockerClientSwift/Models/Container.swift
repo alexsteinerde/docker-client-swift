@@ -1,5 +1,6 @@
 import Foundation
 
+/// Detailed information about a Container
 public struct Container: Codable {
     
     public let appArmorProfile: String?
@@ -79,60 +80,109 @@ public struct Container: Codable {
     }
     
     public struct HealthcheckResult: Codable {
-        var Start: String
-        var End: String
-        var ExitCode: Int
-        var Output: String
+        var start: String
+        var end: String
+        var exitCode: Int
+        var output: String
+        
+        enum CodingKeys: String, CodingKey {
+            case start = "Start"
+            case end = "End"
+            case exitCode = "ExitCode"
+            case output = "Output"
+        }
     }
     
     public struct HealthCheckConfig: Codable {
         /// The time to wait between checks in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
-        public var Interval: UInt64
+        public var interval: UInt64
         
         /// The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit.
-        public var Retries: UInt
+        public var retries: UInt
         
         /// Start period for the container to initialize before starting health-retries countdown in nanoseconds.
         /// It should be 0 or at least 1000000 (1 ms). 0 means inherit.
-        public var StartPeriod: UInt64
+        public var startPeriod: UInt64
         
         /// The test to perform. Possible values are
         /// - `[]` : inherit healthcheck from image or parent image)
         /// - `["NONE"]` : disable healthcheck
         /// - `["CMD", args...]` exec arguments directly
         /// - ["CMD-SHELL", command]` run command with system's default shell
-        public var Test: [String]
+        public var test: [String]
         
         /// The time to wait before considering the check to have hung. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
-        public var Timeout: UInt64
+        public var timeout: UInt64
+        
+        enum CodingKeys: String, CodingKey {
+            case interval = "Interval"
+            case retries = "Retries"
+            case startPeriod = "StartPeriod"
+            case test = "Test"
+            case timeout = "Timeout"
+        }
     }
     
     public struct HealthResponse: Codable {
-        public let Status: HealthStatus
-        /// FailingStreak is the number of consecutive failures
-        public let FailingStreak: UInt64
-        public let Log: [HealthcheckResult]
+        public let status: HealthStatus
+        
+        /// Number of consecutive failures
+        public let failingStreak: UInt64
+        
+        public let log: [HealthcheckResult]
+        
+        enum CodingKeys: String, CodingKey {
+            case status = "Status"
+            case failingStreak = "FailingStreak"
+            case log = "Log"
+        }
     }
     
     public struct State: Codable {
-        public let Dead: Bool
-        public let Error: String
+        public let dead: Bool
+        
+        public let error: String
+        
         /// The last exit code of this container
-        public let ExitCode: Int
+        public let exitCode: Int
+        
         /// Health stores information about the container's healthcheck results.
-        public let Health: HealthResponse?
-        /// The time when this container last exited.
-        public let FinishedAt: String
+        public let health: HealthResponse?
+        
         /// Whether this container has been killed because it ran out of memory.
-        public let OOMKilled: Bool
-        public let Paused: Bool
+        public let oomKilled: Bool
+        
+        public let paused: Bool
+        
         /// The process ID of this container
-        public let Pid: UInt64
-        public let Running: Bool
-        public let Restarting: Bool
+        public let pid: UInt64
+        
+        public let running: Bool
+        
+        public let restarting: Bool
+        
         /// The time when this container was last started.
-        public let StartedAt: String
-        public let Status: String
+        public let startedAt: String
+        
+        /// The time when this container last exited.
+        public let finishedAt: String
+        
+        public let status: String
+        
+        enum CodingKeys: String, CodingKey {
+            case dead = "Dead"
+            case error = "Error"
+            case exitCode = "ExitCode"
+            case health = "Health"
+            case finishedAt = "FinishedAt"
+            case oomKilled = "OOMKilled"
+            case paused = "Paused"
+            case pid = "Pid"
+            case running = "Running"
+            case restarting = "Restarting"
+            case startedAt = "StartedAt"
+            case status = "Status"
+        }
     }
     
     public struct EmptyObject: Codable {}
@@ -223,7 +273,6 @@ public struct Container: Codable {
     }
     
     public struct HostConfig: Codable {
-        
         /// A list of volume bindings for this container. Each volume binding is a string in one of these forms:
         ///- `host-src:container-dest[:options]` to bind-mount a host path into the container. Both host-src, and container-dest must be an absolute path.
         /// - `volume-name:container-dest[:options]` to bind-mount a volume managed by a volume driver into the container. container-dest must be an absolute path.

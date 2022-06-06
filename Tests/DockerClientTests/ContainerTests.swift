@@ -48,7 +48,6 @@ final class ContainerTests: XCTestCase {
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
             output += line.message + "\n"
-            print("\n*** log message=\(line)")
         }
         print("\n••••• OUTPUT=\(output)")
         // arm64v8 or amd64
@@ -79,8 +78,6 @@ final class ContainerTests: XCTestCase {
         
         """
         )
-        
-        
     }
     
     func testPruneContainers() async throws {

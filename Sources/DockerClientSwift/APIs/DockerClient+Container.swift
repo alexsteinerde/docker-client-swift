@@ -16,19 +16,8 @@ extension DockerClient {
         /// - Parameter all: If `true` all containers are fetched, otherwise only running containers.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `Container`.
-        public func list(all: Bool=false) async throws -> [Container] {
+        public func list(all: Bool = false) async throws -> [ContainerSummary] {
             return try await client.run(ListContainersEndpoint(all: all))
-               /* .map({ container in
-                    var digest: Digest?
-                    var repositoryTag: Image.RepositoryTag?
-                    if let value =  Image.parseNameTagDigest(container.Image) {
-                        (digest, repositoryTag) = value
-                    } else if let repoTag = Image.RepositoryTag(container.Image) {
-                        repositoryTag = repoTag
-                    }
-                    let image = Image(id: .init(container.ImageID), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
-                    return Container(id: .init(container.Id), image: image, createdAt: Date(timeIntervalSince1970: TimeInterval(container.Created)), names: container.Names, state: container.State, command: container.Command)
-                })*/
         }
         
         /// Creates a new container from a given image. If specified the commands override the default commands from the image.
@@ -37,7 +26,7 @@ extension DockerClient {
         ///   - commands: Override the default commands from the image. Default `nil`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  a `Container`.
-        public func createContainer(image: Image, commands: [String]?=nil) async throws -> Container {
+        public func createContainer(image: Image, commands: [String]? = nil) async throws -> Container {
             let response = try await client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
             return try await self.get(response.Id)
         }
@@ -63,58 +52,6 @@ extension DockerClient {
             try await client.run(RemoveContainerEndpoint(containerId: container.id))
         }
         
-        /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
-        /// - Parameter container: Instance of a `Container` you want to get the logs for.
-        /// - Throws: Errors that can occur when executing the request.
-        /*public func logs(container: Container) async throws -> String {
-            let response = try await client.run(GetContainerLogsEndpoint(containerId: container.id.value))
-            // Removing the first character of each line because random characters went there.
-            // TODO: first char is the stream (stdout/stderr). Return structured messages instead of a string
-            return response.split(separator: "\n")
-                .map({ originalLine in
-                    var line = originalLine
-                    line.removeFirst(8)
-                    return String(line)
-                })
-                .joined(separator: "\n")
-        }*/
-        
-        public enum DockerLogEntrysource: String, Codable {
-            case stdout, stderr
-        }
-        public struct LogEntry: Codable {
-            public let source: DockerLogEntrysource
-            public let timestamp: Date
-            public let message: String
-            public var eof: Bool = false
-        }
-        
-        /*struct LogEntrySequence: AsyncSequence, AsyncIteratorProtocol {
-            typealias Element = LogEntry
-            private var stream: HTTPClientResponse.Body
-            private var iterator: AsyncIterator
-            internal init(stream: HTTPClientResponse.Body ) {
-                self.stream = stream
-                self.iterator = stream.makeAsyncIterator()
-            }
-            
-            
-            mutating func next() async -> Element? {
-                
-                return iterator.next()
-            }
-            
-            func makeAsyncIterator() -> LogEntrySequence {
-                self
-            }
-        }*/
-
-        enum DockerLogDecodingError: Error {
-            case dataCorrupted
-            case timestampCorrupted
-            case noTimestampFound
-            case noMessageFound
-        }
         /// Gets the logs of a container.
         /// - Parameters:
         ///   - container: Instance of an `Container`.
@@ -125,7 +62,7 @@ extension DockerClient {
         ///   - tail: number of last existing log lines to return. Default: all.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  a  sequence of `LogEntry`.
-        public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil) async throws -> AsyncThrowingStream<LogEntry, Error> {
+        public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
             let response = try await client.run(
                 GetContainerLogsEndpoint(
                     containerId: container.id,
@@ -143,7 +80,7 @@ extension DockerClient {
             let formatter = DateFormatter()
             formatter.dateFormat = format
             
-            return AsyncThrowingStream<LogEntry, Error> { continuation in
+            return AsyncThrowingStream<DockerLogEntry, Error> { continuation in
                 Task {
                     for try await buffer in try await response {
                         var data = Data(buffer: buffer)
@@ -169,7 +106,9 @@ extension DockerClient {
                             }
                             let logMessage = String(string.suffix(string.count - timestampLen))
                             
-                            continuation.yield(LogEntry(source: .stdout, timestamp: timestamp, message: logMessage))
+                            continuation.yield(
+                                DockerLogEntry(source: .stdout, timestamp: timestamp, message: logMessage)
+                            )
                         }
                     }
                     continuation.finish()
