@@ -154,6 +154,7 @@ extension DockerClient {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
+                            print("\n•••rawLine='\(string)'")
                             //let splat = string.split(separator: " ")
                             
                             let timestampRaw = string.prefix(timestampLen - 1) /*else {
