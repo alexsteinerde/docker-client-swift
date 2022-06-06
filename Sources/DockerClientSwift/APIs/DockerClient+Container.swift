@@ -1,5 +1,6 @@
 import Foundation
 import NIO
+import AsyncHTTPClient
 
 extension DockerClient {
     
@@ -65,7 +66,7 @@ extension DockerClient {
         /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
         /// - Parameter container: Instance of a `Container` you want to get the logs for.
         /// - Throws: Errors that can occur when executing the request.
-        public func logs(container: Container) async throws -> String {
+        /*public func logs(container: Container) async throws -> String {
             let response = try await client.run(GetContainerLogsEndpoint(containerId: container.id.value))
             // Removing the first character of each line because random characters went there.
             // TODO: first char is the stream (stdout/stderr). Return structured messages instead of a string
@@ -76,6 +77,102 @@ extension DockerClient {
                     return String(line)
                 })
                 .joined(separator: "\n")
+        }*/
+        
+        public enum LogEntrysource: String, Codable {
+            case stdout, stderr
+        }
+        public struct LogEntry: Codable {
+            public let source: LogEntrysource
+            public let timestamp: Date
+            public let message: String
+            public var eof: Bool = false
+        }
+        
+        /*struct LogEntrySequence: AsyncSequence, AsyncIteratorProtocol {
+            typealias Element = LogEntry
+            private var stream: HTTPClientResponse.Body
+            private var iterator: AsyncIterator
+            internal init(stream: HTTPClientResponse.Body ) {
+                self.stream = stream
+                self.iterator = stream.makeAsyncIterator()
+            }
+            
+            
+            mutating func next() async -> Element? {
+                
+                return iterator.next()
+            }
+            
+            func makeAsyncIterator() -> LogEntrySequence {
+                self
+            }
+        }*/
+
+        enum DockerLogDecodingError: Error {
+            case dataCorrupted
+            case timestampCorrupted
+            case noTimestampFound
+            case noMessageFound
+        }
+        /// Gets the logs of a container.
+        /// - Parameters:
+        ///   - container: Instance of an `Container`.
+        ///   - stdErr: whether to return log lines from the standard error.
+        ///   - stdOut: whether to return log lines from the standard output.
+        ///   - timestamps: whether to return the timestamp of each log line
+        ///   - follow: whether to wait for new logs to become available and stream them.
+        ///   - tail: number of last existing log lines to return. Default: all.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns  a  sequence of `LogEntry`.
+        public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil) async throws -> AsyncThrowingStream<LogEntry, Error> {
+            let response = try await client.run(
+                GetContainerLogsEndpoint(
+                    containerId: container.id.value,
+                    stdout: stdOut,
+                    stderr: stdErr,
+                    timestamps: timestamps,
+                    follow: follow,
+                    tail: tail == nil ? "all" : "\(tail!)"
+                ),
+                timeout: follow ? .hours(24) : .seconds(30)
+            )
+            
+            let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
+            let timestampLen = 31 //format.count
+            let formatter = DateFormatter()
+            formatter.dateFormat = format
+            
+            return AsyncThrowingStream<LogEntry, Error> { continuation in
+                Task {
+                    for try await buffer in try await response {
+                        let data = Data(buffer: buffer)
+                        for line in data.split(separator: 10 /*\n*/) {
+                            let slice = line.dropFirst(8)
+                            let message = Data(slice)
+                            guard let string = String(data: message, encoding: .utf8) else {
+                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                                return
+                            }
+                            //let splat = string.split(separator: " ")
+                            
+                            let timestampRaw = string.prefix(timestampLen-1) /*else {
+                                continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
+                                return
+                            }*/
+                            guard let timestamp = formatter.date(from: String(timestampRaw)) else {
+                                continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
+                                return
+                            }
+                            let logMessage = String(string.suffix(string.count - timestampLen))
+                            
+                            
+                            continuation.yield(LogEntry(source: .stdout, timestamp: timestamp, message: logMessage))
+                        }
+                    }
+                    continuation.finish()
+                }
+            }
         }
         
         /// Fetches the latest information about a container by a given name or id..
@@ -152,7 +249,7 @@ extension Container {
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Return an `EventLoopFuture` with the logs as a plain text `String`.
-    public func logs(on client: DockerClient) async throws -> String {
+    /*public func logs(on client: DockerClient) async throws -> String {
         return try await client.containers.logs(container: self)
-    }
+    }*/
 }

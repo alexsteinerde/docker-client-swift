@@ -29,7 +29,24 @@ extension HTTPClient {
         }
     }
     
-    public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) async throws-> Response {
+    public func executeStream(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: HTTPClientRequest.Body? = nil, tlsConfig: TLSConfiguration?, timeout: TimeAmount, logger: Logger, headers: HTTPHeaders) async throws -> HTTPClientResponse.Body {
+        
+        guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
+            throw HTTPClientError.invalidURL
+        }
+        
+        var request = HTTPClientRequest(url: url.absoluteString)
+        request.headers = headers
+        request.method = method
+        request.body = body
+        
+        let response = try await self.execute(request, timeout: timeout)
+        //let response = try await self.execute(request, deadline: deadline ?? .now() + TimeAmount.seconds(10), logger: logger)
+        return response.body
+    }
+    
+    
+    /*public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) async throws -> Response {
         guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
             throw HTTPClientError.invalidURL
         }
@@ -37,5 +54,5 @@ extension HTTPClient {
         let request = try Request(url: url, method: method, headers: headers, body: body, tlsConfiguration: tlsConfig)
         return try await self.execute(request: request, deadline: deadline, logger: logger).get()
         
-    }
+    }*/
 }

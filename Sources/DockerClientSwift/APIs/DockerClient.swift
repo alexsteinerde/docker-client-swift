@@ -5,7 +5,7 @@ import NIOSSL
 import AsyncHTTPClient
 import Logging
 
-/// The entry point for docker client commands. 
+/// The entry point for Docker client commands.
 public class DockerClient {
     private let apiVersion = "v1.41"
     private let headers = HTTPHeaders([
@@ -94,5 +94,25 @@ public class DockerClient {
         .logResponseBody(logger)
         .mapString(map: endpoint.map(data: ))
         .get()
+    }
+    
+    @discardableResult
+    internal func run<T: StreamingEndpoint>(_ endpoint: T, timeout: TimeAmount) async throws -> T.Response {
+        logger.debug("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
+        let stream = try await client.executeStream(
+            endpoint.method,
+            daemonURL: self.deamonURL,
+            urlPath: "/\(apiVersion)/\(endpoint.path)",
+            //body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
+            body: endpoint.body.map {
+                HTTPClientRequest.Body.bytes( try! $0.encode())
+            },
+            tlsConfig: self.tlsConfig,
+            timeout: timeout,
+            logger: logger,
+            headers: self.headers
+        )
+        print("\n•••\(Self.self).run(StreamingEndpoint) will return \(stream)")
+        return stream as! T.Response
     }
 }

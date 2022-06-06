@@ -25,8 +25,9 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Get logs                | 🚧       | refactoring |
-|                             | Exec                    | ❌       |             |
 |                             | Prune                   | ✅       |             |
+|                             | Attach                  | ❌       |             |
+|                             | Exec                    | ❌       |             |
 | Images                      | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
@@ -61,6 +62,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Tasks                       |                         | ❌       |             |
 |                             |                         |         |             |
 | Plugins                     |                         | ❌       |             |
+|                             |                         |         |             |
+| Registries                  |                         | ❌       |             |
 |                             |                         |         |             |
 
 
