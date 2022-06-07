@@ -1,4 +1,5 @@
 import Foundation
+import BetterCodable
 
 /// Basic Container information returned when listing containers
 public struct ContainerSummary: Codable {
@@ -8,19 +9,25 @@ public struct ContainerSummary: Codable {
     public let imageId: String
     public let command: String
     
-    // date
-    public let createdAt: UInt64
+    @DateValue<TimestampStrategy>
+    private(set)public var createdAt: Date
     
     public let ports: [UInt16]
     
     public let labels: [String:String]
     
-    public let state: String
+    public let state: State
     
     public let status: String
     
+    // TODO: HostConfig
+    // TODO: NetworkSettings
+    
+    public enum State: String, Codable {
+        case created, restarting, running, removing, paused, exited, dead
+    }
     enum CodingKeys: String, CodingKey {
-        case id = "ID"
+        case id = "Id"
         case names = "Names"
         case image = "Image"
         case imageId = "ImageID"

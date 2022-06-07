@@ -28,6 +28,8 @@ final class ContainerTests: XCTestCase {
         let containers = try await client.containers.list(all: true)
     
         XCTAssert(containers.count >= 1)
+        XCTAssert(containers.first!.createdAt > Date.distantPast)
+        
     }
     
     func testInspectContainer() async throws {

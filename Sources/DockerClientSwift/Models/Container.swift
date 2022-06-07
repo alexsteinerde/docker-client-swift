@@ -1,4 +1,5 @@
 import Foundation
+import BetterCodable
 
 /// Detailed information about a Container
 public struct Container: Codable {
@@ -12,7 +13,7 @@ public struct Container: Codable {
     public let config: ContainerConfig
     
     /// The time the container was created
-    public let created: Date
+    public let createdAt: Date
     
     public let driver: String
     public let execIDs: [String]?
@@ -54,7 +55,7 @@ public struct Container: Codable {
         case appArmorProfile = "AppArmorProfile"
         case args = "Args"
         case config = "Config"
-        case created = "Created"
+        case createdAt = "Created"
         case driver = "Driver"
         case execIDs = "ExecIDs"
         case hostConfig = "HostConfig"
@@ -162,10 +163,12 @@ public struct Container: Codable {
         public let restarting: Bool
         
         /// The time when this container was last started.
-        public let startedAt: String
+        @DateValue<ISO8601Strategy>
+        private(set)public var startedAt: Date
         
         /// The time when this container last exited.
-        public let finishedAt: String
+        @DateValue<ISO8601Strategy>
+        private(set)public var finishedAt: Date
         
         public let status: String
         
