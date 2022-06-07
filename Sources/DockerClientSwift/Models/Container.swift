@@ -293,15 +293,16 @@ public struct Container: Codable {
         }
         
         public enum StopSignal: String, Codable {
-            
             case hup = "SIGHUP"
             case int = "SIGINT"
             case quit = "SIGQUIT"
+            /// Illegal Instruction
             case ill = "SIGILL"
             case trap = "SIGTRAP"
             case abrt = "SIGABRT"
             case bus = "SIGBUS"
             case fpe = "SIGFPE"
+            /// Kill signal. Immediately terminates the container without being forwarded to it.
             case kill = "SIGKILL"
             case usr1 = "SIGUSR1"
             case segv = "SIGSEGV"
@@ -309,22 +310,6 @@ public struct Container: Codable {
             case pipe = "SIGPIPE"
             case alrm = "SIGALRM"
             case term = "SIGTERM"
-            
-            
-            
-            
-        }
-    }
-    
-    public struct ContainerDeviceMapping: Codable {
-        public let cgroupPermissions: String
-        public let pathInContainer: String
-        public let pathOnHost: String
-        
-        enum CodingKeys: String, CodingKey {
-            case cgroupPermissions = "CgroupPermissions"
-            case pathInContainer = "PathInContainer"
-            case pathOnHost = "PathOnHost"
         }
     }
     
@@ -537,6 +522,18 @@ public struct Container: Codable {
         
         /// UTS namespace to use for the container.
         public let UTSMode: String
+        
+        public struct DeviceMapping: Codable {
+            public let cgroupPermissions: String
+            public let pathInContainer: String
+            public let pathOnHost: String
+            
+            enum CodingKeys: String, CodingKey {
+                case cgroupPermissions = "CgroupPermissions"
+                case pathInContainer = "PathInContainer"
+                case pathOnHost = "PathOnHost"
+            }
+        }
         
     }
 }
