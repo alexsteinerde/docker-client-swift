@@ -18,7 +18,7 @@ final class ContainerTests: XCTestCase {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let container = try await client.containers.createContainer(image: image)
 
-        XCTAssertEqual(container.config.Cmd, ["/hello"])
+        XCTAssertEqual(container.config.cmd, ["/hello"])
     }
     
     func testListContainers() async throws {
@@ -39,7 +39,7 @@ final class ContainerTests: XCTestCase {
         let inspectedContainer = try await client.containers.get(container.id)
         
         XCTAssertEqual(inspectedContainer.id, container.id)
-        XCTAssertEqual(inspectedContainer.config.Cmd, ["/hello"])
+        XCTAssertEqual(inspectedContainer.config.cmd, ["/hello"])
     }
     
     func testStartingContainerAndRetrievingLogs() async throws {
@@ -51,7 +51,6 @@ final class ContainerTests: XCTestCase {
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
             output += line.message + "\n"
         }
-        print("\n••••• OUTPUT=\(output)")
         // arm64v8 or amd64
         XCTAssertEqual(
             output,

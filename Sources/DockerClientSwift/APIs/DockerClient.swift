@@ -112,7 +112,6 @@ public class DockerClient {
             logger: logger,
             headers: self.headers
         )
-        print("\n•••\(Self.self).run(StreamingEndpoint) will return \(stream)")
         return stream as! T.Response
     }
 }

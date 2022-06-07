@@ -85,7 +85,7 @@ extension DockerClient {
                     for try await buffer in try await response {
                         var data = Data(buffer: buffer)
                         for var line in data.split(separator: 10 /* ascii 10 = \n */) {
-                            if !container.config.Tty {
+                            if !container.config.tty {
                                 line = line.dropFirst(8)
                             }
                             let message = Data(line)

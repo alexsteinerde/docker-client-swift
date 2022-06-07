@@ -12,15 +12,18 @@ public struct Container: Codable {
     /// Configuration for a container that is portable between hosts.
     public let config: ContainerConfig
     
+    /// Container configuration that depends on the host we are running on
+    public let hostConfig: HostConfig
+    
     /// The time the container was created
     public let createdAt: Date
     
-    public let driver: String
-    public let execIDs: [String]?
-    // let GraphDriver
+    /// The storage driver used to store the container's and image's filesystem.
+    public let storageDriver: String
     
-    /// Container configuration that depends on the host we are running on
-    public let hostConfig: HostConfig
+    public let execIDs: [String]?
+    
+    // TODO: let GraphDriver
     
     public let hostnamePath: String
     public let hostsPath: String
@@ -28,12 +31,19 @@ public struct Container: Codable {
     /// The ID of the container
     public let id: String
     
+    /// The container's image ID
     public let image: String
+    
     public let logPath: String
+    
     public let mountLabel: String
-    // let Mounts
+    
+    // TODO: let Mounts
+    
     public let name: String
-    //let NetworkSettings
+    
+    // TODO: let NetworkSettings
+    
     public let platform: String
     
     /// The path to the command being run
@@ -56,7 +66,7 @@ public struct Container: Codable {
         case args = "Args"
         case config = "Config"
         case createdAt = "Created"
-        case driver = "Driver"
+        case storageDriver = "Driver"
         case execIDs = "ExecIDs"
         case hostConfig = "HostConfig"
         case hostnamePath = "HostnamePath"
@@ -95,7 +105,8 @@ public struct Container: Codable {
     }
     
     public struct HealthCheckConfig: Codable {
-        /// The time to wait between checks in nanoseconds. It should be 0 or at least 1000000 (1 ms). 0 means inherit.
+        /// The time to wait between checks, in nanoseconds.
+        /// It should be 0 or at least 1000000 (1 ms). 0 means inherit.
         public var interval: UInt64
         
         /// The number of consecutive failures needed to consider a container as unhealthy. 0 means inherit.
@@ -191,77 +202,142 @@ public struct Container: Codable {
     public struct EmptyObject: Codable {}
     
     public struct ContainerConfig: Codable {
-        public let AttachStderr: Bool
-        public let AttachStdin: Bool
-        public let AttachStdout: Bool
-        public var Cmd: [String] = []
-        public let Domainname: String
-        public var Entrypoint: [String]?
+        public let attachStderr: Bool
+        
+        public let attachStdin: Bool
+        
+        public let attachStdout: Bool
+        
+        public var cmd: [String] = []
+        
+        public let domainname: String
+        
+        public var entrypoint: [String]?
         
         /// A list of environment variables to set inside the container in the form `["VAR=value", ...].`
         /// A variable without `=` is removed from the environment, rather than to have an empty value.
-        public let Env: [String]
+        public let env: [String]
         
-        public let ExposedPorts: [String:EmptyObject]?
+        /// An object mapping ports to an empty object in the form:
+        /// `{"<port>/<tcp|udp|sctp>": {}}`
+        public let exposedPorts: [String:EmptyObject]?
         
-        public let Healthcheck: HealthCheckConfig?
+        /// A test to perform to periodically check that the container is healthy.
+        public let healthcheck: HealthCheckConfig?
         
         /// The hostname to use for the container, as a valid RFC 1123 hostname.
-        public let Hostname: String
+        public let hostname: String
         
-        public let Image: String
-        public var Labels: [String:String]?
-        public var MacAddress: String?
+        public let image: String
+        public var labels: [String:String]?
+        public var macAddress: String?
         
         /// Whether networking is disabled for the container.
-        public var NetworkDisabled: Bool?
+        public var networkDisabled: Bool?
         
         /// `ONBUILD` metadata that were defined in the image's `Dockerfile`
-        public let OnBuild: [String]?
+        public let onBuild: [String]?
         
-        public let OpenStdin: Bool
+        public let openStdin: Bool
         
         /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.
-        public let Shell: [String]?
+        public let shell: [String]?
         
         /// Close stdin after one attached client disconnects
-        public let StdinOnce: Bool
+        public let stdinOnce: Bool
         
         /// Unix signal to stop a container as a string or unsigned integer.
-        public let StopSignal: String?
+        public let stopSignal: StopSignal?
         
-        public let StopTimeout: UInt?
+        /// Timeout to stop a container, in seconds.
+        /// After that, the container will be forcibly killed.
+        public let stopTimeout: UInt?
         
         /// Attach standard streams to a TTY, including stdin if it is not closed.
-        public let Tty: Bool
+        public let tty: Bool
         
         /// The user that commands are run as inside the container.
-        public let User: String
+        public let user: String
         
-        public let Volumes: [String:EmptyObject]??
+        /// An object mapping mount point paths inside the container to empty objects.
+        public let volumes: [String:EmptyObject]??
         
-        public let WorkingDir: String
+        /// The working directory for commands to run in.
+        public let workingDir: String
         
+        enum CodingKeys: String, CodingKey {
+            case attachStderr = "AttachStderr"
+            case attachStdout = "AttachStdout"
+            case attachStdin = "AttachStdin"
+            case cmd = "Cmd"
+            case domainname = "Domainname"
+            case entrypoint = "Entrypoint"
+            case env = "Env"
+            case exposedPorts = "ExposedPorts"
+            case healthcheck = "Healthcheck"
+            case hostname = "Hostname"
+            case image = "Image"
+            case labels = "Labels"
+            case macAddress = "MacAddress"
+            case networkDisabled = "NetworkDisabled"
+            case onBuild = "OnBuild"
+            case openStdin = "OpenStdin"
+            case shell = "Shell"
+            case stdinOnce = "StdinOnce"
+            case stopSignal = "StopSignal"
+            case stopTimeout = "StopTimeout"
+            case tty = "Tty"
+            case user = "User"
+            case volumes = "Volumes"
+            case workingDir = "WorkingDir"
+        }
+        
+        public enum StopSignal: String, Codable {
+            
+            case hup = "SIGHUP"
+            case int = "SIGINT"
+            case quit = "SIGQUIT"
+            case ill = "SIGILL"
+            case trap = "SIGTRAP"
+            case abrt = "SIGABRT"
+            case bus = "SIGBUS"
+            case fpe = "SIGFPE"
+            case kill = "SIGKILL"
+            case usr1 = "SIGUSR1"
+            case segv = "SIGSEGV"
+            case usr2 = "SIGUSR2"
+            case pipe = "SIGPIPE"
+            case alrm = "SIGALRM"
+            case term = "SIGTERM"
+            
+            
+            
+            
+        }
     }
     
     public struct ContainerDeviceMapping: Codable {
-        public let CgroupPermissions: String
-        public let PathInContainer: String
-        public let PathOnHost: String
+        public let cgroupPermissions: String
+        public let pathInContainer: String
+        public let pathOnHost: String
+        
+        enum CodingKeys: String, CodingKey {
+            case cgroupPermissions = "CgroupPermissions"
+            case pathInContainer = "PathInContainer"
+            case pathOnHost = "PathOnHost"
+        }
     }
     
-    public  struct Ulimit: Codable {
-        public var Name: String
-        public var Soft: UInt64
-        public var Hard: UInt64
-    }
-    
-    public enum MountType: String, Codable {
-        case bind, volume, tmpfs, npipe
-    }
-    
-    public enum MountConsistency: String, Codable {
-        case cached, consistent, `default`, delegated
+    public struct Ulimit: Codable {
+        public var name: String
+        public var soft: UInt64
+        public var hard: UInt64
+        
+        enum CodingKeys: String, CodingKey {
+            case name = "Name"
+            case soft = "Soft"
+            case hard = "Hard"
+        }
     }
     
     public struct ContainerMount: Codable {
@@ -273,6 +349,14 @@ public struct Container: Codable {
         public var `Type`: MountType
         // var VolumeOptions
         // var TmpfsOptions
+        
+        public enum MountType: String, Codable {
+            case bind, volume, tmpfs, npipe
+        }
+        
+        public enum MountConsistency: String, Codable {
+            case cached, consistent, `default`, delegated
+        }
     }
     
     public struct HostConfig: Codable {
