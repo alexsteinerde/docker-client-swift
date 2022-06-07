@@ -10,6 +10,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.18.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.10.0"),
+        // Only used for parsing the multiple and inconsistent date formats returned by Docker
         .package(url: "https://github.com/marksands/BetterCodable.git", from: "0.4.0"),
     ],
     targets: [

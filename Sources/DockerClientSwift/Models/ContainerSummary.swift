@@ -4,20 +4,32 @@ import BetterCodable
 /// Basic Container information returned when listing containers
 public struct ContainerSummary: Codable {
     public let id: String
+    
+    /// The names that this container has been given
     public let names: [String]
+    
+    /// The name of the image used when creating this container
     public let image: String
+    
+    /// The ID of the image that this container was created from
     public let imageId: String
+    
+    /// Command to run when starting the container
     public let command: String
     
+    /// When the container was created
     @DateValue<TimestampStrategy>
     private(set)public var createdAt: Date
     
-    public let ports: [UInt16]
+    /// The ports exposed by this container
+    public let ports: [ExposedPort]
     
     public let labels: [String:String]
     
+    /// The state of this container (e.g. `exited`)
     public let state: State
     
+    /// Additional human-readable status of this container (e.g. "Exit 0")
     public let status: String
     
     // TODO: HostConfig
@@ -26,6 +38,25 @@ public struct ContainerSummary: Codable {
     public enum State: String, Codable {
         case created, restarting, running, removing, paused, exited, dead
     }
+    
+    public struct ExposedPort: Codable {
+        public let ip: String?
+        public let privatePort: UInt16
+        public let publicPort: UInt16?
+        public let type: PortProtocol
+        
+        public enum PortProtocol: String, Codable {
+            case tcp, udp, sctp
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case ip = "IP"
+            case privatePort = "PrivatePort"
+            case publicPort = "PublicPort"
+            case type = "Type"
+        }
+    }
+    
     enum CodingKeys: String, CodingKey {
         case id = "Id"
         case names = "Names"
