@@ -29,3 +29,26 @@ struct CreateContainerEndpoint: Endpoint {
         let Id: String
     }
 }
+
+struct CreateContainerEndpoint2: Endpoint {
+    typealias Response = CreateContainerResponse
+    typealias Body = ContainerCreate
+    var method: HTTPMethod = .POST
+    
+    var body: ContainerCreate?
+    private let name: String?
+    
+    init(name: String? = nil, spec: ContainerCreate) {
+        self.name = name
+        self.body = spec
+    }
+    
+    var path: String {
+        "containers/create\(name != nil ? "?name=\(name!)" : "")"
+    }
+
+    struct CreateContainerResponse: Codable {
+        let Id: String
+        let Warnings: [String]
+    }
+}
