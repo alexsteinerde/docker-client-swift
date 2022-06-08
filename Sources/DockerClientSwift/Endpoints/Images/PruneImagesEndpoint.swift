@@ -23,7 +23,7 @@ struct PruneImagesEndpoint: Endpoint {
 
     struct PruneImagesResponse: Codable {
         let ImagesDeleted: [PrunedImageResponse]?
-        let SpaceReclaimed: Int
+        let SpaceReclaimed: UInt64
         
         struct PrunedImageResponse: Codable {
             let Deleted: String?

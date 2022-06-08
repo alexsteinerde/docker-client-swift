@@ -130,24 +130,7 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the `Container` and its information.
         public func get(_ nameOrId: String) async throws -> Container {
-            let container = try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
-            return container
-            /*var digest: Digest?
-            var repositoryTag: Image.RepositoryTag?
-            if let value =  Image.parseNameTagDigest(response.Image) {
-                (digest, repositoryTag) = value
-            } else if let repoTag = Image.RepositoryTag(response.Image) {
-                repositoryTag = repoTag
-            }
-            let image = Image(id: .init(response.Image), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
-            return Container(
-                id: .init(response.Id),
-                image: image,
-                createdAt: response.Created,
-                names: [response.Name],
-                state: response.State.Status,
-                command: response.Config.Cmd.joined(separator: " ")
-            )*/
+            return try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
         }
         
         
@@ -163,10 +146,11 @@ extension DockerClient {
         }
         
         public struct PrunedContainers {
+            /// IDs of the containers that were deleted.
             let containersIds: [String]
             
-            /// Disk space reclaimed in bytes
-            let reclaimedSpace: Int
+            /// Disk space reclaimed in bytes.
+            let reclaimedSpace: UInt64
         }
     }
 }
@@ -195,12 +179,4 @@ extension Container {
     public func remove(on client: DockerClient) async throws {
         try await client.containers.remove(container: self)
     }
-    
-    /// Gets the logs of a container as plain text. This function does not return future log statements but only the once that happen until now.
-    /// - Parameter client: A `DockerClient` instance that is used to perform the request.
-    /// - Throws: Errors that can occur when executing the request.
-    /// - Returns: Return an `EventLoopFuture` with the logs as a plain text `String`.
-    /*public func logs(on client: DockerClient) async throws -> String {
-        return try await client.containers.logs(container: self)
-    }*/
 }

@@ -103,7 +103,6 @@ public class DockerClient {
             endpoint.method,
             daemonURL: self.deamonURL,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
-            //body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             body: endpoint.body.map {
                 HTTPClientRequest.Body.bytes( try! $0.encode())
             },

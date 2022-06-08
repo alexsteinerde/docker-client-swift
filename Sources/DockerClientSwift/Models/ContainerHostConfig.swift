@@ -15,7 +15,7 @@ public struct ContainerHostConfig: Codable {
     public var BlkioWeight: UInt16 = 0
     
     /// Block IO weight (relative device weight)
-    public var BlkioWeightDevice: [BlkioWeight] = []
+    public var BlkioWeightDevice: [BlkioWeight]? = []
     
     /// Limit read rate (bytes per second) from a device
     public var BlkioDeviceReadBps: BlkioRateLimit? = nil
@@ -86,22 +86,22 @@ public struct ContainerHostConfig: Codable {
     /// Value representing this container's relative CPU weight versus other containers.
     public var CpuShares: UInt = 0
     
-    public var Devices: [DeviceMapping] = []
+    public var Devices: [DeviceMapping]? = []
     
     /// A list of cgroup rules to apply to the container
     public var DeviceCgroupRules: [String]? = nil
     
     /// A list of DNS servers for the container to use.
-    public var Dns: [String] = []
+    public var Dns: [String]? = []
     
     /// A list of DNS options.
-    public var DnsOptions: [String] = []
+    public var DnsOptions: [String]? = []
     
     /// A list of DNS search domains.
-    public var DnsSearch: [String] = []
+    public var DnsSearch: [String]? = []
     
     /// A list of hostnames/IP mappings to add to the container's /etc/hosts file. Specified in the form `["hostname:IP"]`.
-    public var ExtraHosts: [String] = []
+    public var ExtraHosts: [String]? = []
     
     /// A list of additional groups that the container process will run as.
     public var GroupAdd: [String]? = nil
@@ -118,6 +118,9 @@ public struct ContainerHostConfig: Codable {
     /// - `host`: use the host system's IPC namespace
     /// If not specified, daemon default is used, which can either be `private` or `shareable`, depending on daemon version and configuration.
     public var IpcMode: String = ""
+    
+    // Windows only.
+    public var Isolation: String = ""
     
     /// Kernel memory limit in bytes.
     /// **Deprecated**: This field is deprecated as the kernel 5.4 deprecated `kmem.limit_in_bytes`.

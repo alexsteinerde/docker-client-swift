@@ -1,34 +1,34 @@
 import Foundation
 
 public struct ContainerConfig: Codable {
-    public let attachStderr: Bool = true
+    public var attachStderr: Bool = true
     
-    public let attachStdin: Bool = false
+    public var attachStdin: Bool = false
     
-    public let attachStdout: Bool = true
+    public var attachStdout: Bool = true
     
     public var cmd: [String]? = nil
     
-    public let domainname: String = ""
+    public var domainname: String = ""
     
     public var entrypoint: [String]? = nil
     
     /// A list of environment variables to set inside the container in the form `["VAR=value", ...].`
     /// A variable without `=` is removed from the environment, rather than to have an empty value.
-    public let env: [String]? = nil
+    public var env: [String]? = nil
     
     /// An object mapping ports to an empty object in the form:
     /// `{"<port>/<tcp|udp|sctp>": {}}`
-    public let exposedPorts: [String:EmptyObject]? = [:]
+    public var exposedPorts: [String:EmptyObject]? = [:]
     
     /// A test to perform to periodically check that the container is healthy.
-    public let healthcheck: HealthCheckConfig? = nil
+    public var healthcheck: HealthCheckConfig? = nil
     
     /// The hostname to use for the container, as a valid RFC 1123 hostname.
-    public let hostname: String = ""
+    public var hostname: String = ""
     
     /// The name (or reference) of the image to use
-    public let image: String
+    public var image: String
     
     public var labels: [String:String] = [:]
     
@@ -38,34 +38,34 @@ public struct ContainerConfig: Codable {
     public var networkDisabled: Bool?
     
     /// `ONBUILD` metadata that were defined in the image's `Dockerfile`
-    public let onBuild: [String]? = nil
+    public var onBuild: [String]? = nil
     
-    public let openStdin: Bool = false
+    public var openStdin: Bool = false
     
     /// Shell for when `RUN`, `CMD`, and `ENTRYPOINT` uses a shell.
-    public let shell: [String]? = nil
+    public var shell: [String]? = nil
     
     /// Close stdin after one attached client disconnects
-    public let stdinOnce: Bool = false
+    public var stdinOnce: Bool = false
     
     /// Unix signal to stop a container as a string or unsigned integer.
-    public let stopSignal: StopSignal? = nil
+    public var stopSignal: StopSignal? = nil
     
     /// Timeout to stop a container, in seconds.
     /// After that, the container will be forcibly killed.
-    public let stopTimeout: UInt? = 10
+    public var stopTimeout: UInt? = 10
     
     /// Attach standard streams to a TTY, including stdin if it is not closed.
-    public let tty: Bool = false
+    public var tty: Bool = false
     
     /// The user that commands are run as inside the container.
-    public let user: String = ""
+    public var user: String = ""
     
     /// An object mapping mount point paths inside the container to empty objects.
-    public let volumes: [String:EmptyObject]? = [:]
+    public var volumes: [String:EmptyObject]? = [:]
     
     /// The working directory for commands to run in.
-    public let workingDir: String = ""
+    public var workingDir: String = ""
     
     enum CodingKeys: String, CodingKey {
         case attachStderr = "AttachStderr"

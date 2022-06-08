@@ -74,7 +74,6 @@ extension DockerClient {
             )
         }
         
-        
         /// Deletes all unused images.
         /// - Parameter all: When set to `true`, prune only unused and untagged images. When set to `false`, all unused images are pruned.
         /// - Throws: Errors that can occur when executing the request.
@@ -88,10 +87,11 @@ extension DockerClient {
         }
         
         public struct PrunedImages {
+            /// IDs of the images that got deleted.
             let imageIds: [Identifier<Image>]
             
-            /// Disk space reclaimed in bytes
-            let reclaimedSpace: Int
+            /// Disk space reclaimed in bytes.
+            let reclaimedSpace: UInt64
         }
     }
 }

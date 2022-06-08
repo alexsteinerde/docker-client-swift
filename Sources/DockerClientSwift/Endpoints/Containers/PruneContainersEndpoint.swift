@@ -17,6 +17,6 @@ struct PruneContainersEndpoint: Endpoint {
     
     struct PruneContainersResponse: Codable {
         let ContainersDeleted: [String]?
-        let SpaceReclaimed: Int
+        let SpaceReclaimed: UInt64
     }
 }
