@@ -136,7 +136,7 @@ Remote daemon via HTTPS and client certificate:
   
   Add `all: true` to also return stopped containers.
   ```swift
-  let containers = try await client.containers.list()
+  let containers = try await docker.containers.list()
   ```
 </details>
 
@@ -144,7 +144,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>Get a container details</summary>
   
   ```swift
-  let container = try await client.containers.get("xxxxxxx")
+  let container = try await docker.containers.get("xxxxxxx")
   ```
 </details>
 
@@ -152,8 +152,8 @@ Remote daemon via HTTPS and client certificate:
   <summary>Create a container: basic</summary>
   
   ```swift
-  let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-  let id = try await client.containers.create(image: image)
+  let image = try await docker.images.pullImage(byName: "hello-world", tag: "latest")
+  let id = try await docker.containers.create(image: image)
   ```
 </details>
 
@@ -170,7 +170,7 @@ Remote daemon via HTTPS and client certificate:
           ...
       )
   )
-  let id = try await client.containers.create(name: "test", spec: spec)
+  let id = try await docker.containers.create(name: "test", spec: spec)
   ```
 </details>
 
