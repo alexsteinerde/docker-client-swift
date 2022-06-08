@@ -131,6 +131,47 @@ Remote daemon via HTTPS and client certificate:
  
 ### Containers
 
+<details>
+  <summary>List containers</summary>
+  Add `all: true` to also return stopped containers.
+  ```swift
+  let containers = try await client.containers.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a container details</summary>
+  
+  ```swift
+  let container = try await client.containers.get("xxxxxxx")
+  ```
+</details>
+
+<details>
+  <summary>Create a container: basic</summary>
+  
+  ```swift
+  let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+  let id = try await client.containers.create(image: image)
+  ```
+</details>
+
+<details>
+  <summary>Create a container: advanced</summary>
+  
+  ```swift
+  let spec = ContainerCreate(
+      config: ContainerConfig(
+          image: "hello-world:latest",
+          ...
+      ),
+      hostConfig: ContainerHostConfig(
+          ...
+      )
+  )
+  let id = try await client.containers.create(name: "test", spec: spec)
+  ```
+</details>
 
 ### Images
 

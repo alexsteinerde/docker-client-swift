@@ -16,8 +16,8 @@ final class ContainerTests: XCTestCase {
     
     func testCreateContainers() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let container = try await client.containers.create(image: image)
-
+        let id = try await client.containers.create(image: image)
+        let container = try await client.containers.get(id)
         XCTAssertEqual(container.config.cmd, ["/hello"])
     }
     
@@ -43,17 +43,17 @@ final class ContainerTests: XCTestCase {
     
     func testInspectContainer() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let container = try await client.containers.create(image: image)
+        let id = try await client.containers.create(image: image)
+        let inspectedContainer = try await client.containers.get(id)
         
-        let inspectedContainer = try await client.containers.get(container.id)
-        
-        XCTAssertEqual(inspectedContainer.id, container.id)
+        XCTAssertEqual(inspectedContainer.id, id)
         XCTAssertEqual(inspectedContainer.config.cmd, ["/hello"])
     }
     
     func testStartingContainerAndRetrievingLogs() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let container = try await client.containers.create(image: image)
+        let id = try await client.containers.create(image: image)
+        let container = try await client.containers.get(id)
         try await container.start(on: client)
         
         var output = ""
@@ -92,7 +92,8 @@ final class ContainerTests: XCTestCase {
     
     func testPruneContainers() async throws {
         let image = try await client.images.pullImage(byName: "nginx", tag: "latest")
-        let container = try await client.containers.create(image: image)
+        let id = try await client.containers.create(image: image)
+        let container = try await client.containers.get(id)
         try await container.start(on: client)
         try await container.stop(on: client)
         

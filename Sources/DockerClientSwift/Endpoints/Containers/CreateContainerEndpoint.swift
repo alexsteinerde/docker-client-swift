@@ -1,6 +1,6 @@
 import NIOHTTP1
 
-struct CreateContainerEndpoint: Endpoint {
+struct SimpleCreateContainerEndpoint: Endpoint {
     var body: CreateContainerBody?
     
     typealias Response = CreateContainerResponse
@@ -10,7 +10,7 @@ struct CreateContainerEndpoint: Endpoint {
     private let imageName: String
     private let commands: [String]?
     
-    init(imageName: String, commands: [String]?=nil) {
+    init(imageName: String, commands: [String]? = nil) {
         self.imageName = imageName
         self.commands = commands
         self.body = .init(Image: imageName, Cmd: commands)
@@ -30,7 +30,7 @@ struct CreateContainerEndpoint: Endpoint {
     }
 }
 
-struct CreateContainerEndpoint2: Endpoint {
+struct CreateContainerEndpoint: Endpoint {
     typealias Response = CreateContainerResponse
     typealias Body = ContainerCreate
     var method: HTTPMethod = .POST
