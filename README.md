@@ -133,6 +133,7 @@ Remote daemon via HTTPS and client certificate:
 
 <details>
   <summary>List containers</summary>
+  
   Add `all: true` to also return stopped containers.
   ```swift
   let containers = try await client.containers.list()
