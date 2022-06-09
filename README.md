@@ -26,14 +26,14 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | 🚧       | refactoring |
 |                             | Get logs                | 🚧       | refactoring |
 |                             | Prune                   | ✅       |             |
-|                             | Attach                  | ❌       |             |
-|                             | Exec                    | ❌       |             |
+|                             | Attach                  | ❌       |      TBD    |
+|                             | Exec                    | ❌       |  unlikely           |
 | Images                      | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
-|                             | Build                   | ❌       |             |
-|                             | Tag                     | ❌       |             |
-|                             | Push                    | ❌       |             |
+|                             | Build                   | ❌       |      TBD       |
+|                             | Tag                     | ❌       |      TBD       |
+|                             | Push                    | ❌       |      TBD       |
 |                             | Create from container (commit)   | ❌       |             |
 |                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
@@ -48,22 +48,22 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Services                    | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
-|                             | Get logs                | ❌       |             |
+|                             | Get logs                | ❌       |    TBD         |
 |                             | Update                  | 🚧       | refactoring |
 |                             | Delete                  | ✅       |             |
-| Networks                    |                         | ❌       |             |
+| Networks                    |                         | ❌       |    TBD         |
 |                             |                         |         |             |
-| Volumes                     |                         | ❌       |             |
+| Volumes                     |                         | ❌       |     TBD        |
 |                             |                         |         |             |
-| Secrets                     |                         | ❌       |             |
+| Secrets                     |                         | ❌       |     TBD        |
 |                             |                         |         |             |
-| Configs                     |                         | ❌       |             |
+| Configs                     |                         | ❌       |   TBD          |
 |                             |                         |         |             |
-| Tasks                       |                         | ❌       |             |
+| Tasks                       |                         | ❌       |    TBD         |
 |                             |                         |         |             |
-| Plugins                     |                         | ❌       |             |
+| Plugins                     |                         | ❌       |    TBD         |
 |                             |                         |         |             |
-| Registries                  |                         | ❌       |             |
+| Registries                  |                         | ❌       |     TBD        |
 |                             |                         |         |             |
 
 
