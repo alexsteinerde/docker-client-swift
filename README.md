@@ -74,13 +74,13 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-    .package(url: "https://github.com/nuw-run/docker-client-swift.git", .branch("main")),
+        .package(url: "https://github.com/nuw-run/docker-client-swift.git", .branch("main")),
     ],
     targets: [
-    .target(name: "App", dependencies: [
-        ...
-        .product(name: "DockerClientSwift", package: "docker-client-swift")
-    ]),
+        .target(name: "App", dependencies: [
+            ...
+            .product(name: "DockerClientSwift", package: "docker-client-swift")
+        ]),
     ...
     ]
 )
@@ -182,8 +182,8 @@ Remote daemon via HTTPS and client certificate:
       config: ContainerConfig(image: "hello-world:latest"),
       hostConfig: ContainerHostConfig()
   )
-  let id = try await client.containers.create(name: "tests", spec: spec)
-  try await client.containers.start(id)
+  let id = try await docker.containers.create(name: "tests", spec: spec)
+  try await docker.containers.start(id)
   ```
 </details>
 
@@ -200,7 +200,7 @@ Remote daemon via HTTPS and client certificate:
   
   If the container is running, deletion can be forced by passing `force: true` 
   ```swift
-  try await client.containers.remove("xxxxxxx")
+  try await docker.containers.remove("xxxxxxx")
   ```
 </details>
 
@@ -209,9 +209,9 @@ Remote daemon via HTTPS and client certificate:
   
   Logs are streamed progressively in an asynchronous way.
   ```swift
-  let container = try await client.containers.get(id)
+  let container = try await docker.containers.get(id)
         
-  for try await line in try await client.containers.logs(container: container, timestamps: true) {
+  for try await line in try await docker.containers.logs(container: container, timestamps: true) {
       print(line.message + "\n")
   }
   ```
@@ -275,6 +275,14 @@ Remote daemon via HTTPS and client certificate:
 
 
 ### Services
+
+<details>
+  <summary>List services</summary>
+  
+  ```swift
+  let services = try await docker.services.list()
+  ```
+</details>
 
 ### Networks
 
