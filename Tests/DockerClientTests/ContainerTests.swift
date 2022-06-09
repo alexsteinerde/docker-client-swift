@@ -54,7 +54,7 @@ final class ContainerTests: XCTestCase {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         let id = try await client.containers.create(image: image)
         let container = try await client.containers.get(id)
-        try await container.start(on: client)
+        try await client.containers.start(id)
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
@@ -93,15 +93,14 @@ final class ContainerTests: XCTestCase {
     func testPruneContainers() async throws {
         let image = try await client.images.pullImage(byName: "nginx", tag: "latest")
         let id = try await client.containers.create(image: image)
-        let container = try await client.containers.get(id)
-        try await container.start(on: client)
-        try await container.stop(on: client)
+        try await client.containers.start(id)
+        try await client.containers.stop(id)
         
         let pruned = try await client.containers.prune()
         
         let containers = try await client.containers.list(all: true)
-        XCTAssert(!containers.map(\.id).contains(container.id))
+        XCTAssert(!containers.map(\.id).contains(id))
         XCTAssert(pruned.reclaimedSpace > 0)
-        XCTAssert(pruned.containersIds.contains(container.id))
+        XCTAssert(pruned.containersIds.contains(id))
     }
 }

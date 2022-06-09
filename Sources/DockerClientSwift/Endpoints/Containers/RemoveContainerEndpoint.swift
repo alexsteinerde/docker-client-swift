@@ -7,12 +7,16 @@ struct RemoveContainerEndpoint: Endpoint {
     var method: HTTPMethod = .DELETE
     
     private let containerId: String
+    private let force: Bool
+    private let removeAnonymousVolumes: Bool
     
-    init(containerId: String) {
+    init(containerId: String, force: Bool, removeAnonymousVolumes: Bool) {
         self.containerId = containerId
+        self.force = force
+        self.removeAnonymousVolumes = removeAnonymousVolumes
     }
     
     var path: String {
-        "containers/\(containerId)"
+        "containers/\(containerId)?force=\(force)&v=\(removeAnonymousVolumes)"
     }
 }

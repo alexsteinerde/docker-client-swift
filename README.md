@@ -174,6 +174,49 @@ Remote daemon via HTTPS and client certificate:
   ```
 </details>
 
+<details>
+  <summary>Create and start a container</summary>
+  
+  ```swift
+  let spec = ContainerCreate(
+      config: ContainerConfig(image: "hello-world:latest"),
+      hostConfig: ContainerHostConfig()
+  )
+  let id = try await client.containers.create(name: "tests", spec: spec)
+  try await client.containers.start(id)
+  ```
+</details>
+
+<details>
+  <summary>Stop a container</summary>
+  
+  ```swift
+  try await client.containers.stop("xxxxxxx")
+  ```
+</details>
+
+<details>
+  <summary>Delete a container</summary>
+  
+  If the container is running, deletion can be forced by passing `force: true` 
+  ```swift
+  try await client.containers.remove("xxxxxxx")
+  ```
+</details>
+
+<details>
+  <summary>Get container logs</summary>
+  
+  Logs are streamed progressively in an asynchronous way.
+  ```swift
+  let container = try await client.containers.get(id)
+        
+  for try await line in try await client.containers.logs(container: container, timestamps: true) {
+      print(line.message + "\n")
+  }
+  ```
+</details>
+
 ### Images
 
 <details>
