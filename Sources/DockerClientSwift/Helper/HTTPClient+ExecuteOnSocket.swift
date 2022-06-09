@@ -40,12 +40,12 @@ extension HTTPClient {
         request.method = method
         request.body = body
         
-        let response = try await self.execute(request, timeout: timeout)
+        let response = try await self.execute(request, timeout: timeout, logger: logger)
         //let response = try await self.execute(request, deadline: deadline ?? .now() + TimeAmount.seconds(10), logger: logger)
         return response.body
     }
     
-    internal func executeStream2(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: HTTPClientRequest.Body? = nil, tlsConfig: TLSConfiguration?, timeout: TimeAmount, logger: Logger, headers: HTTPHeaders) async throws -> AsyncThrowingStream<Data, Error> {
+    internal func executeStream2(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: HTTPClientRequest.Body? = nil, tlsConfig: TLSConfiguration?, timeout: TimeAmount, logger: Logger, headers: HTTPHeaders) async throws -> AsyncThrowingStream<ByteBuffer, Error> {
         
         guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {
             throw HTTPClientError.invalidURL
@@ -56,13 +56,13 @@ extension HTTPClient {
         request.method = method
         request.body = body
         
-        let response = try await self.execute(request, timeout: timeout)
+        let response = try await self.execute(request, timeout: timeout, logger: logger)
         let body = response.body
-        return AsyncThrowingStream<Data, Error> { continuation in
+        return AsyncThrowingStream<ByteBuffer, Error> { continuation in
             _Concurrency.Task {
                 for try await buffer in body {
-                    let data = Data(buffer: buffer)
-                    continuation.yield(data)
+                    //let data = Data(buffer: buffer)
+                    continuation.yield(buffer)
                 }
                 continuation.finish()
             }
