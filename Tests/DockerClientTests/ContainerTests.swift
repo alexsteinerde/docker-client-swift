@@ -58,8 +58,9 @@ final class ContainerTests: XCTestCase {
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
+            XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
+            XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
             output += line.message
-            print(">> \(line)")
         }
         // arm64v8 or amd64
         XCTAssertEqual(
