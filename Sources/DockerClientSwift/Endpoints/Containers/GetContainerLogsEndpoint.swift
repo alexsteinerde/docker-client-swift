@@ -1,10 +1,11 @@
+import NIO
 import NIOHTTP1
 import Foundation
 import AsyncHTTPClient
 
-class GetContainerLogsEndpoint: StreamingEndpoint {   
+class GetContainerLogsEndpoint: StreamingEndpoint {
     typealias Body = NoBody
-    typealias Response = HTTPClientResponse.Body
+    typealias Response = AsyncThrowingStream<ByteBuffer, Error>
     
     var method: HTTPMethod = .GET
     

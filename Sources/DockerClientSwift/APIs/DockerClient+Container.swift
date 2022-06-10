@@ -111,13 +111,15 @@ extension DockerClient {
                             var msgSource = DockerLogEntry.Source.stdout
                             // Each Log/Stream message is prefixed with a bytes header
                             if !container.config.tty {
-                                guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
-                                    continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                    return
-                                }
-                                msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
-                                let _ = buffer.readBytes(length: 3) // 3 unused bytes
+                            // TBD
                             }
+                            guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
+                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                                return
+                            }
+                            msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
+                            let _ = buffer.readBytes(length: 3) // 3 unused bytes
+                            
                             guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
@@ -166,6 +168,49 @@ extension DockerClient {
             }
         }
         
+        private func getNoTtyFormat(buffer: ByteBuffer, timestamps: Bool) throws -> DockerLogEntry {
+            guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
+                throw DockerLogDecodingError.dataCorrupted
+            }
+            msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
+            let _ = buffer.readBytes(length: 3) // 3 unused bytes
+            
+            guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
+                throw DockerLogDecodingError.dataCorrupted
+            }
+            
+            guard msgSize > 0 else {
+                throw DockerLogDecodingError.noMessageFound
+            }
+            if buffer.readableBytes < msgSize {
+                // TODO: does this happen during normal logs streaming behavior?
+                print("\n💣💣💣💣💣💣 readable bytes (\(buffer.readableBytes) are less than msgSize (\(msgSize)!")
+                throw DockerLogDecodingError.dataCorrupted
+            }
+            
+            var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)
+            if timestamps {
+                guard let timestampRaw = msgBuffer.readString(length: timestampLen, encoding: .utf8) else {
+                    continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
+                    return
+                }
+                guard let timestampTry = formatter.date(from: String(timestampRaw)) else {
+                    continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
+                    return
+                }
+                timestamp = timestampTry
+            }
+            guard let message = msgBuffer.readString(length: Int(msgSize - UInt32(timestampLen)), encoding: .utf8) else {
+                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                return
+            }
+            
+            return DockerLogEntry(
+                source: msgSource,
+                timestamp: timestamp,
+                message: message
+            )            
+        }
         
         /// Fetches the latest information about a container by a given name or id..
         /// - Parameter nameOrId: Name or id of a container.
