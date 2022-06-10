@@ -108,12 +108,16 @@ extension DockerClient {
                                 continuation.finish()
                             }
                             
-                            // Each Log/Stream message is prefixed with an 8 bytes header
-                            guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
-                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                return
+                            var msgSource = DockerLogEntry.Source.stdout
+                            // Each Log/Stream message is prefixed with a bytes header
+                            if !container.config.tty {
+                                guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
+                                    continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                                    return
+                                }
+                                msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
+                                let _ = buffer.readBytes(length: 3) // 3 unused bytes
                             }
-                            let _ = buffer.readBytes(length: 3) // 3 unused bytes
                             guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
@@ -149,7 +153,7 @@ extension DockerClient {
                             
                             continuation.yield(
                                 DockerLogEntry(
-                                    source: DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout,
+                                    source: msgSource,
                                     timestamp: timestamp,
                                     message: message
                                 )
