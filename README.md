@@ -28,7 +28,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | ❌       |      TBD    |
 |                             | Rename                  | ❌       |      TBD    |
 |                             | Pause/Unpause           | ❌       |      TBD    |
-|                             | Get logs                | ✅       | refactoring |
+|                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
 |                             | Get process (top)       | ❌       |      TBD    |
 |                             | Prune                   | ✅       |             |

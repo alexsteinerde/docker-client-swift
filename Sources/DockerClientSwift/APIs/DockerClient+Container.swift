@@ -96,19 +96,19 @@ extension DockerClient {
             let timestampLen = timestamps ? 31 : 0//format.count
             let formatter = DateFormatter()
             formatter.dateFormat = format
-            // Each Log/Stream message is prefixed with an 8 bytes header
-            let headerSize: UInt32 = 8
             
             return AsyncThrowingStream<DockerLogEntry, Error> { continuation in
                 Task {
                     for try await var buffer in response {
-                        var timestamp = Date()
+                        var timestamp = Date.distantPast
                         let totalDataSize = buffer.readableBytes
                         
                         while buffer.readerIndex < totalDataSize {
                             if buffer.readableBytes == 0 {
                                 continuation.finish()
                             }
+                            
+                            // Each Log/Stream message is prefixed with an 8 bytes header
                             guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
@@ -118,6 +118,7 @@ extension DockerClient {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
+                            
                             guard msgSize > 0 else {
                                 continuation.finish(throwing: DockerLogDecodingError.noMessageFound)
                                 return
