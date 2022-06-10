@@ -125,7 +125,7 @@ extension DockerClient {
                             }
                             if buffer.readableBytes < msgSize {
                                 // TODO: does this happen during normal logs streaming behavior?
-                                print("\n💣💣💣💣💣💣 readable bytes are less than msgSize!")
+                                print("\n💣💣💣💣💣💣 readable bytes (\(buffer.readableBytes) are less than msgSize (\(msgSize)!")
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
