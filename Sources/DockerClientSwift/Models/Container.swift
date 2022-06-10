@@ -191,8 +191,8 @@ public struct Container: Codable {
         public let restarting: Bool
         
         /// The time when this container was last started.
-        @DateValue<ISO8601Strategy>
-        private(set)public var startedAt: Date
+        //@DateValue<ISO8601Strategy>
+        //private(set)public var startedAt: Date
         
         /// The time when this container last exited.
         //@DateValue<ISO8601Strategy>
@@ -211,7 +211,7 @@ public struct Container: Codable {
             case pid = "Pid"
             case running = "Running"
             case restarting = "Restarting"
-            case startedAt = "StartedAt"
+            //case startedAt = "StartedAt"
             case status = "Status"
         }
     }
