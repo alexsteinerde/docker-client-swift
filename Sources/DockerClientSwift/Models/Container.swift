@@ -16,7 +16,7 @@ public struct Container: Codable {
     public let hostConfig: ContainerHostConfig
     
     /// The time the container was created
-    //public let createdAt: Date
+    public let createdAt: Date
     
     /// The storage driver used to store the container's and image's filesystem.
     public let storageDriver: String
@@ -65,7 +65,7 @@ public struct Container: Codable {
         case appArmorProfile = "AppArmorProfile"
         case args = "Args"
         case config = "Config"
-        //case createdAt = "Created"
+        case createdAt = "Created"
         case storageDriver = "Driver"
         case execIDs = "ExecIDs"
         case graphDriver = "GraphDriver"
