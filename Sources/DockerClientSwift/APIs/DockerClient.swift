@@ -53,6 +53,12 @@ public class DockerClient {
         try client.syncShutdown()
     }
     
+    /// The client needs to be shutdown otherwise it can crash on exit.
+    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    public func shutdown() async throws {
+        try await client.shutdown()
+    }
+    
     /// Executes a request to a specific endpoint. The `Endpoint` struct provides all necessary data and parameters for the request.
     /// - Parameter endpoint: `Endpoint` instance with all necessary data and parameters.
     /// - Throws: It can throw an error when encoding the body of the `Endpoint` request to JSON.

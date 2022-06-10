@@ -21,10 +21,16 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
 |                             | Version                 | ✅       |             |
+|                             | Events                  | ❌       |      TBD    |
 | Containers                  | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
+|                             | Update                  | ❌       |      TBD    |
+|                             | Rename                  | ❌       |      TBD    |
+|                             | Pause/Unpause           | ❌       |      TBD    |
 |                             | Get logs                | 🚧       | refactoring |
+|                             | Get stats               | ❌       |      TBD    |
+|                             | Get process (top)       | ❌       |      TBD    |
 |                             | Prune                   | ✅       |             |
 |                             | Attach                  | ❌       |      TBD    |
 |                             | Exec                    | ❌       |  unlikely           |

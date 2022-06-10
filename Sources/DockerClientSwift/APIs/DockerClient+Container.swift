@@ -75,7 +75,7 @@ extension DockerClient {
         ///   - tail: number of last existing log lines to return. Default: all.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  a  sequence of `LogEntry`.
-        public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
+        public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil, since: Date = .distantPast, until: Date = .distantFuture) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
             let response = try await client.run(
                 GetContainerLogsEndpoint(
                     containerId: container.id,
@@ -83,51 +83,84 @@ extension DockerClient {
                     stderr: stdErr,
                     timestamps: timestamps,
                     follow: follow,
-                    tail: tail == nil ? "all" : "\(tail!)"
+                    tail: tail == nil ? "all" : "\(tail!)",
+                    since: since,
+                    until: until
                 ),
+                // Arbitrary timeouts.
+                // TODO: should probably make these configurable
                 timeout: follow ? .hours(24) : .seconds(30)
             )
             
             let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
-            let timestampLen = 31 //format.count
+            let timestampLen = timestamps ? 31 : 0//format.count
             let formatter = DateFormatter()
             formatter.dateFormat = format
+            // Each Log/Stream message is prefixed with an 8 bytes header
+            let headerSize: UInt32 = 8
             
             return AsyncThrowingStream<DockerLogEntry, Error> { continuation in
                 Task {
-                    for try await buffer in response {
-                        let data = Data(buffer: buffer)
-                        for var line in data.split(separator: 10 /* ascii 10 = \n */) {
-                            if !container.config.tty {
-                                line = line.dropFirst(8)
+                    for try await var buffer in response {
+                        var timestamp = Date()
+                        let totalDataSize = buffer.readableBytes
+                        
+                        while buffer.readerIndex < totalDataSize {
+                            if buffer.readableBytes == 0 {
+                                continuation.finish()
                             }
-                            let message = Data(line)
-                            guard let string = String(data: message, encoding: .utf8) else {
+                            guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
                                 continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
-                            //let splat = string.split(separator: " ")
-                            
-                            
-                            let timestampRaw = string.prefix(timestampLen - 1) /*else {
-                                continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
-                                return
-                            }*/
-                            guard let timestamp = formatter.date(from: String(timestampRaw)) else {
-                                continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
+                            let _ = buffer.readBytes(length: 3) // 3 unused bytes
+                            guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
+                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
                                 return
                             }
-                            let logMessage = String(string.suffix(string.count - timestampLen))
+                            guard msgSize > 0 else {
+                                continuation.finish(throwing: DockerLogDecodingError.noMessageFound)
+                                return
+                            }
+                            if buffer.readableBytes < msgSize {
+                                // TODO: does this happen during normal logs streaming behavior?
+                                print("\n💣💣💣💣💣💣 readable bytes are less than msgSize!")
+                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                                return
+                            }
+                            
+                            var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)
+                            if timestamps {
+                                guard let timestampRaw = msgBuffer.readString(length: timestampLen, encoding: .utf8) else {
+                                    continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
+                                    return
+                                }
+                                guard let timestampTry = formatter.date(from: String(timestampRaw)) else {
+                                    continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
+                                    return
+                                }
+                                timestamp = timestampTry
+                            }
+                            guard let message = msgBuffer.readString(length: Int(msgSize - UInt32(timestampLen)), encoding: .utf8) else {
+                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
+                                return
+                            }
                             
                             continuation.yield(
-                                DockerLogEntry(source: .stdout, timestamp: timestamp, message: logMessage)
+                                DockerLogEntry(
+                                    source: DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout,
+                                    timestamp: timestamp,
+                                    message: message
+                                )
                             )
                         }
                     }
+                    
                     continuation.finish()
                 }
             }
         }
+        
         
         /// Fetches the latest information about a container by a given name or id..
         /// - Parameter nameOrId: Name or id of a container.

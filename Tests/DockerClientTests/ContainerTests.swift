@@ -58,7 +58,8 @@ final class ContainerTests: XCTestCase {
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
-            output += line.message + "\n"
+            output += line.message
+            print(">> \(line)")
         }
         // arm64v8 or amd64
         XCTAssertEqual(
@@ -85,6 +86,7 @@ final class ContainerTests: XCTestCase {
         
         For more examples and ideas, visit:
          https://docs.docker.com/get-started/
+        
         
         """
         )

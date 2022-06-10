@@ -4,10 +4,11 @@ public struct DockerLogEntry: Codable {
     public let source: Source
     public let timestamp: Date
     public let message: String
-    public var eof: Bool = false
     
-    public enum Source: String, Codable {
-        case stdout, stderr
+    public enum Source: UInt8, Codable {
+        case stdin = 0
+        case stdout = 1
+        case stderr = 2
     }
 }
 
