@@ -78,8 +78,11 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 
 
 ✅ : done or _mostly_ done
+
 🚧 : work in progress, partially implemented, might not work
+
 ❌ : not implemented/supported at the moment.
+
 
 ## Installation
 ### Package.swift 
