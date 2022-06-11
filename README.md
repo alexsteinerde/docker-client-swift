@@ -67,9 +67,10 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |         |             |
 | Configs                     |                         | ❌       |   TBD          |
 |                             |                         |         |             |
-| Tasks                       |                         | ❌       |    TBD         |
+| Tasks                       | List                    | ❌       |    TBD         |
+|                             | Inspect                 | ❌       |    TBD     |
 |                             | Get logs                | 🚧       |             |
-|                             |                         |         |             |
+|                             |                         |          |             |
 | Plugins                     |                         | ❌       |    TBD         |
 |                             |                         |         |             |
 | Registries                  |                         | ❌       |     TBD        |
