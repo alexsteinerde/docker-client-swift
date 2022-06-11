@@ -42,7 +42,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Build                   | ❌       |      TBD       |
 |                             | Tag                     | ❌       |      TBD       |
 |                             | Push                    | ❌       |      TBD       |
-|                             | Create from container (commit)   | ❌       |             |
+|                             | Create (container commit)   | ❌       |             |
 |                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |
