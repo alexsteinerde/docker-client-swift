@@ -89,7 +89,13 @@ public struct SystemInformation: Codable {
     /// The logging driver to use as a default for new containers.
     let loggingDriver: String
     
-    let cgroupDriver, cgroupVersion: String
+    /// The cgroup driver the daemon is using; cgroupfs or systemd.
+    /// Returns `none` when the daemon is running in rootless mode
+    let cgroupDriver: String
+    
+    /// The cgroup version
+    let cgroupVersion: String?
+    
     let nEventsListener: Int
     let kernelVersion, operatingSystem, osVersion, osType: String
     

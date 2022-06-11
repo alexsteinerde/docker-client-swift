@@ -30,10 +30,10 @@ public struct ContainerHostConfig: Codable {
     public var blkioDeviceWriteIOps: BlkioRateLimit? = nil
     
     /// A list of kernel capabilities to add to the container. Conflicts with option 'Capabilities'.
-    public var capAdd: [String]? = nil
+    public var capabilityAdd: [String]? = nil
     
     /// A list of kernel capabilities to drop from the container. Conflicts with option 'Capabilities'.
-    public var capDrop: [String]? = nil
+    public var capabilityDrop: [String]? = nil
     
     /// Cgroup to use for the container.
     public var cgroup: String = ""
@@ -239,8 +239,8 @@ public struct ContainerHostConfig: Codable {
         case blkioDeviceWriteBps = "BlkioDeviceWriteBps"
         case blkioDeviceReadIOps = "BlkioDeviceReadIOps"
         case blkioDeviceWriteIOps = "BlkioDeviceWriteIOps"
-        case capAdd = "CapAdd"
-        case capDrop = "CapDrop"
+        case capabilityAdd = "CapAdd"
+        case capabilityDrop = "CapDrop"
         case cgroup = "Cgroup"
         case cgroupNsMode = "CgroupnsMode"
         case cgroupParent = "CgroupParent"
