@@ -300,6 +300,7 @@ Remote daemon via HTTPS and client certificate:
 
 
 ### Services
+Note: Must be connected to a manager node.
 
 <details>
   <summary>List services</summary>
