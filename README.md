@@ -23,7 +23,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Version                 | ✅       |             |
 |                             | Events                  | ❌       |      TBD    |
 | Containers                  | List                    | 🚧       | refactoring |
-|                             | Inspect                 | 🚧       | refactoring |
+|                             | Inspect                 | ✅       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Update                  | ❌       |      TBD    |
 |                             | Rename                  | ❌       |      TBD    |

@@ -89,94 +89,62 @@ extension DockerClient {
                 ),
                 // Arbitrary timeouts.
                 // TODO: should probably make these configurable
-                timeout: follow ? .hours(24) : .seconds(30)
+                timeout: follow ? .hours(12) : .seconds(30)
             )
             
             let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
-            let timestampLen = timestamps ? 31 : 0//format.count
             let formatter = DateFormatter()
             formatter.dateFormat = format
             
             return AsyncThrowingStream<DockerLogEntry, Error> { continuation in
                 Task {
                     for try await var buffer in response {
-                        var timestamp = Date.distantPast
                         let totalDataSize = buffer.readableBytes
-                        
                         while buffer.readerIndex < totalDataSize {
                             if buffer.readableBytes == 0 {
                                 continuation.finish()
                             }
-                            
-                            var msgSource = DockerLogEntry.Source.stdout
-                            // Each Log/Stream message is prefixed with a bytes header
-                            if !container.config.tty {
-                            // TBD
-                            }
-                            guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
-                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                return
-                            }
-                            msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
-                            let _ = buffer.readBytes(length: 3) // 3 unused bytes
-                            
-                            guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
-                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                return
-                            }
-                            
-                            guard msgSize > 0 else {
-                                continuation.finish(throwing: DockerLogDecodingError.noMessageFound)
-                                return
-                            }
-                            if buffer.readableBytes < msgSize {
-                                // TODO: does this happen during normal logs streaming behavior?
-                                print("\n💣💣💣💣💣💣 readable bytes (\(buffer.readableBytes) are less than msgSize (\(msgSize)!")
-                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                return
-                            }
-                            
-                            var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)
-                            if timestamps {
-                                guard let timestampRaw = msgBuffer.readString(length: timestampLen, encoding: .utf8) else {
-                                    continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
+                            if container.config.tty {
+                                do {
+                                    for entry in try getEntryTty(buffer: &buffer, timestamps: timestamps, formatter: formatter) {
+                                        continuation.yield(entry)
+                                    }
+                                }
+                                catch(let error) {
+                                    continuation.finish(throwing: error)
                                     return
                                 }
-                                guard let timestampTry = formatter.date(from: String(timestampRaw)) else {
-                                    continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
+                            }
+                            else {
+                                do {
+                                    let entry = try getEntryNoTty(buffer: &buffer, timestamps: timestamps, formatter: formatter)
+                                    continuation.yield(entry)
+                                }
+                                catch (let error) {
+                                    continuation.finish(throwing: error)
                                     return
                                 }
-                                timestamp = timestampTry
+                                
                             }
-                            guard let message = msgBuffer.readString(length: Int(msgSize - UInt32(timestampLen)), encoding: .utf8) else {
-                                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                                return
-                            }
-                            
-                            continuation.yield(
-                                DockerLogEntry(
-                                    source: msgSource,
-                                    timestamp: timestamp,
-                                    message: message
-                                )
-                            )
                         }
                     }
-                    
                     continuation.finish()
                 }
             }
         }
         
-        private func getNoTtyFormat(buffer: ByteBuffer, timestamps: Bool) throws -> DockerLogEntry {
+        /// Extracts a log entry/line for a container not having a TTY
+        private func getEntryNoTty(buffer: inout ByteBuffer, timestamps: Bool, formatter: DateFormatter) throws -> DockerLogEntry {
+            let timestampLen = timestamps ? 31 : 0
+
             guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
-                throw DockerLogDecodingError.dataCorrupted
+                throw DockerLogDecodingError.dataCorrupted("Unable to read log entry source stream header")
             }
-            msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
+            let msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
             let _ = buffer.readBytes(length: 3) // 3 unused bytes
             
             guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
-                throw DockerLogDecodingError.dataCorrupted
+                throw DockerLogDecodingError.dataCorrupted("Unable to read log size header")
             }
             
             guard msgSize > 0 else {
@@ -184,32 +152,55 @@ extension DockerClient {
             }
             if buffer.readableBytes < msgSize {
                 // TODO: does this happen during normal logs streaming behavior?
-                print("\n💣💣💣💣💣💣 readable bytes (\(buffer.readableBytes) are less than msgSize (\(msgSize)!")
-                throw DockerLogDecodingError.dataCorrupted
+                throw DockerLogDecodingError.dataCorrupted("Readable bytes (\(buffer.readableBytes) are less than msgSize (\(msgSize))")
             }
             
+            var timestamp: Date? = nil
             var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)
             if timestamps {
                 guard let timestampRaw = msgBuffer.readString(length: timestampLen, encoding: .utf8) else {
-                    continuation.finish(throwing: DockerLogDecodingError.noTimestampFound)
-                    return
+                    throw DockerLogDecodingError.noTimestampFound
                 }
                 guard let timestampTry = formatter.date(from: String(timestampRaw)) else {
-                    continuation.finish(throwing: DockerLogDecodingError.timestampCorrupted)
-                    return
+                    throw DockerLogDecodingError.timestampCorrupted
                 }
                 timestamp = timestampTry
             }
-            guard let message = msgBuffer.readString(length: Int(msgSize - UInt32(timestampLen)), encoding: .utf8) else {
-                continuation.finish(throwing: DockerLogDecodingError.dataCorrupted)
-                return
+            guard let message = msgBuffer.readString(length: msgBuffer.readableBytes - 1, encoding: .utf8) else {
+                throw  DockerLogDecodingError.dataCorrupted("Unable to parse log message as String")
             }
             
-            return DockerLogEntry(
-                source: msgSource,
-                timestamp: timestamp,
-                message: message
-            )            
+            return DockerLogEntry(source: msgSource, timestamp: timestamp, message: message)
+        }
+        
+        /// Extracts a log entry/line for a container having a TTY
+        private func getEntryTty(buffer: inout ByteBuffer, timestamps: Bool, formatter: DateFormatter) throws -> [DockerLogEntry] {
+            let timestampLen = timestamps ? 31 : 0
+            //let data = Data(buffer: buffer)
+            let data = buffer.readData(length: buffer.readableBytes)!
+            let lines = data.split(separator: 10 /* ascii code for \n */)
+            var logEntries: [DockerLogEntry] = []
+            for line in lines {
+                var timestamp: Date? = nil
+                var msgBuffer = ByteBuffer(data: line)
+                if timestamps {
+                    guard let timestampRaw = msgBuffer.readString(length: timestampLen, encoding: .utf8) else {
+                        throw DockerLogDecodingError.noTimestampFound
+                    }
+                    guard let timestampTry = formatter.date(from: String(timestampRaw)) else {
+                        throw DockerLogDecodingError.timestampCorrupted
+                    }
+                    timestamp = timestampTry
+                }
+                guard let message = msgBuffer.readString(length: msgBuffer.readableBytes - 1, encoding: .utf8) else {
+                    throw  DockerLogDecodingError.dataCorrupted("Unable to parse log message as String")
+                }
+                
+                logEntries.append(
+                    DockerLogEntry(source: .stdout, timestamp: timestamp, message: message)
+                )
+            }
+            return logEntries
         }
         
         /// Fetches the latest information about a container by a given name or id..

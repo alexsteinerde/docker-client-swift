@@ -2,7 +2,10 @@ import Foundation
 
 public struct DockerLogEntry: Codable {
     public let source: Source
-    public let timestamp: Date
+    
+    /// Only set if the logs are read witb the `timestamp` option set to `true`
+    public let timestamp: Date?
+    
     public let message: String
     
     public enum Source: UInt8, Codable {
@@ -13,7 +16,7 @@ public struct DockerLogEntry: Codable {
 }
 
 enum DockerLogDecodingError: Error {
-    case dataCorrupted
+    case dataCorrupted(_ message: String)
     case timestampCorrupted
     case noTimestampFound
     case noMessageFound
