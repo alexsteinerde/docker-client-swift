@@ -2,7 +2,7 @@ import Foundation
 
 public struct ContainerHostConfig: Codable {
     
-    /// whether to automatically delete the container when iftexits.
+    /// Whether to automatically delete the container when it exits.
     public var autoRemove: Bool = false
     
     /// A list of volume bindings for this container. Each volume binding is a string in one of these forms:

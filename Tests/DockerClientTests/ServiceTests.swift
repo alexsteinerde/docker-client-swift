@@ -25,26 +25,40 @@ final class ServiceTests: XCTestCase {
         XCTAssert(services.count >= 1)
     }
     
-    func testUpdateService() async throws {
+    /*func testUpdateService() async throws {
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
         let updatedService = try await client.services.update(service: service, newImage: Image(id: "nginx:latest"))
         
         XCTAssertTrue(updatedService.version > service.version)
-    }
+    }*/
     
     func testInspectService() async throws {
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
-        XCTAssertNoThrow(Task(priority: .medium) {try await client.services.get(serviceByNameOrId: service.id.value) })
-        XCTAssertEqual(service.name, name)
+        XCTAssertNoThrow(Task(priority: .medium) {try await client.services.get(serviceByNameOrId: service.id) })
+        XCTAssertEqual(service.spec.name, name)
     }
     
     func testCreateService() async throws {
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
         
-        XCTAssertEqual(service.name, name)
+        XCTAssertEqual(service.spec.name, name)
+    }
+    
+    func testGetServiceLogs() async throws {
+        try await client.images.pullImage(byName: "nginx", tag: "latest")
+        let name = UUID().uuidString
+        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
+        var output = ""
+        try await Task.sleep(nanoseconds: 5_000_000_000) // wait until service is running and Nginx has produced logs
+        for try await line in try await client.services.logs(service: service, timestamps: true) {
+            //print("\n>>> LOG: \(line)")
+            XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
+            //XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
+            output += line.message + "\n"
+        }
     }
     
     func textZzzLeaveSwarm() async throws {

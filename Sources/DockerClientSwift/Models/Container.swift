@@ -150,8 +150,8 @@ public struct Container: Codable {
         /// Whether the mount is mounted writable (read-write).
         public let rw: Bool
         
-        ///Propagation describes how mounts are propagated from the host into the mount point, and vice-versa.
-        ///Refer to the Linux kernel documentation for details. This field is not used on Windows.
+        /// Describes how mounts are propagated from the host into the mount point, and vice-versa.
+        /// Refer to the Linux kernel documentation for details. This field is not used on Windows.
         public let propagation: String
         
         enum CodingKeys: String, CodingKey {
@@ -164,7 +164,6 @@ public struct Container: Codable {
             case rw = "RW"
             case propagation = "Propagation"
         }
-        
     }
     
     public struct State: Codable {

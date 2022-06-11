@@ -3,7 +3,7 @@ import NIOHTTP1
 
 struct InspectServiceEndpoint: Endpoint {
     typealias Body = NoBody
-    typealias Response = Service.ServiceResponse
+    typealias Response = Service
     var method: HTTPMethod = .GET
     
     
@@ -12,7 +12,7 @@ struct InspectServiceEndpoint: Endpoint {
         self.nameOrId = nameOrId
     }
     var path: String {
-        "services/\(nameOrId)"
+        "services/\(nameOrId)?insertDefaults=true"
     }
 }
 

@@ -26,6 +26,7 @@ struct UpdateServiceEndpoint: Endpoint {
     }
 }
 
+// TODO: refactor
 extension Service {
     struct UpdateServiceBody: Codable {
         let Name: String

@@ -17,11 +17,12 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |-----------------------------|-------------------------|---------|-------------|
 | Client connection           | Local Unix socket       | ✅       |             |
 |                             | HTTP                    | ✅       |             |
-|                             | HTTPS + TLS client cert | 🚧       | untested    |
+|                             | HTTPS + TLS client cert | 🚧       | untested, WIP |
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
 |                             | Version                 | ✅       |             |
 |                             | Events                  | ❌       |      TBD    |
+|                             | Get disk usage info     | ❌       |      TBD    |
 | Containers                  | List                    | 🚧       | refactoring |
 |                             | Inspect                 | ✅       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
@@ -54,7 +55,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Services                    | List                    | 🚧       | refactoring |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
-|                             | Get logs                | ❌       |    TBD         |
+|                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
 |                             | Delete                  | ✅       |             |
 | Networks                    |                         | ❌       |    TBD         |
