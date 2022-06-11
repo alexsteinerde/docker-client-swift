@@ -1,5 +1,4 @@
 import Foundation
-import NIO
 
 extension DockerClient {
     
@@ -39,7 +38,7 @@ extension DockerClient {
         
         /// Gets the logs of a service.
         /// - Parameters:
-        ///   - container: Instance of a `Container`.
+        ///   - service: Instance of a `Service`.
         ///   - details: whether to return service labels.
         ///   - stdErr: whether to return log lines from the standard error.
         ///   - stdOut: whether to return log lines from the standard output.
