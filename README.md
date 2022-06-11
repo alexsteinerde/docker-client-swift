@@ -228,6 +228,14 @@ Remote daemon via HTTPS and client certificate:
 ### Images
 
 <details>
+  <summary>List the Docker images</summary>
+  
+  ```swift
+  let nodes = try await docker.images.list()
+  ```
+</details>
+
+<details>
   <summary>Pull an image</summary>
   
   ```swift
@@ -289,6 +297,20 @@ Remote daemon via HTTPS and client certificate:
   
   ```swift
   let services = try await docker.services.list()
+  ```
+</details>
+
+
+<details>
+  <summary>Get service logs</summary>
+  
+  Logs are streamed progressively in an asynchronous way.
+  ```swift
+  let service = try await docker.services.get(id)
+        
+  for try await line in try await docker.services.logs(service: service) {
+      print(line.message + "\n")
+  }
   ```
 </details>
 
