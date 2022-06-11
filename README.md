@@ -231,7 +231,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>List the Docker images</summary>
   
   ```swift
-  let nodes = try await docker.images.list()
+  let images = try await docker.images.list()
   ```
 </details>
 
