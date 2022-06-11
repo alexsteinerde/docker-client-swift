@@ -54,7 +54,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 | Services                    | List                    | 🚧       | refactoring |
-|                             | Inspect                 | 🚧       | refactoring |
+|                             | Inspect                 | ✅       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
@@ -76,6 +76,10 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Registries                  |                         | ❌       |     TBD        |
 |                             |                         |         |             |
 
+
+✅ : done or _mostly_ done
+🚧 : work in progress, partially implemented, might not work
+❌ : not implemented/supported at the moment.
 
 ## Installation
 ### Package.swift 
