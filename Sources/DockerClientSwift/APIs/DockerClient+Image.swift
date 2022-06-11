@@ -43,11 +43,8 @@ extension DockerClient {
         /// - Parameter all: If `true` intermediate image layer will be returned as well. Default is `false`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `Image` instances.
-        public func list(all: Bool = false) async throws -> [Image] {
-            try await client.run(ListImagesEndpoint(all: all))
-                .map({ image in
-                        Image(id: .init(image.Id), digest: image.RepoDigests?.first.map({ Digest.init($0) }), repoTags: image.RepoTags, createdAt: Date(timeIntervalSince1970: TimeInterval(image.Created)))
-                })
+        public func list(all: Bool = false) async throws -> [ImageResponse] {
+            return try await client.run(ListImagesEndpoint(all: all))
         }
         
         /// Removes an image. By default only unused images can be removed. If you set `force` to `true` the image will also be removed if it is used.

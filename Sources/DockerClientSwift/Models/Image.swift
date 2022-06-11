@@ -1,4 +1,37 @@
 import Foundation
+import BetterCodable
+
+/// Brief info about an image, returned when listing images.
+public struct ImageResponse: Codable {
+    public let id: String
+    public let parentId: String
+    public let repoTags: [String]?
+    public let repoDigests: [String]?
+    
+    /// Date when the image was created.
+    /// This is **not** the date when the image was pulled.
+    @DateValue<TimestampStrategy>
+    public var created: Date
+    
+    public let size: Int
+    public let virtualSize: Int
+    public let sharedSize: Int
+    public let labels: [String:String]? = [:]
+    public let containers: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "Id"
+        case parentId = "ParentId"
+        case repoTags = "RepoTags"
+        case repoDigests = "RepoDigests"
+        case created = "Created"
+        case size = "Size"
+        case virtualSize = "VirtualSize"
+        case sharedSize = "SharedSize"
+        case labels = "Labels"
+        case containers = "Containers"
+    }
+}
 
 /// Representation of an image.
 /// Some actions can be performed on an instance.

@@ -51,13 +51,12 @@ final class ServiceTests: XCTestCase {
         try await client.images.pullImage(byName: "nginx", tag: "latest")
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
-        var output = ""
-        try await Task.sleep(nanoseconds: 5_000_000_000) // wait until service is running and Nginx has produced logs
+        // wait until service is running and Nginx has produced logs
+        // not sure how to improve that, might lead to flaky test
+        try await Task.sleep(nanoseconds: 5_000_000_000)
         for try await line in try await client.services.logs(service: service, timestamps: true) {
-            //print("\n>>> LOG: \(line)")
             XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
             //XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
-            output += line.message + "\n"
         }
     }
     

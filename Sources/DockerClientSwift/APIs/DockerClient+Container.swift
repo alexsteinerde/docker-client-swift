@@ -74,7 +74,7 @@ extension DockerClient {
         ///   - follow: whether to wait for new logs to become available and stream them.
         ///   - tail: number of last existing log lines to return. Default: all.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns  a  sequence of `LogEntry`.
+        /// - Returns: Returns  a  sequence of `DockerLogEntry`.
         public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil, since: Date = .distantPast, until: Date = .distantFuture) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
             let endpoint = GetContainerLogsEndpoint(
                 containerId: container.id,
@@ -90,7 +90,7 @@ extension DockerClient {
                 endpoint,
                 // Arbitrary timeouts.
                 // TODO: should probably make these configurable
-                timeout: follow ? .hours(12) : .seconds(30)
+                timeout: follow ? .hours(12) : .seconds(60)
             )
             
             return try await endpoint.map(response: response, tty: container.config.tty)

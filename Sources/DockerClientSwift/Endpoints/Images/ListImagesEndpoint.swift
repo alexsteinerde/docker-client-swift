@@ -14,17 +14,4 @@ struct ListImagesEndpoint: Endpoint {
     var path: String {
         "images/json?all=\(all)"
     }
-    
-    struct ImageResponse: Codable {
-        let Id: String
-        let ParentId: String
-        let RepoTags: [String]?
-        let RepoDigests: [String]?
-        let Created: Int
-        let Size: Int
-        let VirtualSize: Int
-        let SharedSize: Int
-        let Containers: Int
-        // TODO: Add additional fields
-    }
 }

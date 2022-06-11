@@ -26,6 +26,10 @@ final class ImageTests: XCTestCase {
         let images = try await client.images.list()
         
         XCTAssert(images.count >= 1)
+        
+        for i in images {
+            XCTAssert(i.created < Date(), "Ensure image create date is parsed properly")
+        }
     }
     
     func testParsingRepositoryTagSuccessfull() {
@@ -64,7 +68,8 @@ final class ImageTests: XCTestCase {
         let pruned = try await client.images.prune(all: true)
         
         let images = try await client.images.list()
-        XCTAssert(!images.map(\.id).contains(image.id))
+        
+        XCTAssert(!images.map(\.id).contains(image.id.value))
         XCTAssert(pruned.reclaimedSpace > 0)
         XCTAssert(pruned.imageIds.contains(image.id))
     }

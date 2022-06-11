@@ -2,9 +2,10 @@
 [![Language](https://img.shields.io/badge/Swift-5.5-brightgreen.svg)](http://swift.org)
 [![Docker Engine API](https://img.shields.io/badge/Docker%20Engine%20API-%20%201.41-blue)](https://docs.docker.com/engine/api/v1.41/)
 
-This is a low-level Docker Client written in Swift. It very closely follows the Docker API.
+This is a low-level, **work in progress** Docker Client written in Swift. It very closely follows the Docker API.
 
 It fully uses the Swift concurrency features introduced with Swift 5.5 (`async`/`await`).
+
 
 ## Docker API version support
 This client library aims at implementing the Docker API version 1.41 (https://docs.docker.com/engine/api/v1.41/#)
@@ -35,7 +36,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Prune                   | ✅       |             |
 |                             | Attach                  | ❌       |      TBD    |
 |                             | Exec                    | ❌       |  unlikely           |
-| Images                      | List                    | 🚧       | refactoring |
+| Images                      | List                    | ✅       |             |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
 |                             | Build                   | ❌       |      TBD       |
