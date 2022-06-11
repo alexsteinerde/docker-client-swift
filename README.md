@@ -53,8 +53,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
-| Services                    | List                    | 🚧       | refactoring |
-|                             | Inspect                 | ✅       | refactoring |
+| Services                    | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
@@ -158,7 +158,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>Get a container details</summary>
   
   ```swift
-  let container = try await docker.containers.get("xxxxxxx")
+  let container = try await docker.containers.get("nameOrId")
   ```
 </details>
 
@@ -223,7 +223,7 @@ Remote daemon via HTTPS and client certificate:
   
   Logs are streamed progressively in an asynchronous way.
   ```swift
-  let container = try await docker.containers.get(id)
+  let container = try await docker.containers.get("nameOrId")
         
   for try await line in try await docker.containers.logs(container: container, timestamps: true) {
       print(line.message + "\n")
@@ -312,7 +312,7 @@ Remote daemon via HTTPS and client certificate:
   
   Logs are streamed progressively in an asynchronous way.
   ```swift
-  let service = try await docker.services.get(id)
+  let service = try await docker.services.get("nameOrId")
         
   for try await line in try await docker.services.logs(service: service) {
       print(line.message + "\n")
