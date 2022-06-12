@@ -33,3 +33,21 @@ extension StreamingEndpoint {
     }
 }
 
+
+protocol JSONStreamingEndpoint {
+    associatedtype T: Codable
+    associatedtype E: Error
+    var Response: AsyncThrowingStream<T, E>{get}
+    associatedtype Body: Codable
+    var path: String { get }
+    var method: HTTPMethod { get }
+    var body: Body? { get }
+    var model: T.Type{get set}
+}
+
+extension JSONStreamingEndpoint {
+    public var body: Body? {
+        return nil
+    }
+}
+
