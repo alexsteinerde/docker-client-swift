@@ -60,7 +60,11 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
                         if buffer.readableBytes == 0 {
                             continuation.finish()
                         }
-                        let data = Data(buffer: buffer)
+                        //let data = Data(buffer: buffer)
+                        guard let data = buffer.readData(length: buffer.readableBytes) else {
+                            continuation.finish(throwing: DockerLogDecodingError.dataCorrupted("Unable to read \(totalDataSize) bytes as Data"))
+                            return
+                        }
                         let splat = data.split(separator: 10 /* ascii code for \n */)
                         guard splat.count >= 1 else {
                             continuation.finish(throwing: DockerError.unknownResponse("Expected json terminated by line return"))

@@ -17,11 +17,11 @@ public struct DockerEvent: Codable {
     private(set) public var time: Date
     
     enum CodingKeys: String, CodingKey {
-        case type = "type"
+        case type = "Type"
         case action = "Action"
-        case scope = "Scope"
+        case scope = "scope"
         case actor = "Actor"
-        case time = "Time"
+        case time = "time"
     }
     
     public enum EventType: String, Codable {

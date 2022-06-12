@@ -22,7 +22,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
 |                             | Version                 | ✅       |             |
-|                             | Events                  | ❌       |      TBD    |
+|                             | Events                  | ✅       |             |
 |                             | Get disk usage info     | ❌       |      TBD    |
 | Containers                  | List                    | 🚧       | refactoring |
 |                             | Inspect                 | ✅       | refactoring |
@@ -144,6 +144,27 @@ Remote daemon via HTTPS and client certificate:
   ```swift
   let version = try await docker.version()
   print("• Docker API version: \(version.apiVersion)")
+  ```
+</details>
+
+<details>
+  <summary>Listen for Docker daemon events</summary>
+  
+  We start by listening for docker events, then we create a container.
+  ```swift
+  async let events = try await client.events()
+  
+  let container = try await client.containers.create(
+      name: "hello",
+      spec: .init(
+          config: .init(image: "hello-world:latest"),
+          hostConfig: .init()
+      )
+  )
+  // We should get an event whose `action` is "create" and whose `type` is "container"
+  for try await event in try await events {
+      print("\n••• event: \(event)")
+  }
   ```
 </details>
 

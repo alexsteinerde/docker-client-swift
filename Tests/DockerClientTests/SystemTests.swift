@@ -18,6 +18,25 @@ final class SystemTests: XCTestCase {
         XCTAssert(version.version != "", "Ensure Version field is set")
     }
     
+    func testEvents() async throws {
+        let name = UUID().uuidString
+        async let events = try await client.events()
+        let container = try await client.containers.create(
+            name: name,
+            spec: .init(
+                config: .init(image: "hello-world:latest"),
+                hostConfig: .init()
+            )
+        )
+        for try await event in try await events {
+            if event.action == .create && event.type == .container {
+                XCTAssert(event.actor.attributes?["name"] == name, "Ensure create event for this container is emitted")
+                break
+            }
+        }
+        try await client.containers.remove(name, force: true, removeAnonymousVolumes: true)
+    }
+    
     func testSystemInfo() async throws {
         let info = try await client.info()
         XCTAssert(info.id != "", "Ensure id is set")
