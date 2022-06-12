@@ -88,6 +88,9 @@ public struct ContainerHostConfig: Codable {
     
     public var devices: [DeviceMapping]? = []
     
+    // TODO: implement
+    // public var deviceRequests
+    
     /// A list of cgroup rules to apply to the container
     public var deviceCgroupRules: [String]? = nil
     

@@ -20,6 +20,14 @@ extension DockerClient {
             return try await client.run(ListContainersEndpoint(all: all))
         }
         
+        /// Fetches the latest information about a container by a given name or id..
+        /// - Parameter nameOrId: Name or id of a container.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns the `Container` and its information.
+        public func get(_ nameOrId: String) async throws -> Container {
+            return try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
+        }
+        
         /// Creates a new container from a given image. If specified the commands override the default commands from the image.
         /// - Parameters:
         ///   - image: Instance of an `Image`.
@@ -39,6 +47,15 @@ extension DockerClient {
         public func create(name: String? = nil, spec: ContainerCreate) async throws -> String {
             let response = try await client.run(CreateContainerEndpoint(name: name, spec: spec))
             return response.Id
+        }
+        
+        /// Updates an existing container.
+        /// - Parameters:
+        ///   - nameOrId: Name or id of a container.
+        ///   - spec: a `ContainerUpdate` representing the configuration to update
+        /// - Throws: Errors that can occur when executing the request.
+        public func update(_ nameOrId: String, spec: ContainerUpdate) async throws {
+            try await client.run(UpdateContainerEndpoint(nameOrId: nameOrId, spec: spec))
         }
         
         /// Starts a container. Before starting it needs to be created.
@@ -103,14 +120,6 @@ extension DockerClient {
             )
             
             return try await endpoint.map(response: response, tty: container.config.tty)
-        }
-        
-        /// Fetches the latest information about a container by a given name or id..
-        /// - Parameter nameOrId: Name or id of a container.
-        /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns the `Container` and its information.
-        public func get(_ nameOrId: String) async throws -> Container {
-            return try await client.run(InspectContainerEndpoint(nameOrId: nameOrId))
         }
         
         /// Deletes all stopped containers.

@@ -26,9 +26,9 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Get disk usage info     | ❌       |      TBD    |
 | Containers                  | List                    | 🚧       | refactoring |
 |                             | Inspect                 | ✅       | refactoring |
-|                             | Create                  | 🚧       | refactoring |
-|                             | Update                  | ❌       |      TBD    |
-|                             | Rename                  | ✅       |      TBD    |
+|                             | Create                  | ✅       | refactoring |
+|                             | Update                  | ✅       |             |
+|                             | Rename                  | ✅       |             |
 |                             | Pause/Unpause           | ❌       |      TBD    |
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
