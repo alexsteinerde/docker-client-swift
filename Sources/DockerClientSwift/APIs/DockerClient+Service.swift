@@ -68,7 +68,7 @@ extension DockerClient {
             return try await endpoint.map(response: response, tty: service.spec.taskTemplate.containerSpec.tty ?? false)
         }
         
-        /// Created a new service with a name and an image.
+        /// Create a new service with a name and an image.
         /// This is the minimal way of creating a new service.
         /// - Parameters:
         ///   - name: Name of the new service.
@@ -81,10 +81,22 @@ extension DockerClient {
             return service
         }
         
-        // ServiceSpec
+        /// Create a new service.
+        /// - Parameters:
+        ///   - spec: the `ServiceSpec` describing the configuration of the service.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns the newly created `Service` ID.
         public func create(spec: ServiceSpec) async throws -> String {
             let createResponse = try await client.run(CreateServiceAdvancedEndpoint(spec: spec))
             return createResponse.ID
+        }
+        
+        /// Removes an existing service.
+        /// - Parameters:
+        ///   - nameOrId: Name or Id of the`Service`.
+        /// - Throws: Errors that can occur when executing the request.
+        public func remove(_ nameOrId: String) async throws {
+            try await client.run(RemoveServiceEndpoint(nameOrId: nameOrId))
         }
     }
 }

@@ -310,6 +310,13 @@ Note: Must be connected to a manager node.
   ```
 </details>
 
+<details>
+  <summary>Get a service details</summary>
+  
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+  ```
+</details>
 
 <details>
   <summary>Create a service</summary>
@@ -339,6 +346,14 @@ Note: Must be connected to a manager node.
   for try await line in try await docker.services.logs(service: service) {
       print(line.message + "\n")
   }
+  ```
+</details>
+
+<details>
+  <summary>Delete a service</summary>
+  
+  ```swift
+  try await docker.services.remove("nameOrId")
   ```
 </details>
 
