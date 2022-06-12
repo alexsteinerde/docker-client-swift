@@ -238,18 +238,18 @@ Remote daemon via HTTPS and client certificate:
   
   Wait for future log messages:
   ```swift
-  let service = try await docker.services.get("nameOrId")
+  let service = try await docker.containers.get("nameOrId")
         
-  for try await line in try await docker.services.logs(service: service, follow: true) {
+  for try await line in try await docker.containers.logs(service: service, follow: true) {
       print(line.message + "\n")
   }
   ```
   
   Only the last 100 messages:
   ```swift
-  let service = try await docker.services.get("nameOrId")
+  let service = try await docker.containers.get("nameOrId")
         
-  for try await line in try await docker.services.logs(service: service, tail: 100) {
+  for try await line in try await docker.containers.logs(service: service, tail: 100) {
       print(line.message + "\n")
   }
   ```
