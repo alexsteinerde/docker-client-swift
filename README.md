@@ -28,7 +28,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       | refactoring |
 |                             | Create                  | 🚧       | refactoring |
 |                             | Update                  | ❌       |      TBD    |
-|                             | Rename                  | ❌       |      TBD    |
+|                             | Rename                  | ✅       |      TBD    |
 |                             | Pause/Unpause           | ❌       |      TBD    |
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
@@ -212,6 +212,15 @@ Remote daemon via HTTPS and client certificate:
   try await client.containers.stop("xxxxxxx")
   ```
 </details>
+
+<details>
+  <summary>Rename a container</summary>
+  
+  ```swift
+  try await client.containers.rename("xxxxxxx", to: "hahi")
+  ```
+</details>
+
 
 <details>
   <summary>Delete a container</summary>

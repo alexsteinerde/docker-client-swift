@@ -55,6 +55,15 @@ extension DockerClient {
             try await client.run(StopContainerEndpoint(containerId: nameOrId))
         }
         
+        /// Renames a container.
+        /// - Parameters:
+        ///   - nameOrId: Name or Id of the`Container`.
+        ///   - to: The new name of the `Container`.
+        /// - Throws: Errors that can occur when executing the request.
+        public func rename(_ nameOrId: String, to newName: String) async throws {
+            try await client.run(RenameContainerEndpoint(containerId: nameOrId, newName: newName))
+        }
+        
         /// Removes an existing container.
         /// - Parameters:
         ///   - nameOrId: Name or Id of the`Container`.
