@@ -23,4 +23,10 @@ extension DockerClient {
     public func version() async throws -> DockerVersion {
         return try await run(VersionEndpoint())
     }
+    
+    public func events() async throws -> AsyncThrowingStream<DockerEvent, Error> {
+        let endpoint = JSONStreamingEndpoint<DockerEvent>(path: "/events")
+        let stream = try await run(endpoint, timeout: .hours(12))
+        return try await endpoint.map(response: stream, as: DockerEvent.self)
+    }
 }

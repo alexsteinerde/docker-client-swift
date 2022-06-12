@@ -1,4 +1,5 @@
 import NIOHTTP1
+import NIO
 import Foundation
 
 protocol Endpoint {
@@ -34,20 +35,44 @@ extension StreamingEndpoint {
 }
 
 
-protocol JSONStreamingEndpoint {
-    associatedtype T: Codable
-    associatedtype E: Error
-    var Response: AsyncThrowingStream<T, E>{get}
-    associatedtype Body: Codable
-    var path: String { get }
-    var method: HTTPMethod { get }
-    var body: Body? { get }
-    var model: T.Type{get set}
-}
-
-extension JSONStreamingEndpoint {
-    public var body: Body? {
-        return nil
+class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
+    internal init(path: String, method: HTTPMethod = .GET) {
+        self.path = path
+        self.method = method
+    }
+    
+    var path: String
+    
+    var method: HTTPMethod = .GET
+    
+    typealias Response = AsyncThrowingStream<ByteBuffer, Error>
+    
+    typealias Body = NoBody
+    
+    private let decoder = JSONDecoder()
+    
+    func map(response: Response, as: T.Type) async throws -> AsyncThrowingStream<T, Error>  {
+        return AsyncThrowingStream<T, Error> { continuation in
+            Task {
+                for try await var buffer in response {
+                    let totalDataSize = buffer.readableBytes
+                    while buffer.readerIndex < totalDataSize {
+                        if buffer.readableBytes == 0 {
+                            continuation.finish()
+                        }
+                        let data = Data(buffer: buffer)
+                        let splat = data.split(separator: 10 /* ascii code for \n */)
+                        guard splat.count >= 1 else {
+                            continuation.finish(throwing: DockerError.unknownResponse("Expected json terminated by line return"))
+                            return
+                        }
+                        let model = try decoder.decode(T.self, from: splat.first!)
+                        continuation.yield(model)
+                    }
+                }
+                continuation.finish()
+            }
+        }
     }
 }
 
