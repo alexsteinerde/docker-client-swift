@@ -59,7 +59,7 @@ final class ImageTests: XCTestCase {
     }
     
     func testInspectImage() async throws {
-        XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get(imageByNameOrId: "nginx:latest") })
+        XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get("nginx:latest") })
     }
     
     func testPruneContainers() async throws {

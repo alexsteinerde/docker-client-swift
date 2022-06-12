@@ -36,7 +36,7 @@ extension DockerClient {
         /// - Returns: Fetches the latest image information and returns the `Image` that has been fetched.
         public func pullImage(byIdentifier identifier: String) async throws -> Image {
             try await client.run(PullImageEndpoint(imageName: identifier))
-            return try await self.get(imageByNameOrId: identifier)
+            return try await self.get(identifier)
         }
         
         /// Gets all images in the Docker system.
@@ -61,7 +61,7 @@ extension DockerClient {
         /// - Parameter nameOrId: Name or id of an image that should be fetched.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the `Image` data.
-        public func get(imageByNameOrId nameOrId: String) async throws -> Image {
+        public func get(_ nameOrId: String) async throws -> Image {
             let image = try await client.run(InspectImagesEndpoint(nameOrId: nameOrId))
             return Image(
                 id: .init(image.Id),
@@ -69,6 +69,16 @@ extension DockerClient {
                 repoTags: image.RepoTags,
                 createdAt: image.Created
             )
+        }
+        
+        /// Tags an image.
+        /// - Parameters:
+        ///   - nameOrId: Name or ID of the image to tag.
+        ///   - repoName: The repository name. (can optionally start with a registry endpoint)
+        ///   - tag: The tag name. Defaults to "latest"..
+        /// - Throws: Errors that can occur when executing the request.
+        public func tag(_ nameOrId: String, repoName: String, tag: String = "latest") async throws {
+            try await client.run(TagImageEndpoint(nameOrId: nameOrId, repoName: repoName, tag: tag))
         }
         
         /// Deletes all unused images.
