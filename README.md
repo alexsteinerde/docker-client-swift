@@ -170,6 +170,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Create a container: basic</summary>
   
+  Note: you will also need to start it for the container to actually run.
   ```swift
   let image = try await docker.images.pullImage(byName: "hello-world", tag: "latest")
   let id = try await docker.containers.create(image: image)
@@ -179,6 +180,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Create a container: advanced</summary>
   
+  Note: you will also need to start it for the container to actually run.
   ```swift
   let spec = ContainerCreate(
       config: ContainerConfig(
@@ -194,15 +196,10 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 <details>
-  <summary>Create and start a container</summary>
+  <summary>Start a container</summary>
   
   ```swift
-  let spec = ContainerCreate(
-      config: ContainerConfig(image: "hello-world:latest"),
-      hostConfig: ContainerHostConfig()
-  )
-  let id = try await docker.containers.create(name: "tests", spec: spec)
-  try await docker.containers.start(id)
+  try await docker.containers.start("nameOrId")
   ```
 </details>
 
