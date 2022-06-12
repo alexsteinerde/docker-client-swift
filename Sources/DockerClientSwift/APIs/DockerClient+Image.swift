@@ -49,12 +49,12 @@ extension DockerClient {
         
         /// Removes an image. By default only unused images can be removed. If you set `force` to `true` the image will also be removed if it is used.
         /// - Parameters:
-        ///   - image: Instance of an `Image` that should be removed.
+        ///   - nameOrId: Name or ID of an `Image` that should be removed.
         ///   - force: Should the image be removed by force? If `false` the image will only be removed if it's unused. If `true` existing containers will break. Default is `false`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` when the image has been removed or an error is thrown.
-        public func remove(image: Image, force: Bool = false) async throws {
-            try await client.run(RemoveImageEndpoint(imageId: image.id.value, force: force))
+        public func remove(_ nameOrId: String, force: Bool = false) async throws {
+            try await client.run(RemoveImageEndpoint(nameOrId: nameOrId, force: force))
         }
         
         /// Fetches the current information about an image from the Docker system.
@@ -103,17 +103,6 @@ extension DockerClient {
     }
 }
 
-extension Image {
-    /// Deletes all unused images.
-    /// - Parameters:
-    ///   - client: A `DockerClient` instance that is used to perform the request.
-    ///   - force: When set to `true`, prune only unused and untagged images. When set to `false`, all unused images are pruned.
-    /// - Throws: Errors that can occur when executing the request.
-    /// - Returns: Returns an `EventLoopFuture` with `PrunedImages` details about removed images and the reclaimed space.
-    public func remove(on client: DockerClient, force: Bool = false) async throws {
-        try await client.images.remove(image: self, force: force)
-    }
-}
 
 extension Image {
     /// Parses an image identifier to it's corresponding digest, name and tag.

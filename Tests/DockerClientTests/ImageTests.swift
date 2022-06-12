@@ -14,6 +14,11 @@ final class ImageTests: XCTestCase {
         try client.syncShutdown()
     }
     
+    func testDeleteImage() async throws {
+        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        try await client.images.remove(image.id.value, force: true)
+    }
+    
     func testPullImage() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         

@@ -36,14 +36,15 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             | Attach                  | ❌       |      TBD    |
-|                             | Exec                    | ❌       |  unlikely           |
+|                             | Exec                    | ❌       |  unlikely   |
 | Images                      | List                    | ✅       |             |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
-|                             | Build                   | ❌       |      TBD       |
-|                             | Tag                     | ✅       |                |
-|                             | Push                    | ❌       |      TBD       |
+|                             | Build                   | ❌       |      TBD    |
+|                             | Tag                     | ✅       |             |
+|                             | Push                    | ❌       |      TBD    |
 |                             | Create (container commit)| ❌       |             |
+|                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |

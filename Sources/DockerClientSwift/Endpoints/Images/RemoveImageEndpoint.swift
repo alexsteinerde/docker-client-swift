@@ -6,15 +6,15 @@ struct RemoveImageEndpoint: Endpoint {
     typealias Response = NoBody?
     var method: HTTPMethod = .DELETE
     
-    private let imageId: String
+    private let nameOrId: String
     private let force: Bool
     
-    init(imageId: String, force: Bool=false) {
-        self.imageId = imageId
+    init(nameOrId: String, force: Bool=false) {
+        self.nameOrId = nameOrId
         self.force = force
     }
     
     var path: String {
-        "images/\(imageId)?force=\(force ? "true" : "false")"
+        "images/\(nameOrId)?force=\(force ? "true" : "false")"
     }
 }
