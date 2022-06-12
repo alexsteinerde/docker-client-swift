@@ -55,7 +55,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Delete                  | ✅       |             |
 | Services                    | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
-|                             | Create                  | 🚧       | refactoring |
+|                             | Create                  | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
 |                             | Delete                  | ✅       |             |
@@ -325,7 +325,7 @@ Note: Must be connected to a manager node.
         )
     )
     let id = try await docker.services.create(spec: spec)
-```
+    ```
 </details>
         
 
