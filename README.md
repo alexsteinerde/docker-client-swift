@@ -29,7 +29,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       | refactoring |
 |                             | Update                  | ✅       |             |
 |                             | Rename                  | ✅       |             |
-|                             | Pause/Unpause           | ❌       |      TBD    |
+|                             | Pause/Unpause           | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
 |                             | Get process (top)       | ❌       |      TBD    |

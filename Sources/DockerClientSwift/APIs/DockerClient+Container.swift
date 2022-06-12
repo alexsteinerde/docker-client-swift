@@ -65,11 +65,28 @@ extension DockerClient {
             try await client.run(StartContainerEndpoint(containerId: nameOrId))
         }
         
-        /// Stops a container. Before stopping it needs to be created and started..
+        /// Stops a container. Before stopping it needs to be created and started.
         /// - Parameter nameOrId: Name or Id of the`Container`.
         /// - Throws: Errors that can occur when executing the request.
         public func stop(_ nameOrId: String) async throws {
             try await client.run(StopContainerEndpoint(containerId: nameOrId))
+        }
+        
+        /// Pauses a container.
+        /// Uses the freezer cgroup to suspend all processes in a container.
+        /// Traditionally, when suspending a process the SIGSTOP signal is used, which is observable by the process being suspended.
+        /// With the freezer cgroup the process is unaware, and unable to capture, that it is being suspended, and subsequently resumed.
+        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Throws: Errors that can occur when executing the request.
+        public func pause(_ nameOrId: String) async throws {
+            try await client.run(PauseUnpauseContainerEndpoint(nameOrId: nameOrId, unpause: false))
+        }
+        
+        /// Resume a container which has been paused.
+        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Throws: Errors that can occur when executing the request.
+        public func unpause(_ nameOrId: String) async throws {
+            try await client.run(PauseUnpauseContainerEndpoint(nameOrId: nameOrId, unpause: true))
         }
         
         /// Renames a container.
