@@ -312,7 +312,7 @@ Note: Must be connected to a manager node.
 
 
 <details>
-  <summary>Create a service</summary>
+    <summary>Create a service</summary>
   
     ```swift
     let spec = ServiceSpec(
