@@ -81,8 +81,8 @@ public struct ServiceSpec: Codable {
         
         // MARK: - Resource
         public struct Resources: Codable {
-            public var limits: [Limit]? = []
-            public var reservations: [ResourceObject]? = []
+            public var limits: Limit? = nil
+            public var reservations: ResourceObject? = nil
             
             enum CodingKeys: String, CodingKey {
                 case limits = "Limits"
@@ -91,12 +91,12 @@ public struct ServiceSpec: Codable {
             
             public struct Limit: Codable {
             
-                public var nanoCPUs: UInt64 = 0
+                public var nanoCPUs: UInt64? = 0
                 
-                public var memoryBytes: UInt64 = 0
+                public var memoryBytes: UInt64? = 0
                 
                 /// Limits the maximum number of PIDs in the container. Set 0 for unlimited.
-                public var pids: UInt64 = 0
+                public var pids: UInt64? = 0
                 
                 enum CodingKeys: String, CodingKey {
                     case nanoCPUs = "NanoCPUs"
@@ -106,11 +106,11 @@ public struct ServiceSpec: Codable {
             }
             
             public struct ResourceObject: Codable {
-                public var nanoCPUs: UInt64 = 0
+                public var nanoCPUs: UInt64? = 0
                 
-                public var memoryBytes: UInt64 = 0
+                public var memoryBytes: UInt64? = 0
                 
-                public var genericResources: [GenericResource]
+                public var genericResources: [GenericResource]? = []
                 
                 enum CodingKeys: String, CodingKey {
                     case nanoCPUs = "NanoCPUs"

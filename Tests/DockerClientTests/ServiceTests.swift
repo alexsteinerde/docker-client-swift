@@ -53,16 +53,21 @@ final class ServiceTests: XCTestCase {
         let spec = ServiceSpec(
             name: name,
             taskTemplate: .init(
-                containerSpec: .init(image: "nginx:latest")
+                containerSpec: .init(image: "nginx:latest"),
+                resources: .init(
+                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+                )
             ),
             mode: .init(
                 replicated: .init(replicas: 1)
             )
         )
         let id = try await client.services.create(spec: spec)
+        print("\n••••• SERVICE CREATED, id = \(id)")
         let service = try await client.services.get(id)
         
-        XCTAssertEqual(service.spec.name, name)
+        XCTAssert(service.spec.name == name, "Ensure custom service name is set")
+        XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == 64 * 1024 * 1024, "Ensure memory limit is set")
     }
     
     func testGetServiceLogs() async throws {

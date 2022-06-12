@@ -42,7 +42,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Build                   | ❌       |      TBD       |
 |                             | Tag                     | ❌       |      TBD       |
 |                             | Push                    | ❌       |      TBD       |
-|                             | Create (container commit)   | ❌       |             |
+|                             | Create (container commit)| ❌       |             |
 |                             | Prune                   | ✅       |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |
@@ -321,11 +321,29 @@ Note: Must be connected to a manager node.
 <details>
   <summary>Create a service</summary>
   
+  Simplest possible setup, we just specify the image and a number of replicas:
   ```swift
   let spec = ServiceSpec(
       name: "my-nginx",
       taskTemplate: .init(
           containerSpec: .init(image: "nginx:latest")
+      ),
+      mode: .init(
+          replicated: .init(replicas: 1)
+      )
+  )
+  let id = try await docker.services.create(spec: spec)
+  ```
+  
+  Let's specify a memory limit of 64MB for our service containers:
+  ```swift
+  let spec = ServiceSpec(
+      name: "my-nginx",
+      taskTemplate: .init(
+          containerSpec: .init(image: "nginx:latest"),
+          resources: .init(
+              limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+          )
       ),
       mode: .init(
           replicated: .init(replicas: 1)
