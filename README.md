@@ -312,20 +312,20 @@ Note: Must be connected to a manager node.
 
 
 <details>
-    <summary>Create a service</summary>
+  <summary>Create a service</summary>
   
-    ```swift
-    let spec = ServiceSpec(
-        name: "my-nginx",
-        taskTemplate: .init(
-            containerSpec: .init(image: "nginx:latest")
-        ),
-        mode: .init(
-            replicated: .init(replicas: 1)
-        )
-    )
-    let id = try await docker.services.create(spec: spec)
-    ```
+  ```swift
+  let spec = ServiceSpec(
+      name: "my-nginx",
+      taskTemplate: .init(
+          containerSpec: .init(image: "nginx:latest")
+      ),
+      mode: .init(
+          replicated: .init(replicas: 1)
+      )
+  )
+  let id = try await docker.services.create(spec: spec)
+  ```
 </details>
         
 
