@@ -209,7 +209,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>Stop a container</summary>
   
   ```swift
-  try await client.containers.stop("xxxxxxx")
+  try await client.containers.stop("nameOrId")
   ```
 </details>
 
@@ -217,7 +217,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>Rename a container</summary>
   
   ```swift
-  try await client.containers.rename("xxxxxxx", to: "hahi")
+  try await client.containers.rename("nameOrId", to: "hahi")
   ```
 </details>
 
@@ -227,7 +227,7 @@ Remote daemon via HTTPS and client certificate:
   
   If the container is running, deletion can be forced by passing `force: true` 
   ```swift
-  try await docker.containers.remove("xxxxxxx")
+  try await docker.containers.remove("nameOrId")
   ```
 </details>
 
