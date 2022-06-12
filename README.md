@@ -77,7 +77,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |         |             |
 | Registries                  |                         | ❌       |     TBD        |
 |                             |                         |         |             |
-| docker error responses mgmt |                         | 🚧       |             |
+| Docker error responses mgmt |                         | 🚧       |             |
 
 
 
@@ -108,7 +108,7 @@ let package = Package(
 ```
 
 ### Xcode Project
-To add DockerClientSwift to your existing Xcode project, select File -> Swift Packages -> Add Package Depedancy. 
+To add DockerClientSwift to your existing Xcode project, select File -> Swift Packages -> Add Package Dependancy. 
 Enter `https://github.com/nuw-run/docker-client-swift.git` for the URL.
 
 
@@ -163,6 +163,7 @@ Remote daemon via HTTPS and client certificate:
           hostConfig: .init()
       )
   )
+  
   // We should get an event whose `action` is "create" and whose `type` is "container"
   for try await event in try await events {
       print("\n••• event: \(event)")
