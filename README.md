@@ -352,6 +352,7 @@ Note: Must be connected to a manager node.
   )
   let id = try await docker.services.create(spec: spec)
   ```
+  TODO: add examples for specifying networks and volumes
 </details>
         
 
