@@ -81,7 +81,7 @@ public struct ContainerUpdate: Codable {
     public var kernelMemoryTcp: UInt64? = nil
     
     /// Memory limit in bytes.
-    public var memory: UInt64? = nil
+    public var memoryLimit: UInt64? = nil
     
     /// Memory soft limit in bytes.
     public var memoryReservation: UInt64? = nil
@@ -129,7 +129,7 @@ public struct ContainerUpdate: Codable {
         case `init` = "Init"
         case kernelMemory = "KernelMemory"
         case kernelMemoryTcp = "KernelMemoryTCP"
-        case memory = "Memory"
+        case memoryLimit = "Memory"
         case memoryReservation = "MemoryReservation"
         case memorySwap = "MemorySwap"
         case memorySwappiness = "MemorySwappiness"

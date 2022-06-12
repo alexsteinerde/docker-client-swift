@@ -144,7 +144,7 @@ public struct ContainerHostConfig: Codable {
     public var maskedPaths: [String]? = nil
     
     /// Memory limit in bytes.
-    public var memory: UInt64 = 0
+    public var memoryLimit: UInt64 = 0
     
     /// Memory soft limit in bytes.
     public var memoryReservation: UInt64 = 0
@@ -270,7 +270,7 @@ public struct ContainerHostConfig: Codable {
         case kernelMemoryTcp = "KernelMemoryTCP"
         case links = "Links"
         case maskedPaths = "MaskedPaths"
-        case memory = "Memory"
+        case memoryLimit = "Memory"
         case memoryReservation = "MemoryReservation"
         case memorySwap = "MemorySwap"
         case memorySwappiness = "MemorySwappiness"

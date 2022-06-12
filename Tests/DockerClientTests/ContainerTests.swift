@@ -27,7 +27,26 @@ final class ContainerTests: XCTestCase {
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
         )
-        let id = try await client.containers.create(name: "tests", spec: spec)
+        try await client.containers.create(name: "tests", spec: spec)
+    }
+    
+    func testUpdateContainers() async throws {
+        let name = UUID.init().uuidString
+        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let spec = ContainerCreate(
+            config: ContainerConfig(image: "hello-world:latest"),
+            hostConfig: ContainerHostConfig()
+        )
+        let id = try await client.containers.create(name: name, spec: spec)
+        try await client.containers.start(id)
+        
+        let newConfig = ContainerUpdate(memoryLimit: 64 * 1024 * 1024, memorySwap: 64 * 1024 * 1024)
+        try await client.containers.update(id, spec: newConfig)
+        
+        let updated = try await client.containers.get(id)
+        XCTAssert(updated.hostConfig.memoryLimit == 64 * 1024 * 1024, "Ensure param has been updated")
+        
+        try await client.containers.remove(id)
     }
     
     func testListContainers() async throws {

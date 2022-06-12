@@ -196,6 +196,18 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 <details>
+  <summary>Update a container</summary>
+  
+  Let's update the memory limits for an existing container:
+  ```swift
+  let newMemory = 64 * 1024 * 1024 // 64MB
+  let newConfig = ContainerUpdate(memoryLimit: newMemory, memorySwap: newMemory)
+  try await client.containers.update("nameOrId", spec: newConfig)
+  ```
+</details>
+
+
+<details>
   <summary>Start a container</summary>
   
   ```swift
