@@ -18,6 +18,13 @@ final class SystemTests: XCTestCase {
         XCTAssert(version.version != "", "Ensure Version field is set")
     }
     
+    func testDataUsage() async throws {
+        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let dataUsage = try await client.dataUsage()
+        XCTAssert(dataUsage.layersSize > 0, "Ensure layersSize is parsed")
+        XCTAssert(dataUsage.images.count > 0, "Ensure images field is parsed")
+    }
+    
     func testEvents() async throws {
         let name = UUID().uuidString
         async let events = try await client.events()

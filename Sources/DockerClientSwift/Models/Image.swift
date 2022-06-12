@@ -2,7 +2,7 @@ import Foundation
 import BetterCodable
 
 /// Brief info about an image, returned when listing images.
-public struct ImageResponse: Codable {
+public struct ImageSummary: Codable {
     public let id: String
     public let parentId: String
     public let repoTags: [String]?
@@ -16,7 +16,7 @@ public struct ImageResponse: Codable {
     public let size: Int
     public let virtualSize: Int
     public let sharedSize: Int
-    public let labels: [String:String]? = [:]
+    public let labels: [String:String] = [:]
     public let containers: Int
     
     enum CodingKeys: String, CodingKey {

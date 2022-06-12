@@ -33,7 +33,7 @@ public struct SwarmEncryptionConfig: Codable {
 public struct SwarmTaskDefaults: Codable {
     /// The log driver to use for tasks created in the orchestrator if unspecified by a service.
     /// Updating this value only affects new tasks. Existing tasks continue to use their previously configured log driver until recreated.
-    public let logDriver: LogDriver?
+    public let logDriver: DriverConfig?
     
     enum CodingKeys: String, CodingKey {
         case logDriver = "LogDriver"

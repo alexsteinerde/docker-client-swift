@@ -1,7 +1,7 @@
 import Foundation
 
 //// Specific the log driver and its options for a Swarm (globally) or for a Service.
-public struct LogDriver: Codable {
+public struct DriverConfig: Codable {
     /// The log driver to use as a default for new tasks.
     public let name: String?
     

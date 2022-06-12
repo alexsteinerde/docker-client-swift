@@ -43,7 +43,7 @@ extension DockerClient {
         /// - Parameter all: If `true` intermediate image layer will be returned as well. Default is `false`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `Image` instances.
-        public func list(all: Bool = false) async throws -> [ImageResponse] {
+        public func list(all: Bool = false) async throws -> [ImageSummary] {
             return try await client.run(ListImagesEndpoint(all: all))
         }
         

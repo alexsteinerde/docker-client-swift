@@ -331,24 +331,24 @@ public struct ContainerHostConfig: Codable {
     }
     
     public struct ContainerMount: Codable {
-        // var bindOptions
-        public var consistency: MountConsistency
+        public var bindOptions: BindOptions? = nil
+        public var consistency: MountConsistency? = nil
         public var readOnly: Bool
         public var source: String
         public var target: String
         public var `type`: MountType
-        // var volumeOptions
-        // var tmpFsOptions
+        public var volumeOptions: VolumeOptions? = nil
+        public var tmpFsOptions: TmpfsOptions? = nil
         
         enum CodingKeys: String, CodingKey {
-            //case bindOptions = "BindOptions"
+            case bindOptions = "BindOptions"
             case consistency = "Consistency"
             case readOnly = "ReadOnly"
             case source = "Source"
             case target = "Target"
             case type = "Type"
-            //case volumeOptions = "VolumeOptions"
-            //case tmpFsOptions = "TmpfsOptions"
+            case volumeOptions = "VolumeOptions"
+            case tmpFsOptions = "TmpfsOptions"
         }
         
         public enum MountType: String, Codable {
@@ -357,6 +357,41 @@ public struct ContainerHostConfig: Codable {
         
         public enum MountConsistency: String, Codable {
             case cached, consistent, `default`, delegated
+        }
+        
+        public struct BindOptions: Codable {
+            public var propagation: BindOptionsPropagation
+            public var nonRecursive: Bool = false
+            
+            enum CodingKeys: String, CodingKey {
+                case propagation = "Propagation"
+                case nonRecursive = "NonRecursive"
+            }
+            public enum BindOptionsPropagation: String, Codable {
+                case `private`, rprivate, shared, rshared, slave, rslave
+            }
+        }
+        
+        public struct VolumeOptions: Codable {
+            public var noCopy: Bool = false
+            public var labels: [String:String] = [:]
+            public var driverConfig: DriverConfig?
+            
+            enum CodingKeys: String, CodingKey {
+                case noCopy = "NoCopy"
+                case labels = "Labels"
+                case driverConfig = "DriverConfig"
+            }
+        }
+        
+        public struct TmpfsOptions: Codable {
+            public var sizeBytes: UInt64
+            public var mode: Int
+            
+            enum CodingKeys: String, CodingKey {
+                case sizeBytes = "SizeBytes"
+                case mode = "Mode"
+            }
         }
     }
     
@@ -371,4 +406,4 @@ public struct ContainerHostConfig: Codable {
             case hard = "Hard"
         }
     }
-    }
+}

@@ -1,4 +1,5 @@
 import Foundation
+import BetterCodable
 
 public struct DockerVersion: Codable {
     
@@ -71,7 +72,7 @@ public struct DockerVersionComponent: Codable {
 public struct DockerVersionComponentDetails: Codable {
     public let apiVersion, arch: String?
     
-    /// This is a boolean, but encoded as a String
+    // This is a boolean, but encoded as a String
     public let experimental: String?
     
     // This is a Date but is not encoded using the format used elsewhere in the Docker API.

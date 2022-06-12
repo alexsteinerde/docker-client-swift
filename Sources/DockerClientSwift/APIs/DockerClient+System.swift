@@ -24,6 +24,13 @@ extension DockerClient {
         return try await run(VersionEndpoint())
     }
     
+    /// Get data usage information.
+    /// - Throws: Errors that can occur when executing the request.
+    /// - Returns: Returns the `DataUsageInformation`.
+    public func dataUsage() async throws -> DataUsageInformation {
+        return try await run(DiskUsageInformationEndpoint())
+    }
+    
     public func events() async throws -> AsyncThrowingStream<DockerEvent, Error> {
         let endpoint = JSONStreamingEndpoint<DockerEvent>(path: "/events")
         let stream = try await run(endpoint, timeout: .hours(12))
