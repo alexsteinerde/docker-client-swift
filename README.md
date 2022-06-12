@@ -233,6 +233,24 @@ Remote daemon via HTTPS and client certificate:
       print(line.message + "\n")
   }
   ```
+  
+  Wait for future log messages:
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+        
+  for try await line in try await docker.services.logs(service: service, follow: true) {
+      print(line.message + "\n")
+  }
+  ```
+  
+  Only the last 100 messages:
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+        
+  for try await line in try await docker.services.logs(service: service, tail: 100) {
+      print(line.message + "\n")
+  }
+  ```
 </details>
 
 ### Images
@@ -367,6 +385,25 @@ Note: Must be connected to a manager node.
       print(line.message + "\n")
   }
   ```
+  
+  Wait for future log messages:
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+        
+  for try await line in try await docker.services.logs(service: service, follow: true) {
+      print(line.message + "\n")
+  }
+  ```
+  
+  Only the last 100 messages:
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+        
+  for try await line in try await docker.services.logs(service: service, tail: 100) {
+      print(line.message + "\n")
+  }
+  ```
+  
 </details>
 
 
