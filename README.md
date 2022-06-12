@@ -77,6 +77,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |         |             |
 | Registries                  |                         | ❌       |     TBD        |
 |                             |                         |         |             |
+| docker error responses mgmt |                         | 🚧       |             |
+
 
 
 ✅ : done or _mostly_ done
