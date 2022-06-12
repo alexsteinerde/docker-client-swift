@@ -33,6 +33,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
 |                             | Get process (top)       | ❌       |      TBD    |
+|                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             | Attach                  | ❌       |      TBD    |
 |                             | Exec                    | ❌       |  unlikely           |
