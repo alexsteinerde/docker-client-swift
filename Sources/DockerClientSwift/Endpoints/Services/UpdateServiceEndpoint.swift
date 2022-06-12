@@ -9,20 +9,21 @@ struct UpdateServiceEndpoint: Endpoint {
     
     private let nameOrId: String
     private let version: Int
+    private let rollback: Bool
     private let image: String?
     private let name: String
     
-    init(nameOrId: String, name: String, version: Int, image: String?) {
+    init(nameOrId: String, name: String, version: Int, image: String?, rollback: Bool?) {
         self.nameOrId = nameOrId
         self.name = name
         self.version = version
         self.image = image
-        
+        self.rollback = rollback ?? false
         self.body = .init(Name: name, TaskTemplate: .init(ContainerSpec: .init(Image: image)))
     }
     
     var path: String {
-        "services/\(nameOrId)/update?version=\(version)"
+        "services/\(nameOrId)/update?version=\(version)&rollback=\(self.rollback ? "previous" : "")"
     }
 }
 

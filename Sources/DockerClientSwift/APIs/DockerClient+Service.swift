@@ -36,6 +36,16 @@ extension DockerClient {
             return try await self.get(serviceByNameOrId: service.id)
         }*/
         
+        
+        
+        /// Trigger a server-side rollback to the previous service spec
+        /// - Parameter nameOrId: Name or id of a service that should be fetched.
+        /// - Throws: Errors that can occur when executing the request.
+        public func rollback(_ nameOrId: String) async throws {
+            let service = try await get(nameOrId)
+            try await client.run(UpdateServiceEndpoint(nameOrId: nameOrId, name: "", version: service.version.index, image: nil, rollback: true) )
+        }
+        
         /// Gets the logs of a service.
         /// - Parameters:
         ///   - service: Instance of a `Service`.

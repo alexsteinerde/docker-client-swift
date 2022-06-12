@@ -58,6 +58,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
+|                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
 | Networks                    |                         | ❌       |    TBD         |
 |                             |                         |         |             |
@@ -321,7 +322,7 @@ Note: Must be connected to a manager node.
 <details>
   <summary>Create a service</summary>
   
-  Simplest possible setup, we just specify the image and a number of replicas:
+  Simplest possible example, we just specify the image and a number of replicas:
   ```swift
   let spec = ServiceSpec(
       name: "my-nginx",
@@ -364,6 +365,17 @@ Note: Must be connected to a manager node.
   for try await line in try await docker.services.logs(service: service) {
       print(line.message + "\n")
   }
+  ```
+</details>
+
+
+<details>
+  <summary>Rollback a service</summary>
+  
+  Suppose that we updated our existing service configuration, and something is not working properly.
+  We want to revert back to the previous, working version.
+  ```swift
+  try await docker.services.rollback("nameOrId")
   ```
 </details>
 
