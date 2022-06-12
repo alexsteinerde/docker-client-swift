@@ -4,6 +4,6 @@ struct PingEndpoint: Endpoint {
     typealias Body = NoBody
     typealias Response = String
     
-    var method: HTTPMethod = .HEAD
+    var method: HTTPMethod = .GET
     let path: String = "_ping"
 }

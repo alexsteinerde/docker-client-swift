@@ -21,7 +21,7 @@ extension DockerClient {
         /// - Parameter nameOrId: Name or id of a service that should be fetched.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Return the `Service`.
-        public func get(serviceByNameOrId nameOrId: String) async throws -> Service {
+        public func get(_ nameOrId: String) async throws -> Service {
             return try await client.run(InspectServiceEndpoint(nameOrId: nameOrId))
         }
         
@@ -79,6 +79,12 @@ extension DockerClient {
             let serviceId = try await client.run(CreateServiceEndpoint(name: name, image: image.id.value))
             let service = try await client.run(InspectServiceEndpoint(nameOrId: serviceId.ID))
             return service
+        }
+        
+        // ServiceSpec
+        public func create(spec: ServiceSpec) async throws -> String {
+            let createResponse = try await client.run(CreateServiceAdvancedEndpoint(spec: spec))
+            return createResponse.ID
         }
     }
 }

@@ -21,7 +21,7 @@ final class ServiceTests: XCTestCase {
         let name = UUID().uuidString
         let _ = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
         let services = try await client.services.list()
-        
+        print("\n•••• testListingServices(): \(services)")
         XCTAssert(services.count >= 1)
     }
     
@@ -36,13 +36,31 @@ final class ServiceTests: XCTestCase {
     func testInspectService() async throws {
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
-        XCTAssertNoThrow(Task(priority: .medium) {try await client.services.get(serviceByNameOrId: service.id) })
+        try await Task.sleep(nanoseconds: 3_000_000_000)
+        XCTAssertNoThrow(Task(priority: .medium) {try await client.services.get(service.id) })
         XCTAssertEqual(service.spec.name, name)
     }
     
-    func testCreateService() async throws {
+    func testCreateServiceSimple() async throws {
         let name = UUID().uuidString
         let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
+        
+        XCTAssertEqual(service.spec.name, name)
+    }
+    
+    func testCreateServiceAdvanced() async throws {
+        let name = UUID().uuidString
+        let spec = ServiceSpec(
+            name: name,
+            taskTemplate: .init(
+                containerSpec: .init(image: "nginx:latest")
+            ),
+            mode: .init(
+                replicated: .init(replicas: 1)
+            )
+        )
+        let id = try await client.services.create(spec: spec)
+        let service = try await client.services.get(id)
         
         XCTAssertEqual(service.spec.name, name)
     }

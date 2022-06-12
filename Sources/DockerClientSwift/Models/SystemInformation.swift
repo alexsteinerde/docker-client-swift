@@ -264,9 +264,10 @@ struct DefaultAddressPool: Codable {
 }
 
 // MARK: - GenericResource
-struct GenericResource: Codable {
-    let discreteResourceSpec: DiscreteResourceSpec?
-    let namedResourceSpec: NamedResourceSpec?
+/// User-defined container resources can be either Integer resources (e.g, SSD=3) or String resources (e.g, GPU=UUID1).
+public struct GenericResource: Codable {
+    public var discreteResourceSpec: DiscreteResourceSpec?
+    public var namedResourceSpec: NamedResourceSpec?
     
     enum CodingKeys: String, CodingKey {
         case discreteResourceSpec = "DiscreteResourceSpec"
@@ -275,9 +276,9 @@ struct GenericResource: Codable {
 }
 
 // MARK: - DiscreteResourceSpec
-struct DiscreteResourceSpec: Codable {
-    let kind: String
-    let value: Int
+public struct DiscreteResourceSpec: Codable {
+    public var kind: String
+    public var value: Int
     
     enum CodingKeys: String, CodingKey {
         case kind = "Kind"
@@ -286,8 +287,8 @@ struct DiscreteResourceSpec: Codable {
 }
 
 // MARK: - NamedResourceSpec
-struct NamedResourceSpec: Codable {
-    let kind, value: String
+public struct NamedResourceSpec: Codable {
+    public var kind, value: String
     
     enum CodingKeys: String, CodingKey {
         case kind = "Kind"

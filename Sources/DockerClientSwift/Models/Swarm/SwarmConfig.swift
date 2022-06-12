@@ -30,24 +30,10 @@ public struct SwarmEncryptionConfig: Codable {
     }
 }
 
-// MARK: - SwarmLogDriver
-public struct SwarmLogDriver: Codable {
-    /// The log driver to use as a default for new tasks.
-    public let name: String?
-    
-    /// Driver-specific options for the selectd log driver, specified as key/value pairs.
-    public let options: [String:String]?
-    
-    enum CodingKeys: String, CodingKey {
-        case name = "Name"
-        case options = "Options"
-    }
-}
-
 public struct SwarmTaskDefaults: Codable {
     /// The log driver to use for tasks created in the orchestrator if unspecified by a service.
     /// Updating this value only affects new tasks. Existing tasks continue to use their previously configured log driver until recreated.
-    public let logDriver: SwarmLogDriver?
+    public let logDriver: LogDriver?
     
     enum CodingKeys: String, CodingKey {
         case logDriver = "LogDriver"
