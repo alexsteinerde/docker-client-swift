@@ -226,6 +226,8 @@ Remote daemon via HTTPS and client certificate:
   <summary>Get container logs</summary>
   
   Logs are streamed progressively in an asynchronous way.
+  
+  Get all logs:
   ```swift
   let container = try await docker.containers.get("nameOrId")
         
@@ -378,6 +380,8 @@ Note: Must be connected to a manager node.
   <summary>Get service logs</summary>
   
   Logs are streamed progressively in an asynchronous way.
+  
+  Get all logs:
   ```swift
   let service = try await docker.services.get("nameOrId")
         
