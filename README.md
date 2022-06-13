@@ -491,7 +491,7 @@ Note: Must be connected to a manager node.
 </details>
 
 <details>
-  <summary>Get a volume details</summary>
+  <summary>Get a network details</summary>
   
   ```swift
   let network = try await docker.networks.get("nameOrId")
