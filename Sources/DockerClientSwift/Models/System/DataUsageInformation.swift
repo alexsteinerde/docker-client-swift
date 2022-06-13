@@ -6,7 +6,7 @@ public struct DataUsageInformation: Codable {
     public let images: [ImageSummary]
     public let containers: [ContainerSummary]
     public let volumes: [Volume]
-    //public let buildCache: [BuildCache]
+    //public let buildCache: [BuildCache]?
     public let builderSize: UInt64
     
     enum CodingKeys: String, CodingKey {

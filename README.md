@@ -62,22 +62,26 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | 🚧       | refactoring |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
-| Networks                    |                         | ❌       |    TBD         |
-|                             |                         |         |             |
-| Volumes                     |                         | ❌       |     TBD        |
-|                             |                         |         |             |
-| Secrets                     |                         | ❌       |     TBD        |
-|                             |                         |         |             |
-| Configs                     |                         | ❌       |   TBD          |
-|                             |                         |         |             |
-| Tasks                       | List                    | ❌       |    TBD         |
-|                             | Inspect                 | ❌       |    TBD     |
+| Networks                    |                         | ❌       |   TBD       |
+|                             |                         |          |             |
+| Volumes                     | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Create                  | ❌       |     TBD     |
+|                             | Delete                  | ✅       |             |
+|                             | Prune                   | ✅       |             |
+|                             |                         |          |             |
+| Secrets                     |                         | ❌       |     TBD     |
+|                             |                         |          |             |
+| Configs                     |                         | ❌       |   TBD       |
+|                             |                         |          |             |
+| Tasks                       | List                    | ❌       |    TBD      |
+|                             | Inspect                 | ❌       |    TBD      |
 |                             | Get logs                | 🚧       |             |
 |                             |                         |          |             |
-| Plugins                     |                         | ❌       |    TBD         |
-|                             |                         |         |             |
-| Registries                  |                         | ❌       |     TBD        |
-|                             |                         |         |             |
+| Plugins                     |                         | ❌       |    TBD      |
+|                             |                         |          |             |
+| Registries                  |                         | ❌       |     TBD     |
+|                             |                         |          |             |
 | Docker error responses mgmt |                         | 🚧       |             |
 
 
@@ -87,6 +91,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 🚧 : work in progress, partially implemented, might not work
 
 ❌ : not implemented/supported at the moment.
+
+Note: various Docker endpoints such as list or prune support *filters*. These are currently not implemented.
 
 
 ## Installation
