@@ -13,15 +13,15 @@ public struct NetworkSpec: Codable {
     public var driver: String = "bridge"
     
     /// Restrict external access to the network.
-    public var `internal`: Bool?
+    public var `internal`: Bool = false
     
     /// Globally scoped network is manually attachable by regular containers from workers in swarm mode.
-    public var attachable: Bool?
+    public var attachable: Bool = false
     
     /// Ingress network is the network which provides the routing-mesh in swarm mode.
-    public var ingress: Bool?
+    public var ingress: Bool = false
     
-    public var ipam: IPAM
+    public var ipam: IPAM? = nil
     
     /// Enable IPv6 on the network.
     public var enableIPv6: Bool?

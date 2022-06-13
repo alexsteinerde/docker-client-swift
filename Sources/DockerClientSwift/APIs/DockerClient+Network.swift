@@ -25,26 +25,28 @@ extension DockerClient {
         public func get(_ nameOrId: String) async throws -> Network {
             return try await client.run(InspectNetworkEndpoint(nameOrId: nameOrId))
         }
+
+        /// Create a new Network.
+        /// - Parameters:
+        ///   - spec: configuration as a `NetworkSpec`.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns the newly created `Network`.
+        public func create(spec: NetworkSpec) async throws -> Network {
+            let createResponse = try await client.run(CreateNetworkEndpoint(spec: spec))
+            return try await client.networks.get(createResponse.Id)
+        }
+        
+    
+        /// Removes an existing Network.
+        /// - Parameters:
+        ///   - nameOrId: Name or Id of the`Network`.
+        /// - Throws: Errors that can occur when executing the request.
+        public func remove(_ nameOrId: String) async throws {
+            try await client.run(RemoveNetworkEndpoint(nameOrId: nameOrId))
+        }
+        
         /*
-        /// Create a new Volume.
-        /// - Parameters:
-        ///   - spec: configuration as a `VolumeSpec`.
-        /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns the newly created `Volume`.
-        public func create(spec: VolumeSpec) async throws -> Volume {
-            return try await client.run(CreateVolumeEndpoint(spec: spec))
-        }
-        
-        /// Removes an existing Volume.
-        /// - Parameters:
-        ///   - nameOrId: Name or Id of the`Volume`.
-        ///   - force: Force removal.
-        /// - Throws: Errors that can occur when executing the request.
-        public func remove(_ nameOrId: String, force: Bool = false) async throws {
-            try await client.run(RemoveVolumeEndpoint(nameOrId: nameOrId, force: force))
-        }
-        
-        /// Deletes all unused volumes.
+        /// Deletes all unused networks.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a `PrunedVolumes` details about removed volumes and the reclaimed space.
         public func prune(all: Bool = false) async throws -> PrunedVolumes {

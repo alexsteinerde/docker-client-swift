@@ -1,11 +1,13 @@
 import Foundation
 
+/// IP Addresses Management (IPAM) configuration options
 public struct IPAM: Codable {
     /// Name of the IPAM driver to use.
     public var driver: String = "default"
     
     public var config: [IPAMConfig]
     
+    /// Driver-specific options
     public var options: [String:String]? = nil
     
     enum CodingKeys: String, CodingKey {

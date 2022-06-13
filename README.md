@@ -64,8 +64,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Delete                  | ✅       |             |
 | Networks                    | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
-|                             | Create                  | ❌       |    TBD      |
-|                             | Delete                  | ❌       |    TBD      |
+|                             | Create                  | ✅       |             |
+|                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -495,6 +495,24 @@ Note: Must be connected to a manager node.
   
   ```swift
   let network = try await docker.networks.get("nameOrId")
+  ```
+</details>
+
+<details>
+  <summary>Create a network</summary>
+  
+  ```swift
+  let network = try await docker.networks.create(
+    spec: .init(name: name)
+  )
+  ```
+</details>
+
+<details>
+  <summary>Delete a network</summary>
+  
+  ```swift
+  try await docker.networks.remove("nameOrId")
   ```
 </details>
 
