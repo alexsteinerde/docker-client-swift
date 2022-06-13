@@ -23,7 +23,7 @@ public struct Volume: Codable {
     public let labels: [String:String]?
     
     /// The level at which the volume exists
-    public let scope: Scope
+    public let scope: DockerScope
     
     /// The driver specific options used when creating the volume.
     public let driverOptions: [String:String]?
@@ -41,13 +41,6 @@ public struct Volume: Codable {
         case scope = "Scope"
         case driverOptions = "Options"
         case usageData = "UsageData"
-    }
-    
-    public enum Scope: String, Codable {
-        /// machine level
-        case local
-        /// cluster-wide
-        case global
     }
     
     public struct UsageData: Codable {

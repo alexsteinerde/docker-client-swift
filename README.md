@@ -62,7 +62,10 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | 🚧       | refactoring |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
-| Networks                    |                         | ❌       |   TBD       |
+| Networks                    | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Create                  | ❌       |    TBD      |
+|                             | Delete                  | ❌       |    TBD      |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -460,7 +463,6 @@ Note: Must be connected to a manager node.
   
 </details>
 
-
 <details>
   <summary>Rollback a service</summary>
   
@@ -480,6 +482,21 @@ Note: Must be connected to a manager node.
 </details>
 
 ### Networks
+<details>
+  <summary>List networks</summary>
+  
+  ```swift
+  let networks = try await docker.networks.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a volume details</summary>
+  
+  ```swift
+  let network = try await docker.networks.get("nameOrId")
+  ```
+</details>
 
 ### Volumes
 <details>
