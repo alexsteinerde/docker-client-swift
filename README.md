@@ -66,7 +66,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
-|                             | Create                  | ❌       |     TBD     |
+|                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             |                         |          |             |
@@ -482,6 +482,31 @@ Note: Must be connected to a manager node.
 ### Networks
 
 ### Volumes
+<details>
+  <summary>List volumes</summary>
+  
+  ```swift
+  let volumes = try await docker.volumes.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a volume details</summary>
+  
+  ```swift
+  let volume = try await docker.volumes.get("nameOrId")
+  ```
+</details>
+
+<details>
+  <summary>Create a volume</summary>
+  
+  ```swift
+  let volume = try await docker.volumes.create(
+    spec: .init(name: "myVolume", labels: ["myLabel": "value"])
+  )
+  ```
+</details>
 
 ### Secrets
 

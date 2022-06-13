@@ -14,6 +14,15 @@ final class VolumeTests: XCTestCase {
         try client.syncShutdown()
     }
     
+    func testCreateDeleteVolume() async throws {
+        let name = UUID().uuidString
+        let volume = try await client.volumes.create(
+            spec: .init(name: name, labels: ["myLabel": "value"])
+        )
+        XCTAssert(volume.name == name, "Ensure volume name is set")
+        try await client.volumes.remove(name, force: true)
+    }
+    
     func testListVolumes() async throws {
         // TODO: improve and check the actual content
         let _ = try await client.volumes.list()

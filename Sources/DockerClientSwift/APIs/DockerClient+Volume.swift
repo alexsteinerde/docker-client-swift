@@ -27,6 +27,14 @@ extension DockerClient {
             return try await client.run(InspectVolumeEndpoint(nameOrId: nameOrId))
         }
         
+        /// Create a new Volume.
+        /// - Parameters:
+        ///   - spec: configuration as a `VolumeSpec`.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns the newly created `Volume`.
+        public func create(spec: VolumeSpec) async throws -> Volume {
+            return try await client.run(CreateVolumeEndpoint(spec: spec))
+        }
         
         /// Removes an existing Volume.
         /// - Parameters:

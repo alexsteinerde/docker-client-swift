@@ -26,7 +26,7 @@ public struct Volume: Codable {
     public let scope: Scope
     
     /// The driver specific options used when creating the volume.
-    public let options: [String:String]?
+    public let driverOptions: [String:String]?
     
     /// Usage details about the volume. This information is used by the GET /system/df endpoint, and omitted in other endpoints.
     public let usageData: UsageData?
@@ -39,7 +39,7 @@ public struct Volume: Codable {
         case status = "Status"
         case labels = "Labels"
         case scope = "Scope"
-        case options = "Options"
+        case driverOptions = "Options"
         case usageData = "UsageData"
     }
     
