@@ -508,6 +508,15 @@ Note: Must be connected to a manager node.
   ```
 </details>
 
+<details>
+  <summary>Delete a volume</summary>
+  
+  ```swift
+  try await docker.volumes.remove("nameOrId")
+  ```
+</details>
+
+
 ### Secrets
 
 
