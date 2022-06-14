@@ -569,6 +569,43 @@ Note: Must be connected to a manager node.
 
 
 ### Secrets
+This requires a Docker daemon with Swarm mode enabled.
+
+<details>
+  <summary>List secrets</summary>
+  
+  ```swift
+  let secrets = try await docker.secrets.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a secret details</summary>
+  
+  Note: The Docker API doesn't return secret data/values.
+  ```swift
+  let secret = try await docker.secrets.get("nameOrId")
+  ```
+</details>
+
+<details>
+  <summary>Create a secret</summary>
+  
+  ```swift
+  let secretData = "test secret value".data(using: .utf8)!
+  let secret = try await docker.secrets.create(
+    spec: .init(name: "myVolume", data: secretData)
+  )
+  ```
+</details>
+
+<details>
+  <summary>Delete a secret</summary>
+  
+  ```swift
+  try await docker.secrets.remove("nameOrId")
+  ```
+</details>
 
 
 ## Credits

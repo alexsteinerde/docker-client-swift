@@ -8,7 +8,7 @@ public struct ConfigSpec: Codable {
     public var labels: [String:String] = [:]
     
     /// Base64-url-safe-encoded (RFC 4648) config data.
-    public var data: String
+    public var data: Data
     
     /// Template driver configuration
     public var templating: DriverConfig?
