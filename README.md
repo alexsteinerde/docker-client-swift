@@ -19,6 +19,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Client connection           | Local Unix socket       | ✅       |             |
 |                             | HTTP                    | ✅       |             |
 |                             | HTTPS + TLS client cert | 🚧       | untested, WIP |
+|                             |                         |          |             |
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
 |                             | Version                 | ✅       |             |
@@ -59,6 +60,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
+|                             |                         |          |             |
 | Services                    | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
