@@ -24,6 +24,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Version                 | ✅       |             |
 |                             | Events                  | ✅       |             |
 |                             | Get data usage info     | ✅       |             |
+|                             |                         |          |             |
 | Containers                  | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       | refactoring |
@@ -37,6 +38,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Prune                   | ✅       |             |
 |                             | Attach                  | ❌       |      TBD    |
 |                             | Exec                    | ❌       |  unlikely   |
+|                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
 |                             | Inspect                 | 🚧       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
@@ -46,11 +48,13 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create (container commit)| ❌       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
+|                             |                         |          |             |
 | Swarm                       | Init                    | ✅       |             |
 |                             | Join                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Leave                   | ✅       |             |
 |                             | Update                  | ✅       |             |
+|                             |                         |          |             |
 | Nodes                       | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Update                  | ✅       |             |
@@ -62,10 +66,12 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | 🚧       | refactoring |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
+|                             |                         |          |             |
 | Networks                    | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
+|                             | Prune                   | ❌       |    TBD      |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -73,9 +79,17 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             |                         |          |             |
-| Secrets                     |                         | ❌       |     TBD     |
+| Secrets                     | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Create                  | ✅       |             |
+|                             | Update                  | ❌       |             |
+|                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
-| Configs                     |                         | ❌       |   TBD       |
+| Configs                     | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Create                  | ✅       |             |
+|                             | Update                  | ❌       |             |
+|                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
 | Tasks                       | List                    | ❌       |    TBD      |
 |                             | Inspect                 | ❌       |    TBD      |
