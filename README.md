@@ -84,7 +84,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Secrets                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
-|                             | Update                  | ❌       |             |
+|                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
 | Configs                     | List                    | ✅       |             |
@@ -569,7 +569,9 @@ Note: Must be connected to a manager node.
 
 
 ### Secrets
-This requires a Docker daemon with Swarm mode enabled.
+> This requires a Docker daemon with Swarm mode enabled.
+
+The API is very similar for managing Docker Configs and the below examples also apply to them.
 
 <details>
   <summary>List secrets</summary>
@@ -591,7 +593,7 @@ This requires a Docker daemon with Swarm mode enabled.
 <details>
   <summary>Create a secret</summary>
   
-  Create a Secret containing a String value:
+  Create a Secret containing a `String` value:
   ```swift
   let secret = try await docker.secrets.create(
     spec: .init(name: "myVolume", data: "test secret value 💥")
@@ -604,6 +606,16 @@ This requires a Docker daemon with Swarm mode enabled.
   let secret = try await docker.secrets.create(
     spec: .init(name: "myVolume", data: data)
   )
+  ```
+</details>
+
+<details>
+  <summary>Update a secret</summary>
+  
+  Currently, only the `labels` field can be updated (Docker limitation).
+  ```swift
+  let secret = docker.secrets.get("nameOrId")
+  try await docker.secrets.update("nameOrId", version: secret.version.id, labels: ["myKey": "myValue"])
   ```
 </details>
 
