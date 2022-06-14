@@ -49,4 +49,8 @@ final class ConfigAndSecretTests: XCTestCase {
         XCTAssert(secret.spec.name == name, "Ensure name is set")
         try await client.secrets.remove(secret.id)
     }
+    
+    func textZzzLeaveSwarm() async throws {
+        try? await client.swarm.leave()
+    }
 }

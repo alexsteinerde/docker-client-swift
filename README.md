@@ -591,10 +591,18 @@ This requires a Docker daemon with Swarm mode enabled.
 <details>
   <summary>Create a secret</summary>
   
+  Create a Secret containing a String value:
   ```swift
-  let secretData = "test secret value".data(using: .utf8)!
   let secret = try await docker.secrets.create(
-    spec: .init(name: "myVolume", data: secretData)
+    spec: .init(name: "myVolume", data: "test secret value 💥")
+  )
+  ```
+  
+  You can also pass a `Data` value to store as a Secret:
+  ```swift
+  let data: Data = ...
+  let secret = try await docker.secrets.create(
+    spec: .init(name: "myVolume", data: data)
   )
   ```
 </details>
