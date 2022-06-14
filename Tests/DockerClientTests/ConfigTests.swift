@@ -16,12 +16,6 @@ final class ConfigTests: XCTestCase {
         try client.syncShutdown()
     }
     
-    /*func testConfigInpsect() async throws {
-        let configs = try await client.configs.list()
-        let config = try await client.networks.get(configs.first!.id)
-        XCTAssert(config.createdAt > Date.distantPast, "ensure createdAt field is parsed")
-    }*/
-    
     func testListConfigs() async throws {
         // TODO: improve and check the actual content
         let _ = try await client.configs.list()
@@ -29,15 +23,16 @@ final class ConfigTests: XCTestCase {
     
     func testCreateConfig() async throws {
         let name = UUID().uuidString
+        let b64Data = "test config value".data(using: .utf8)!.base64EncodedString()
         let config = try await client.configs.create(
             spec: .init(
                 name: name,
-                data: "test config value".data(using: .utf8)!.base64EncodedString()
+                data: b64Data
             )
         )
         XCTAssert(config.id != "", "Ensure ID is parsed")
         XCTAssert(config.spec.name == name, "Ensure name is set")
-        
+        XCTAssert(config.spec.data == b64Data, "Ensure data is correct")
         try await client.configs.remove(config.id)
     }
 }
