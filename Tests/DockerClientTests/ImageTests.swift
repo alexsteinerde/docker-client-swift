@@ -31,10 +31,6 @@ final class ImageTests: XCTestCase {
         let images = try await client.images.list()
         
         XCTAssert(images.count >= 1)
-        
-        for i in images {
-            XCTAssert(i.created < Date(), "Ensure image create date is parsed properly")
-        }
     }
     
     /*func testParsingRepositoryTagSuccessfull() {

@@ -68,9 +68,11 @@ public struct Image : Codable {
     /// Information about the storage driver used to store the container's and image's filesystem.
     public let graphDriver: GraphDriverData
     
+    /// Information about the image's RootFS, including the layer IDs.
     public let rootFs: RootFS
     
-    // public let Metadata
+    /// Additional metadata of the image in the local cache. This information is local to the daemon, and not part of the image itself.
+    //public let metadata: Metadata
     
     enum CodingKeys: String, CodingKey {
         case id = "Id"
@@ -94,6 +96,7 @@ public struct Image : Codable {
         case labels = "Labels"
         case graphDriver = "GraphDriver"
         case rootFs = "RootFS"
+        //case metadata = "Metadata"
     }
     
     public struct GraphDriverData: Codable {
@@ -115,6 +118,20 @@ public struct Image : Codable {
         enum CodingKeys: String, CodingKey {
             case `type` = "Type"
             case layers = "Layers"
+        }
+    }
+    
+    public struct Metadata: Codable {
+        
+        // TODO: set to usual docker date format when exists: 2022-06-15T12:40:21.113162625Z
+        // otherwise default to different format ""0001-01-01T00:00:00Z". Nice Docker, well done! So convenient and consistent
+        /// Date and time at which the image was last tagged.
+        /// This information is only available if the image was tagged locally, and omitted otherwise.
+        @DateValue<ISO8601Strategy>
+        private(set) public var lastTagTime: Date
+        
+        enum CodingKeys: String, CodingKey {
+            case lastTagTime = "LastTagTime"
         }
     }
 }

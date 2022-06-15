@@ -30,7 +30,7 @@ public struct ContainerConfig: Codable {
     /// The name (or reference) of the image to use
     public var image: String
     
-    public var labels: [String:String] = [:]
+    public var labels: [String:String]? = [:]
     
     public var macAddress: String?
     

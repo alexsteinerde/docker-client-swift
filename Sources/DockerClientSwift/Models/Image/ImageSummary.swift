@@ -32,6 +32,7 @@ public struct ImageSummary: Codable {
     public let sharedSize: Int
     
     public let labels: [String:String] = [:]
+    
     public let containers: Int
     
     
