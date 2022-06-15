@@ -164,9 +164,17 @@ extension DockerClient {
         /// - Parameter nameOrId: Name or Id of the`Container`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the exit code of the`Container` (`0` meaning success/no error).
-        public func wait(_ nameOrId: String) async throws -> Int{
+        public func wait(_ nameOrId: String) async throws -> Int {
             let response = try await client.run(WaitContainerEndpoint(nameOrId: nameOrId))
             return response.StatusCode
+        }
+        
+        /// Returns which files in a container's filesystem have been added, deleted, or modified.
+        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns a list of `ContainerFsChange`.
+        public func getFsChanges(_ nameOrId: String) async throws -> [ContainerFsChange] {
+            return try await client.run(GetContainerChangesEndpoint(nameOrId: nameOrId))
         }
     }
 }

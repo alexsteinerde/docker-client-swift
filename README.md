@@ -37,7 +37,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Get process (top)       | ❌       |      TBD    |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | Wait                    | ✅       |             |
+|                             | Wait                    | ✅       |   untested  |
+|                             | Filesystem changes      | ✅       |   untested  |
 |                             | Attach                  | ❌       |      TBD    |
 |                             | Exec                    | ❌       |  unlikely   |
 |                             |                         |          |             |
