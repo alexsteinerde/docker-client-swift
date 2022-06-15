@@ -8,6 +8,7 @@ public struct Network: Codable {
     
     public let createdAt: Date
     
+    /// `local` (this Docker host only) or `swarm` (available in the whole cluster)
     public let scope: DockerScope
     
     /// Name of the network driver plugin to use.
@@ -33,7 +34,7 @@ public struct Network: Codable {
     public let options: [String:String]
     
     /// User-defined key/value metadata.
-    public let labels: [String:String]
+    public let labels: [String:String]?
     
     enum CodingKeys: String, CodingKey {
         case name = "Name"

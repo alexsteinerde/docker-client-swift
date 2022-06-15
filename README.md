@@ -45,7 +45,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Images                      | List                    | ✅       |             |
 |                             | Inspect                 | ✅       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
-|                             | Build                   | ❌       |      TBD    |
+|                             | Build                   | 🚧       |      TBD    |
 |                             | Tag                     | ✅       |             |
 |                             | Push                    | ❌       |      TBD    |
 |                             | Create (container commit)| ❌       |             |

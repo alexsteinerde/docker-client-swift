@@ -4,5 +4,5 @@ public enum DockerScope: String, Codable {
     /// machine level
     case local
     /// cluster-wide
-    case global
+    case global, swarm
 }
