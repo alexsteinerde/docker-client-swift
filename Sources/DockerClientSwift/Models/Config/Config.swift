@@ -1,5 +1,6 @@
 import Foundation
 
+/// A docker Swarm Config
 public struct Config: Codable {
     public let id: String
     

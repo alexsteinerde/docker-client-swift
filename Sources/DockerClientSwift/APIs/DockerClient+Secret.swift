@@ -39,20 +39,19 @@ extension DockerClient {
         /// Updates a Secret. Currently, only the `labels` field can be updated (Docker limitation)
         /// - Parameters:
         ///   - nameOrId: Name or ID of the `Secret` that should be updated.
-        ///   - version: Current version of the `Secret` that should be updated. Can be obtained by calling get()
         ///   - labels: new labels to set.
         /// - Throws: Errors that can occur when executing the request.
-        public func update(_ nameOrId: String, version: UInt64, labels: [String:String]) async throws {
-            let config = try await get(nameOrId)
+        public func update(_ nameOrId: String, labels: [String:String]) async throws {
+            let secret = try await get(nameOrId)
             try await client.run(
                 UpdateSecretEndpoint(
-                    nameOrId: config.id,
-                    version: version,
+                    nameOrId: secret.id,
+                    version: secret.version.index,
                     spec: .init(
-                        name: config.spec.name,
-                        data: config.spec.data,
+                        name: secret.spec.name,
+                        data: secret.spec.data,
                         labels: labels,
-                        templating: config.spec.templating
+                        templating: secret.spec.templating
                     )
                 )
             )

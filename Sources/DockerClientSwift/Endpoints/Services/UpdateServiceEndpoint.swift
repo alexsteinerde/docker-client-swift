@@ -8,12 +8,12 @@ struct UpdateServiceEndpoint: Endpoint {
     var method: HTTPMethod = .POST
     
     private let nameOrId: String
-    private let version: Int
+    private let version: UInt64
     private let rollback: Bool
     private let image: String?
     private let name: String
     
-    init(nameOrId: String, name: String, version: Int, image: String?, rollback: Bool?) {
+    init(nameOrId: String, name: String, version: UInt64, image: String?, rollback: Bool?) {
         self.nameOrId = nameOrId
         self.name = name
         self.version = version
