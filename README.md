@@ -224,7 +224,7 @@ Remote daemon via HTTPS and client certificate:
   Note: you will also need to start it for the container to actually run.
   ```swift
   let image = try await docker.images.pullImage(byName: "hello-world", tag: "latest")
-  let id = try await docker.containers.create(image: image)
+  let container = try await docker.containers.create(image: image)
   ```
 </details>
 
@@ -242,7 +242,7 @@ Remote daemon via HTTPS and client certificate:
           ...
       )
   )
-  let id = try await docker.containers.create(name: "test", spec: spec)
+  let container = try await docker.containers.create(name: "test", spec: spec)
   ```
 </details>
 

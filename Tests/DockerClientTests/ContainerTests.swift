@@ -16,8 +16,7 @@ final class ContainerTests: XCTestCase {
     
     func testCreateContainers() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let id = try await client.containers.create(image: image)
-        let container = try await client.containers.get(id)
+        let container = try await client.containers.create(image: image)
         XCTAssertEqual(container.config.cmd, ["/hello"])
     }
     
@@ -37,16 +36,16 @@ final class ContainerTests: XCTestCase {
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
         )
-        let id = try await client.containers.create(name: name, spec: spec)
-        try await client.containers.start(id)
+        let container = try await client.containers.create(name: name, spec: spec)
+        try await client.containers.start(container.id)
         
         let newConfig = ContainerUpdate(memoryLimit: 64 * 1024 * 1024, memorySwap: 64 * 1024 * 1024)
-        try await client.containers.update(id, spec: newConfig)
+        try await client.containers.update(container.id, spec: newConfig)
         
-        let updated = try await client.containers.get(id)
+        let updated = try await client.containers.get(container.id)
         XCTAssert(updated.hostConfig.memoryLimit == 64 * 1024 * 1024, "Ensure param has been updated")
         
-        try await client.containers.remove(id)
+        try await client.containers.remove(container.id)
     }
     
     func testListContainers() async throws {
@@ -62,18 +61,17 @@ final class ContainerTests: XCTestCase {
     
     func testInspectContainer() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let id = try await client.containers.create(image: image)
-        let inspectedContainer = try await client.containers.get(id)
+        let container = try await client.containers.create(image: image)
+        let inspectedContainer = try await client.containers.get(container.id)
         
-        XCTAssertEqual(inspectedContainer.id, id)
+        XCTAssertEqual(inspectedContainer.id, container.id)
         XCTAssertEqual(inspectedContainer.config.cmd, ["/hello"])
     }
     
     func testStartingContainerAndRetrievingLogs() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let id = try await client.containers.create(image: image)
-        let container = try await client.containers.get(id)
-        try await client.containers.start(id)
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
@@ -115,14 +113,13 @@ final class ContainerTests: XCTestCase {
     // Log entries parsing is quite different depending on whether the container has a TTY
     func testStartingContainerAndRetrievingLogsTty() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        let id = try await client.containers.create(
+        let container = try await client.containers.create(
             name: nil,
             spec: ContainerCreate(
                 config: ContainerConfig(image: image.id, tty: true),
                 hostConfig: .init())
         )
-        let container = try await client.containers.get(id)
-        try await client.containers.start(id)
+        try await client.containers.start(container.id)
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
@@ -163,15 +160,15 @@ final class ContainerTests: XCTestCase {
     
     func testPruneContainers() async throws {
         let image = try await client.images.pullImage(byName: "nginx", tag: "latest")
-        let id = try await client.containers.create(image: image)
-        try await client.containers.start(id)
-        try await client.containers.stop(id)
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        try await client.containers.stop(container.id)
         
         let pruned = try await client.containers.prune()
         
         let containers = try await client.containers.list(all: true)
-        XCTAssert(!containers.map(\.id).contains(id))
+        XCTAssert(!containers.map(\.id).contains(container.id))
         XCTAssert(pruned.reclaimedSpace > 0)
-        XCTAssert(pruned.containersIds.contains(id))
+        XCTAssert(pruned.containersIds.contains(container.id))
     }
 }
