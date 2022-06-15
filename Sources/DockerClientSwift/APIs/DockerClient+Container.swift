@@ -159,6 +159,15 @@ extension DockerClient {
             /// Disk space reclaimed in bytes.
             let reclaimedSpace: UInt64
         }
+        
+        /// Blocks until a container stops, then returns the exit code.
+        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns the exit code of the`Container` (`0` meaning success/no error).
+        public func wait(_ nameOrId: String) async throws -> Int{
+            let response = try await client.run(WaitContainerEndpoint(nameOrId: nameOrId))
+            return response.StatusCode
+        }
     }
 }
 
