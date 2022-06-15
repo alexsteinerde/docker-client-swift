@@ -336,6 +336,14 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 <details>
+  <summary>Get an image details</summary>
+  
+  ```swift
+  let image = try await docker.images.get("nameOrId")
+  ```
+</details>
+
+<details>
   <summary>Pull an image</summary>
   
   ```swift
