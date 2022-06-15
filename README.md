@@ -90,7 +90,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Configs                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
-|                             | Update                  | ❌       |             |
+|                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
 | Tasks                       | List                    | ❌       |    TBD      |
