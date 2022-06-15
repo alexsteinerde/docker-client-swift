@@ -118,7 +118,7 @@ final class ContainerTests: XCTestCase {
         let id = try await client.containers.create(
             name: nil,
             spec: ContainerCreate(
-                config: ContainerConfig(image: image.id.value, tty: true),
+                config: ContainerConfig(image: image.id, tty: true),
                 hostConfig: .init())
         )
         let container = try await client.containers.get(id)

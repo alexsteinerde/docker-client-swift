@@ -26,7 +26,7 @@ extension DockerClient {
             return try await client.run(InspectConfigEndpoint(nameOrId: nameOrId))
         }
         
-        /// Create a new Config.
+        /// Creates a new Config.
         /// - Parameters:
         ///   - spec: configuration as a `ConfigSpec`.
         /// - Throws: Errors that can occur when executing the request.
@@ -36,7 +36,7 @@ extension DockerClient {
             return try await client.configs.get(createResponse.ID)
         }
         
-        /// Update a  Config. Currently, only the `labels` field can be updated (Docker limitation)
+        /// Updates a  Config. Currently, only the `labels` field can be updated (Docker limitation)
         /// - Parameters:
         ///   - nameOrId: Name or ID of the `Config` that should be updated.
         ///   - version: Current version of the `Config` that should be updated. Can be obtained by calling get()

@@ -16,13 +16,13 @@ final class ImageTests: XCTestCase {
     
     func testDeleteImage() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
-        try await client.images.remove(image.id.value, force: true)
+        try await client.images.remove(image.id, force: true)
     }
     
     func testPullImage() async throws {
         let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
         
-        XCTAssertTrue(image.repositoryTags.contains(where: { $0.repository == "hello-world" && $0.tag == "latest"}))
+        XCTAssertTrue(image.repoTags!.first == "hello-world:latest")
     }
     
     func testListImage() async throws {
@@ -37,7 +37,7 @@ final class ImageTests: XCTestCase {
         }
     }
     
-    func testParsingRepositoryTagSuccessfull() {
+    /*func testParsingRepositoryTagSuccessfull() {
         let rt = Image.RepositoryTag("hello-world:latest")
         
         XCTAssertEqual(rt?.repository, "hello-world")
@@ -61,7 +61,7 @@ final class ImageTests: XCTestCase {
         let rt = Image.RepositoryTag("sha256:89b647c604b2a436fc3aa56ab1ec515c26b085ac0c15b0d105bc475be15738fb")
         
         XCTAssertNil(rt)
-    }
+    }*/
     
     func testInspectImage() async throws {
         XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get("nginx:latest") })
@@ -74,7 +74,7 @@ final class ImageTests: XCTestCase {
         
         let images = try await client.images.list()
         
-        XCTAssert(!images.map(\.id).contains(image.id.value))
+        XCTAssert(!images.map(\.id).contains(image.id))
         XCTAssert(pruned.reclaimedSpace > 0)
         XCTAssert(pruned.imageIds.contains(image.id))
     }

@@ -62,13 +62,7 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the `Image` data.
         public func get(_ nameOrId: String) async throws -> Image {
-            let image = try await client.run(InspectImagesEndpoint(nameOrId: nameOrId))
-            return Image(
-                id: .init(image.Id),
-                digest: image.RepoDigests?.first.map({ Digest.init($0) }),
-                repoTags: image.RepoTags,
-                createdAt: image.Created
-            )
+            return try await client.run(InspectImagesEndpoint(nameOrId: nameOrId))
         }
         
         /// Tags an image.
@@ -88,14 +82,14 @@ extension DockerClient {
         public func prune(all: Bool = false) async throws -> PrunedImages {
             let response = try await client.run(PruneImagesEndpoint(dangling: !all))
             return PrunedImages(
-                imageIds: response.ImagesDeleted?.compactMap(\.Deleted).map({ .init($0)}) ?? [],
+                imageIds: response.ImagesDeleted?.compactMap(\.Deleted) ?? [],
                 reclaimedSpace: response.SpaceReclaimed
             )
         }
         
         public struct PrunedImages {
             /// IDs of the images that got deleted.
-            let imageIds: [Identifier<Image>]
+            let imageIds: [String]
             
             /// Disk space reclaimed in bytes.
             let reclaimedSpace: UInt64
@@ -104,7 +98,7 @@ extension DockerClient {
 }
 
 
-extension Image {
+/*extension Image {
     /// Parses an image identifier to it's corresponding digest, name and tag.
     /// - Parameter value: Image identifer.
     /// - Returns: Returns an `Optional` tuple of a `Digest` and a `RepositoryTag`.
@@ -116,4 +110,4 @@ extension Image {
             return nil
         }
     }
-}
+}*/

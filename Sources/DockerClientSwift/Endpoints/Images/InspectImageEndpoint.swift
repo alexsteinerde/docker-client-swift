@@ -3,7 +3,7 @@ import NIOHTTP1
 
 struct InspectImagesEndpoint: Endpoint {
     typealias Body = NoBody
-    typealias Response = ImageResponse
+    typealias Response = Image
     var method: HTTPMethod = .GET
     
     let nameOrId: String
@@ -14,18 +14,5 @@ struct InspectImagesEndpoint: Endpoint {
     
     var path: String {
         "images/\(nameOrId)/json"
-    }
-    
-    struct ImageResponse: Codable {
-        let Id: String
-        let Parent: String
-        let Os: String
-        let Architecture: String
-        let Created: Date
-        let RepoTags: [String]?
-        let RepoDigests: [String]?
-        let Size: Int
-        let VirtualSize: Int
-        // TODO: Add additional fields
     }
 }

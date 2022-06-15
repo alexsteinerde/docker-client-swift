@@ -41,7 +41,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Exec                    | ❌       |  unlikely   |
 |                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
-|                             | Inspect                 | 🚧       | refactoring |
+|                             | Inspect                 | ✅       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
 |                             | Build                   | ❌       |      TBD    |
 |                             | Tag                     | ✅       |             |

@@ -35,7 +35,7 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  the created `Container` Id.
         public func create(image: Image, commands: [String]? = nil) async throws -> String {
-            let response = try await client.run(SimpleCreateContainerEndpoint(imageName: image.id.value, commands: commands))
+            let response = try await client.run(SimpleCreateContainerEndpoint(imageName: image.id, commands: commands))
             return response.Id
         }
         

@@ -26,7 +26,7 @@ extension DockerClient {
             return try await client.run(InspectSecretEndpoint(nameOrId: nameOrId))
         }
         
-        /// Create a new Secret.
+        /// Creates a new Secret.
         /// - Parameters:
         ///   - spec: configuration as a `SecretSpec`.
         /// - Throws: Errors that can occur when executing the request.
@@ -36,7 +36,7 @@ extension DockerClient {
             return try await client.secrets.get(createResponse.ID)
         }
         
-        /// Update a Secret. Currently, only the `labels` field can be updated (Docker limitation)
+        /// Updates a Secret. Currently, only the `labels` field can be updated (Docker limitation)
         /// - Parameters:
         ///   - nameOrId: Name or ID of the `Secret` that should be updated.
         ///   - version: Current version of the `Secret` that should be updated. Can be obtained by calling get()

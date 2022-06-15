@@ -85,11 +85,11 @@ extension DockerClient {
         ///   - image: Instance of an `Image` for the service.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the newly created `Service`.
-        public func create(serviceName name: String, image: Image) async throws -> Service {
-            let serviceId = try await client.run(CreateServiceEndpoint(name: name, image: image.id.value))
+        /*public func create(serviceName name: String, image: Image) async throws -> Service {
+            let serviceId = try await client.run(CreateServiceEndpoint(name: name, image: image.id))
             let service = try await client.run(InspectServiceEndpoint(nameOrId: serviceId.ID))
             return service
-        }
+        }*/
         
         /// Create a new service.
         /// - Parameters:
