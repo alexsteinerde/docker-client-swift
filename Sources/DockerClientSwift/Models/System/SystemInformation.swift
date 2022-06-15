@@ -421,7 +421,7 @@ public struct SwarmTLSInfo: Codable {
 
 // MARK: - SwarmVersion
 public struct SwarmVersion: Codable {
-    public let index: Int
+    public let index: UInt64
     
     enum CodingKeys: String, CodingKey {
         case index = "Index"

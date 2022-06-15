@@ -46,7 +46,7 @@ extension DockerClient {
             try await client.run(
                 UpdateConfigEndpoint(
                     nameOrId: config.id,
-                    version: config.version.id,
+                    version: config.version.index,
                     spec: .init(
                         name: config.spec.name,
                         data: config.spec.data,

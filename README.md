@@ -623,8 +623,7 @@ The API is very similar for managing Docker Configs and the below examples also 
   
   Currently, only the `labels` field can be updated (Docker limitation).
   ```swift
-  let secret = docker.secrets.get("nameOrId")
-  try await docker.secrets.update("nameOrId", version: secret.version.id, labels: ["myKey": "myValue"])
+  try await docker.secrets.update("nameOrId", labels: ["myKey": "myValue"])
   ```
 </details>
 
