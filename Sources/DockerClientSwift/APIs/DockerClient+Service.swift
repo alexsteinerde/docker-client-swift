@@ -96,9 +96,10 @@ extension DockerClient {
         ///   - spec: the `ServiceSpec` describing the configuration of the service.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the newly created `Service` ID.
-        public func create(spec: ServiceSpec) async throws -> String {
+        public func create(spec: ServiceSpec) async throws -> Service {
             let createResponse = try await client.run(CreateServiceAdvancedEndpoint(spec: spec))
-            return createResponse.ID
+            let service = try await get(createResponse.ID)
+            return service
         }
         
         /// Removes an existing service.

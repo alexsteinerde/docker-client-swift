@@ -431,7 +431,7 @@ Note: Must be connected to a manager node.
           replicated: .init(replicas: 1)
       )
   )
-  let id = try await docker.services.create(spec: spec)
+  let service = try await docker.services.create(spec: spec)
   ```
   
   Let's specify a memory limit of 64MB for our service containers:
@@ -448,7 +448,7 @@ Note: Must be connected to a manager node.
           replicated: .init(replicas: 1)
       )
   )
-  let id = try await docker.services.create(spec: spec)
+  let service = try await docker.services.create(spec: spec)
   ```
   TODO: add examples for specifying networks and volumes
 </details>

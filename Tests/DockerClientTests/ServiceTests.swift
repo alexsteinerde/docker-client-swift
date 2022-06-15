@@ -60,9 +60,8 @@ final class ServiceTests: XCTestCase {
                 replicated: .init(replicas: 1)
             )
         )
-        let id = try await client.services.create(spec: spec)
+        let service = try await client.services.create(spec: spec)
         try await Task.sleep(nanoseconds: 3_000_000_000)
-        let service = try await client.services.get(id)
         XCTAssertEqual(service.spec.name, name)
     }
     
@@ -87,9 +86,7 @@ final class ServiceTests: XCTestCase {
                 replicated: .init(replicas: 1)
             )
         )
-        let id = try await client.services.create(spec: spec)
-        print("\n••••• SERVICE CREATED, id = \(id)")
-        let service = try await client.services.get(id)
+        let service = try await client.services.create(spec: spec)
         
         XCTAssert(service.spec.name == name, "Ensure custom service name is set")
         XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == 64 * 1024 * 1024, "Ensure memory limit is set")
@@ -107,8 +104,7 @@ final class ServiceTests: XCTestCase {
                 replicated: .init(replicas: 1)
             )
         )
-        let id = try await client.services.create(spec: spec)
-        let service = try await client.services.get(id)
+        let service = try await client.services.create(spec: spec)
         
         // wait until service is running and Nginx has produced logs
         // not sure how to improve that, might lead to flaky test
