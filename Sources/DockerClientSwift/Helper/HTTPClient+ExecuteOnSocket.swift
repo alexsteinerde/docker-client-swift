@@ -45,7 +45,6 @@ extension HTTPClient {
         return AsyncThrowingStream<ByteBuffer, Error> { continuation in
             _Concurrency.Task {
                 for try await buffer in body {
-                    //let data = Data(buffer: buffer)
                     continuation.yield(buffer)
                 }
                 continuation.finish()

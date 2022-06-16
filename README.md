@@ -45,7 +45,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Images                      | List                    | ✅       |             |
 |                             | Inspect                 | ✅       | refactoring |
 |                             | Pull                    | ✅       | refactoring |
-|                             | Build                   | 🚧       |      TBD    |
+|                             | Build                   | ✅       | basic implementation |
 |                             | Tag                     | ✅       |             |
 |                             | Push                    | ❌       |      TBD    |
 |                             | Create (container commit)| ❌       |             |
@@ -259,7 +259,6 @@ Remote daemon via HTTPS and client certificate:
   ```
 </details>
 
-
 <details>
   <summary>Start a container</summary>
   
@@ -283,7 +282,6 @@ Remote daemon via HTTPS and client certificate:
   try await client.containers.rename("nameOrId", to: "hahi")
   ```
 </details>
-
 
 <details>
   <summary>Delete a container</summary>
@@ -327,6 +325,7 @@ Remote daemon via HTTPS and client certificate:
   ```
 </details>
 
+
 ### Images
 
 <details>
@@ -352,6 +351,30 @@ Remote daemon via HTTPS and client certificate:
   let image = try await docker.images.pullImage(byIdentifier: "hello-world:latest")
   ```
 </details>
+
+<details>
+  <summary>Build an image</summary>
+  
+  The current implementation of this library is very bare-bones.
+  The Docker build context, containing the Dockerfile and any other resources required during the build, must be passed as a TAR archive.
+  
+  Supposing we already have a TAR archive of the build context in a `Data` variable:
+  ```swift
+  let buildOutput = try await client.images.build(
+      config: .init(repoTags: ["build:test"]),
+      context: buffer
+  )
+  var imageId: String? = nil
+  for try await item in try await buildOutput {
+      if item.aux != nil {
+          imageId = item.aux!.id
+          print("\n• Image ID: \(imageId!)")
+      }
+      print("\n• Build output: \(item.stream)")
+  }
+  ```
+</details>
+
 
 ### Swarm
 
@@ -380,6 +403,7 @@ Remote daemon via HTTPS and client certificate:
   try await docker.swarm.leave(force: true)
   ```
 </details>
+
 
 ### Nodes
 <details>
@@ -455,7 +479,6 @@ Note: Must be connected to a manager node.
   TODO: add examples for specifying networks and volumes
 </details>
         
-
 <details>
   <summary>Get service logs</summary>
   
@@ -507,6 +530,7 @@ Note: Must be connected to a manager node.
   try await docker.services.remove("nameOrId")
   ```
 </details>
+
 
 ### Networks
 <details>

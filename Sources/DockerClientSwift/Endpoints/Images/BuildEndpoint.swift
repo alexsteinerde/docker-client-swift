@@ -28,8 +28,8 @@ struct BuildEndpoint: UploadEndpoint {
         }
         
         let cacheFrom = try? encoder.encode(buildConfig.cacheFrom)
-        let buildArgs = try? encoder.encode(buildConfig.buildargs)
-        let labels = try? encoder.encode(buildConfig.labels)
+        let buildArgs = String(data: try! encoder.encode(buildConfig.buildargs), encoding: .utf8)
+        let labels = String(data: try! encoder.encode(buildConfig.labels), encoding: .utf8)
         
         return
         """
@@ -55,12 +55,10 @@ struct BuildEndpoint: UploadEndpoint {
         &networkmode=\(buildConfig.networkMode ?? "")\
         &platform=\(buildConfig.platform ?? "")\
         &target=\(buildConfig.target ?? "")\
-        &outputs=\(buildConfig.outputs ?? "")
+        &outputs=\(buildConfig.outputs ?? "")\
+        &buildargs=\(buildArgs?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")\
+        &labels=\(labels?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
         """
-        //         &labels=\(String(data: labels ?? Data(), encoding: .utf8) ?? "")\
-        //        &buildargs=\(String(data: buildArgs ?? Data(), encoding: .utf8) ?? "")\
-
-
     }
     
     func map(response: Response) async throws -> AsyncThrowingStream<BuildStreamOutput, Error>  {
@@ -72,7 +70,6 @@ struct BuildEndpoint: UploadEndpoint {
                         if buffer.readableBytes == 0 {
                             continuation.finish()
                         }
-                        //let data = Data(buffer: buffer)
                         guard let data = buffer.readData(length: buffer.readableBytes) else {
                             continuation.finish(throwing: DockerLogDecodingError.dataCorrupted("Unable to read \(totalDataSize) bytes as Data"))
                             return
@@ -82,8 +79,12 @@ struct BuildEndpoint: UploadEndpoint {
                             continuation.finish(throwing: DockerError.unknownResponse("Expected json terminated by line return"))
                             return
                         }
-                        for streamItem in splat {
+                        for streamItem in splat {                            
                             let model = try decoder.decode(BuildStreamOutput.self, from: streamItem)
+                            guard model.message == nil else {
+                                continuation.finish(throwing: DockerError.message(model.message!))
+                                return
+                            }
                             continuation.yield(model)
                         }
                     }

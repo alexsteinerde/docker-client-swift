@@ -74,7 +74,7 @@ extension DockerClient {
         ///   - timeout: How long to wait for the build to finish before cancelling it (by cancelling the request).
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` when the image has been removed or an error is thrown.
-        public func build(config: BuildConfig, context: ByteBuffer, timeout: TimeAmount = .minutes(10)) async throws -> (id: String, output: AsyncThrowingStream<BuildStreamOutput, Error>) {
+        public func build(config: BuildConfig, context: ByteBuffer, timeout: TimeAmount = .minutes(10)) async throws -> AsyncThrowingStream<BuildStreamOutput, Error> {
             let endpoint = BuildEndpoint(buildConfig: config, context: context)
             let response =  try await client.run(endpoint, timeout: timeout)
             return try await endpoint.map(response: response)

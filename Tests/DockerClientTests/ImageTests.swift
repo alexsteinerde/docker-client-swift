@@ -78,25 +78,29 @@ final class ImageTests: XCTestCase {
     }
     
     func testBuild() async throws {
-        do {
-            let tarPath = URL(string: "file:///tmp/docker-build.tar")!
-            try FileManager.default.createTar(
-                at: tarPath,
-                from: URL(string: "file:///Users/matthieu.barthelemy/git/ccloud/docker-client-swift")!
-            )
-            guard let tar = FileManager.default.contents(atPath: "/tmp/docker-build.tar") else {
-                print("\n•••• Failed to read \(tarPath.absoluteString)")
-                return
-            }
-            let buffer = ByteBuffer.init(data: tar)
-            let buildOutput = try await client.images.build(config: .init(repoTags: ["build:test"]), context: buffer)
-            for try await item in try await buildOutput {
-                print("\n••• BUILD OUT: \(item)")
-            }
+        let tarPath = URL(string: "file:///tmp/docker-build.tar")!
+        try FileManager.default.createTar(
+            at: tarPath,
+            from: URL(string: "file:///Users/matthieubarthelemy/git/docker-client-swift/Tests")!
+        )
+        guard let tar = FileManager.default.contents(atPath: "/tmp/docker-build.tar") else {
+            print("\n•••• Failed to read \(tarPath.absoluteString)")
+            return
         }
-        catch(let error) {
-            print("\n••• ERROR: \(error)")
+        let buffer = ByteBuffer.init(data: tar)
+        let buildOutput = try await client.images.build(
+            config: .init(repoTags: ["build:test"]),
+            context: buffer
+        )
+        var imageId: String? = nil
+        for try await item in try await buildOutput {
+            if item.aux != nil {
+                imageId = item.aux!.id
+            }
+            print("\n••• BUILD OUT: \(item)")
         }
+        XCTAssert(imageId != nil, "Ensure built Image ID is returned")
+        let image = try await client.images.get(imageId!)
     }
     
 }

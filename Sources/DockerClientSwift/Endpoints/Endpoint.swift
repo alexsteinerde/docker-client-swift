@@ -60,7 +60,6 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
                         if buffer.readableBytes == 0 {
                             continuation.finish()
                         }
-                        //let data = Data(buffer: buffer)
                         guard let data = buffer.readData(length: buffer.readableBytes) else {
                             continuation.finish(throwing: DockerLogDecodingError.dataCorrupted("Unable to read \(totalDataSize) bytes as Data"))
                             return
@@ -83,7 +82,6 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
 
 protocol UploadEndpoint {
     associatedtype Response: AsyncSequence
-    //associatedtype Body: ByteBuffer
     var path: String { get }
     var method: HTTPMethod { get }
     var body: ByteBuffer? { get }
