@@ -71,10 +71,14 @@ extension DockerClient {
         /// - Parameters:
         ///   - config: A `BuildConfig` instance specifying build options.
         ///   - context: A `ByteBuffer` containing a **TAR archive** of the Docker Build context (Dockerfile + any other content needed to build the image).
+        ///   - timeout: How long to wait for the build to finish before cancelling it (by cancelling the request).
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` when the image has been removed or an error is thrown.
-        public func build(config: BuildConfig, context: ByteBuffer, timeout: TimeAmount = .minutes(5)) async throws {
-            try await client.run(BuildEndpoint(buildConfig: config, context: context), timeout: timeout)
+        public func build(config: BuildConfig, context: ByteBuffer, timeout: TimeAmount = .minutes(10)) async throws -> (id: String, output: AsyncThrowingStream<BuildStreamOutput, Error>) {
+            let endpoint = BuildEndpoint(buildConfig: config, context: context)
+            let response =  try await client.run(endpoint, timeout: timeout)
+            return try await endpoint.map(response: response)
+            
         }
         
         /// Tags an image.

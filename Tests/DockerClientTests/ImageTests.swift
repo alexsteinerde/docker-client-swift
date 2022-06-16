@@ -82,14 +82,17 @@ final class ImageTests: XCTestCase {
             let tarPath = URL(string: "file:///tmp/docker-build.tar")!
             try FileManager.default.createTar(
                 at: tarPath,
-                from: URL(string: "file:///Users/matthieubarthelemy/git/docker-client-swift")!
+                from: URL(string: "file:///Users/matthieu.barthelemy/git/ccloud/docker-client-swift")!
             )
             guard let tar = FileManager.default.contents(atPath: "/tmp/docker-build.tar") else {
                 print("\n•••• Failed to read \(tarPath.absoluteString)")
                 return
             }
             let buffer = ByteBuffer.init(data: tar)
-            try await client.images.build(config: .init(), context: buffer)
+            let buildOutput = try await client.images.build(config: .init(repoTags: ["build:test"]), context: buffer)
+            for try await item in try await buildOutput {
+                print("\n••• BUILD OUT: \(item)")
+            }
         }
         catch(let error) {
             print("\n••• ERROR: \(error)")

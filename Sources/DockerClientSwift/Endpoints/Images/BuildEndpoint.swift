@@ -5,7 +5,7 @@ import Foundation
 struct BuildEndpoint: UploadEndpoint {
     var body: Body?
     
-    typealias Response = NoBody
+    typealias Response = AsyncThrowingStream<ByteBuffer, Error>
     typealias Body = ByteBuffer
     var method: HTTPMethod = .POST
     
@@ -13,6 +13,7 @@ struct BuildEndpoint: UploadEndpoint {
     
     // Some Query String have to be encoded as JSON
     private let encoder: JSONEncoder
+    private let decoder = JSONDecoder()
     
     init(buildConfig: BuildConfig, context: ByteBuffer) {
         self.buildConfig = buildConfig
@@ -35,7 +36,7 @@ struct BuildEndpoint: UploadEndpoint {
         build\
         ?dockerfile=\(buildConfig.dockerfile)\
         \(tags)\
-        &extrahosts=\(buildConfig.extraHosts ?? "")\
+        \(buildConfig.extraHosts != nil ? "&extrahosts=\(buildConfig.extraHosts!)" : "")\
         &remote=\(buildConfig.remote?.absoluteString ?? "")\
         &q=\(buildConfig.quiet)\
         &nocache=\(buildConfig.noCache)\
@@ -60,5 +61,35 @@ struct BuildEndpoint: UploadEndpoint {
         //        &buildargs=\(String(data: buildArgs ?? Data(), encoding: .utf8) ?? "")\
 
 
+    }
+    
+    func map(response: Response) async throws -> AsyncThrowingStream<BuildStreamOutput, Error>  {
+        return AsyncThrowingStream<BuildStreamOutput, Error> { continuation in
+            Task {
+                for try await var buffer in response {
+                    let totalDataSize = buffer.readableBytes
+                    while buffer.readerIndex < totalDataSize {
+                        if buffer.readableBytes == 0 {
+                            continuation.finish()
+                        }
+                        //let data = Data(buffer: buffer)
+                        guard let data = buffer.readData(length: buffer.readableBytes) else {
+                            continuation.finish(throwing: DockerLogDecodingError.dataCorrupted("Unable to read \(totalDataSize) bytes as Data"))
+                            return
+                        }
+                        let splat = data.split(separator: 10 /* ascii code for \n */)
+                        guard splat.count >= 1 else {
+                            continuation.finish(throwing: DockerError.unknownResponse("Expected json terminated by line return"))
+                            return
+                        }
+                        for streamItem in splat {
+                            let model = try decoder.decode(BuildStreamOutput.self, from: streamItem)
+                            continuation.yield(model)
+                        }
+                    }
+                }
+                continuation.finish()
+            }
+        }
     }
 }
