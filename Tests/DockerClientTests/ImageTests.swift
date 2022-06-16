@@ -1,6 +1,8 @@
 import XCTest
 @testable import DockerClientSwift
 import Logging
+import Tarscape
+import NIO
 
 final class ImageTests: XCTestCase {
     
@@ -63,7 +65,7 @@ final class ImageTests: XCTestCase {
         XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get("nginx:latest") })
     }
     
-    func testPruneContainers() async throws {
+    func testPruneImages() async throws {
         let image = try await client.images.pullImage(byName: "nginx", tag: "1.18-alpine")
         
         let pruned = try await client.images.prune(all: true)
@@ -74,4 +76,24 @@ final class ImageTests: XCTestCase {
         XCTAssert(pruned.reclaimedSpace > 0)
         XCTAssert(pruned.imageIds.contains(image.id))
     }
+    
+    func testBuild() async throws {
+        do {
+            let tarPath = URL(string: "file:///tmp/docker-build.tar")!
+            try FileManager.default.createTar(
+                at: tarPath,
+                from: URL(string: "file:///Users/matthieubarthelemy/git/docker-client-swift")!
+            )
+            guard let tar = FileManager.default.contents(atPath: "/tmp/docker-build.tar") else {
+                print("\n•••• Failed to read \(tarPath.absoluteString)")
+                return
+            }
+            let buffer = ByteBuffer.init(data: tar)
+            try await client.images.build(config: .init(), context: buffer)
+        }
+        catch(let error) {
+            print("\n••• ERROR: \(error)")
+        }
+    }
+    
 }

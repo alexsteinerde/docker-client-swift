@@ -3,7 +3,7 @@ import Foundation
 /// Configuration for a `docker build`.
 public struct BuildConfig: Codable {
     /// Path within the build context to the Dockerfile. This is ignored if `remote` is specified and points to an external Dockerfile.
-    public var dockerfile: String
+    public var dockerfile: String = "Dockerfile"
     
     /// list of names and optional tags to apply to the image, in the `name:tag` format.
     /// If you omit the tag the default `latest` value is assumed.

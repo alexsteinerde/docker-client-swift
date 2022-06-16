@@ -80,3 +80,11 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
     }
 }
 
+
+protocol UploadEndpoint {
+    associatedtype Response: Codable
+    //associatedtype Body: ByteBuffer
+    var path: String { get }
+    var method: HTTPMethod { get }
+    var body: ByteBuffer? { get }
+}

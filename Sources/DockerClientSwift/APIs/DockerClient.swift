@@ -9,9 +9,9 @@ import Logging
 public class DockerClient {
     private let apiVersion = "v1.41"
     private let headers = HTTPHeaders([
+        ("Host", "localhost"), // Required by Docker
         ("Accept", "application/json;charset=utf-8"),
-        ("Content-Type", "application/json"),
-        ("Host", "localhost")
+        ("Content-Type", "application/json")
     ])
     private let decoder: JSONDecoder
     
@@ -104,7 +104,7 @@ public class DockerClient {
     
     @discardableResult
     internal func run<T: StreamingEndpoint>(_ endpoint: T, timeout: TimeAmount) async throws -> T.Response {
-        logger.debug("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
+        logger.trace("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
         let stream = try await client.executeStream(
             endpoint.method,
             daemonURL: self.deamonURL,
@@ -112,6 +112,22 @@ public class DockerClient {
             body: endpoint.body.map {
                 HTTPClientRequest.Body.bytes( try! $0.encode())
             },
+            tlsConfig: self.tlsConfig,
+            timeout: timeout,
+            logger: logger,
+            headers: self.headers
+        )
+        return stream as! T.Response
+    }
+    
+    @discardableResult
+    internal func run<T: UploadEndpoint>(_ endpoint: T, timeout: TimeAmount) async throws -> T.Response {
+        logger.debug("\(Self.self) execute \(T.self): \(endpoint.path)")
+        let stream = try await client.executeStream(
+            endpoint.method,
+            daemonURL: self.deamonURL,
+            urlPath: "/\(apiVersion)/\(endpoint.path)",
+            body: endpoint.body == nil ? nil : .bytes(endpoint.body!),
             tlsConfig: self.tlsConfig,
             timeout: timeout,
             logger: logger,

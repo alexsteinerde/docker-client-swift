@@ -12,8 +12,8 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.10.0"),
         // Only used for parsing the multiple and inconsistent date formats returned by Docker
         .package(url: "https://github.com/marksands/BetterCodable.git", from: "0.4.0"),
-        // Some Docker features receive or return TAR archives
-        .package(url: "https://github.com/tsolomko/SWCompression.git", from: "4.8.0"),
+        // Some Docker features receive or return TAR archives. Used by tests
+        .package(url: "https://github.com/kayembi/Tarscape.git", .branch("main")),
     ],
     targets: [
         .target(
@@ -22,11 +22,10 @@ let package = Package(
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "BetterCodable",
-                "SWCompression",
             ]),
         .testTarget(
             name: "DockerClientTests",
-            dependencies: ["DockerClientSwift"]
+            dependencies: ["DockerClientSwift", "Tarscape"]
         ),
     ]
 )

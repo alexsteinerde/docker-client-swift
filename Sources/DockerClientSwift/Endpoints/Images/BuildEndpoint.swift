@@ -2,19 +2,21 @@ import NIOHTTP1
 import NIO
 import Foundation
 
-struct BuildEndpoint: Endpoint {
+struct BuildEndpoint: UploadEndpoint {
     var body: Body?
     
     typealias Response = NoBody
-    typealias Body = Data
+    typealias Body = ByteBuffer
     var method: HTTPMethod = .POST
     
     private let buildConfig: BuildConfig
     
+    // Some Query String have to be encoded as JSON
     private let encoder: JSONEncoder
     
-    init(buildConfig: BuildConfig) {
+    init(buildConfig: BuildConfig, context: ByteBuffer) {
         self.buildConfig = buildConfig
+        self.body = context
         self.encoder = .init()
     }
     
@@ -35,11 +37,11 @@ struct BuildEndpoint: Endpoint {
         \(tags)\
         &extrahosts=\(buildConfig.extraHosts ?? "")\
         &remote=\(buildConfig.remote?.absoluteString ?? "")\
-        &q=\(buildConfig.quiet)
+        &q=\(buildConfig.quiet)\
         &nocache=\(buildConfig.noCache)\
         &cachefrom=\(String(data: cacheFrom ?? Data(), encoding: .utf8) ?? "")\
         &pull=\(buildConfig.pull)\
-        &rm=\(buildConfig.rm)
+        &rm=\(buildConfig.rm)\
         &forcerm=\(buildConfig.forceRm)\
         &memory=\(buildConfig.memory)\
         &memswap=\(buildConfig.memorySwap)\
@@ -47,14 +49,16 @@ struct BuildEndpoint: Endpoint {
         &cpusetcpus=\(buildConfig.cpusetCpus ?? "")\
         &cpuperiod=\(buildConfig.cpuPeriod)\
         &cpuquota=\(buildConfig.cpuQuota)\
-        &buildargs=\(String(data: buildArgs ?? Data(), encoding: .utf8) ?? "")\
         &shmsize=\(buildConfig.shmSizeBytes?.description ?? "")\
         &squash=\(buildConfig.squash)\
-        &labels=\(String(data: labels ?? Data(), encoding: .utf8) ?? "")\
         &networkmode=\(buildConfig.networkMode ?? "")\
         &platform=\(buildConfig.platform ?? "")\
         &target=\(buildConfig.target ?? "")\
         &outputs=\(buildConfig.outputs ?? "")
         """
+        //         &labels=\(String(data: labels ?? Data(), encoding: .utf8) ?? "")\
+        //        &buildargs=\(String(data: buildArgs ?? Data(), encoding: .utf8) ?? "")\
+
+
     }
 }
