@@ -358,20 +358,36 @@ Remote daemon via HTTPS and client certificate:
   The current implementation of this library is very bare-bones.
   The Docker build context, containing the Dockerfile and any other resources required during the build, must be passed as a TAR archive.
   
-  Supposing we already have a TAR archive of the build context in a `Data` variable:
+  Supposing we already have a TAR archive of the build context:
   ```swift
-  let buildOutput = try await client.images.build(
+  let tar = FileManager.default.contents(atPath: "/tmp/docker-build.tar")
+  let buffer = ByteBuffer.init(data: tar)
+  let buildOutput = try await docker.images.build(
       config: .init(repoTags: ["build:test"]),
       context: buffer
   )
   var imageId: String? = nil
-  for try await item in try await buildOutput {
+  for try await item in buildOutput {
       if item.aux != nil {
           imageId = item.aux!.id
           print("\n• Image ID: \(imageId!)")
       }
-      print("\n• Build output: \(item.stream)")
+      else {
+        print("\n• Build output: \(item.stream)")
+      }
   }
+  ```
+  
+  You can use external libraries to create TAR archives of your build context.
+  Example with Tarscape (https://github.com/kayembi/Tarscape):
+  ```
+  import Tarscape
+  
+  let tarContextPath = "/tmp/docker-build.tar"
+  try FileManager.default.createTar(
+      at: URL(fileURLWithPath: tarContextPath),
+      from: URL(string: "file:///path/to/your/context/folder")!
+  )
   ```
 </details>
 
