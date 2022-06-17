@@ -43,7 +43,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Exec                    | ❌       |  unlikely   |
 |                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
-|                             | Inspect                 | ✅       | refactoring |
+|                             | Inspect                 | ✅       |             |
 |                             | History                 | ✅       | untested    |
 |                             | Pull                    | ✅       | refactoring |
 |                             | Build                   | ✅       | basic implementation |
