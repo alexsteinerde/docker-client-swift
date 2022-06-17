@@ -380,7 +380,7 @@ Remote daemon via HTTPS and client certificate:
   
   You can use external libraries to create TAR archives of your build context.
   Example with Tarscape (https://github.com/kayembi/Tarscape):
-  ```
+  ```swift
   import Tarscape
   
   let tarContextPath = "/tmp/docker-build.tar"
