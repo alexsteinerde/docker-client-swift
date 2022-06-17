@@ -28,7 +28,7 @@ struct BuildEndpoint: UploadEndpoint {
         }
         
         let cacheFrom = try? encoder.encode(buildConfig.cacheFrom)
-        let buildArgs = String(data: try! encoder.encode(buildConfig.buildargs), encoding: .utf8)
+        let buildArgs = String(data: try! encoder.encode(buildConfig.buildArgs), encoding: .utf8)
         let labels = String(data: try! encoder.encode(buildConfig.labels), encoding: .utf8)
         
         return

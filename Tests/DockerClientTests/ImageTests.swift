@@ -65,6 +65,12 @@ final class ImageTests: XCTestCase {
         XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get("nginx:latest") })
     }
     
+    func testImageHistory() async throws {
+        let image = try await client.images.pull(byName: "nginx", tag: "1.18-alpine")
+        let history = try await client.images.history(image.id)
+        XCTAssert(history.count > 0 && history.first!.id.starts(with: "sha256"))
+    }
+    
     func testPruneImages() async throws {
         let image = try await client.images.pull(byName: "nginx", tag: "1.18-alpine")
         
@@ -78,15 +84,20 @@ final class ImageTests: XCTestCase {
     }
     
     func testBuild() async throws {
+        let fm = FileManager.default
         let tarContextPath = "/tmp/docker-build.tar"
-        try FileManager.default.createTar(
+        try fm.createTar(
             at: URL(fileURLWithPath: tarContextPath),
-            from: URL(string: "file:///Users/matthieubarthelemy/git/docker-client-swift/Tests")!
+            from: URL(string: "file:///\(fm.currentDirectoryPath)/Tests")!
         )
-        let tar = FileManager.default.contents(atPath: tarContextPath)
+        let tar = fm.contents(atPath: tarContextPath)
         let buffer = ByteBuffer.init(data: tar!)
         let buildOutput = try await client.images.build(
-            config: .init(repoTags: ["build:test"]),
+            config: .init(
+                repoTags: ["build:test"],
+                buildArgs: ["TEST": "test"],
+                labels: ["test": "value"]
+            ),
             context: buffer
         )
         var imageId: String? = nil
@@ -96,6 +107,11 @@ final class ImageTests: XCTestCase {
             }
         }
         XCTAssert(imageId != nil, "Ensure built Image ID is returned")
+        
+        let image = try await client.images.get(imageId!)
+        XCTAssert(image.repoTags != nil && image.repoTags!.first == "build:test", "Ensure repo and tag are set")
+        XCTAssert(image.containerConfig.labels != nil && image.containerConfig.labels!["test"] == "value", "Ensure labels are set")
+        try await client.images.remove(imageId!)
     }
     
 }

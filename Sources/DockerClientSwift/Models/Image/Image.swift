@@ -39,7 +39,7 @@ public struct Image : Codable {
     /// Depending on how the image was created, this field may be empty.
     public let dockerVersion: String
     
-    /// Name of the author that was specified when committing the image, or as specified through 1MAINTAINER1 (deprecated) in the Dockerfile.
+    /// Name of the author that was specified when committing the image, or as specified through `MAINTAINER` (deprecated) in the Dockerfile.
     public let author: String
     
     /// Hardware CPU architecture that the image runs on.

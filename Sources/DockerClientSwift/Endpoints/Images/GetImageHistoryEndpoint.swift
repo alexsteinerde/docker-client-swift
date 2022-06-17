@@ -12,6 +12,6 @@ struct GetImageHistoryEndpoint: Endpoint {
     }
     
     var path: String {
-        "images/\(nameOrId)/history/json"
+        "images/\(nameOrId)/history"
     }
 }

@@ -57,7 +57,7 @@ public struct BuildConfig: Codable {
     /// String pairs for build-time variables.
     /// Users pass these values at build-time. Docker uses the buildargs as the environment context for commands run via the Dockerfile `RUN` instruction, or for variable expansion in other Dockerfile instructions.
     /// This is not meant for passing secret values.
-    public var buildargs: [String:String] = [:]
+    public var buildArgs: [String:String] = [:]
     
     /// Size of `/dev/shm` in bytes.
     /// The size must be greater than 0. If omitted the system uses 64MB.
