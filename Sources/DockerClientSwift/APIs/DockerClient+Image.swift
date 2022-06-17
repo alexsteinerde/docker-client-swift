@@ -39,6 +39,15 @@ extension DockerClient {
             return try await self.get(identifier)
         }
         
+        /// Push an image to a registry.
+        /// - Parameters:
+        ///   - nameOrId: Name or ID of the `Image` that should be pushed.
+        ///   - tag: The tag to associate with the image on the registry. If you wish to push an image on to a private registry, that image must already have a tag which references the registry. For example, registry.example.com/myimage:latest.
+        /// - Throws: Errors that can occur when executing the request.
+        public func push(_ nameOrId: String, tag: String? = nil) async throws {
+            try await client.run(PushImageEndpoint(nameOrId: nameOrId, tag: tag))
+        }
+        
         /// Gets all images in the Docker system.
         /// - Parameter all: If `true` intermediate image layer will be returned as well. Default is `false`.
         /// - Throws: Errors that can occur when executing the request.
