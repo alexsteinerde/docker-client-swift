@@ -19,7 +19,7 @@ extension DockerClient {
         ///   - digest: Optional digest value. Default is `nil`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Fetches the latest image information and returns the `Image` that has been fetched.
-        public func pullImage(byName name: String, tag: String? = nil, digest: Digest? = nil) async throws -> Image {
+        public func pull(byName name: String, tag: String? = nil, digest: Digest? = nil) async throws -> Image {
             var identifier = name
             if let tag = tag {
                 identifier += ":\(tag)"
@@ -27,14 +27,14 @@ extension DockerClient {
             if let digest = digest {
                 identifier += "@\(digest.rawValue)"
             }
-            return try await pullImage(byIdentifier: identifier)
+            return try await pull(byIdentifier: identifier)
         }
         
         /// Pulls an image by a given identifier. The identifier can be build manually.
         /// - Parameter identifier: Identifier of an image that is pulled.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Fetches the latest image information and returns the `Image` that has been fetched.
-        public func pullImage(byIdentifier identifier: String) async throws -> Image {
+        public func pull(byIdentifier identifier: String) async throws -> Image {
             try await client.run(PullImageEndpoint(imageName: identifier))
             return try await self.get(identifier)
         }

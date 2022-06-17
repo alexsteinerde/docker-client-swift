@@ -17,18 +17,18 @@ final class ImageTests: XCTestCase {
     }
     
     func testDeleteImage() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         try await client.images.remove(image.id, force: true)
     }
     
     func testPullImage() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         
         XCTAssertTrue(image.repoTags!.first == "hello-world:latest")
     }
     
     func testListImage() async throws {
-        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         
         let images = try await client.images.list()
         
@@ -66,7 +66,7 @@ final class ImageTests: XCTestCase {
     }
     
     func testPruneImages() async throws {
-        let image = try await client.images.pullImage(byName: "nginx", tag: "1.18-alpine")
+        let image = try await client.images.pull(byName: "nginx", tag: "1.18-alpine")
         
         let pruned = try await client.images.prune(all: true)
         

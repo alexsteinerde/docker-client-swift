@@ -93,7 +93,7 @@ final class ServiceTests: XCTestCase {
     }
     
     func testGetServiceLogs() async throws {
-        try await client.images.pullImage(byName: "nginx", tag: "latest")
+        try await client.images.pull(byName: "nginx", tag: "latest")
         let name = UUID().uuidString
         let spec = ServiceSpec(
             name: name,

@@ -15,13 +15,13 @@ final class ContainerTests: XCTestCase {
     }
     
     func testCreateContainers() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(image: image)
         XCTAssertEqual(container.config.cmd, ["/hello"])
     }
     
     func testCreateContainers2() async throws {
-        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let spec = ContainerCreate(
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
@@ -31,7 +31,7 @@ final class ContainerTests: XCTestCase {
     
     func testUpdateContainers() async throws {
         let name = UUID.init().uuidString
-        let _ = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let spec = ContainerCreate(
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
@@ -49,7 +49,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testListContainers() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let _ = try await client.containers.create(image: image)
         
         let containers = try await client.containers.list(all: true)
@@ -60,7 +60,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testInspectContainer() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(image: image)
         let inspectedContainer = try await client.containers.get(container.id)
         
@@ -69,7 +69,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testStartingContainerAndRetrievingLogs() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(image: image)
         try await client.containers.start(container.id)
         
@@ -112,7 +112,7 @@ final class ContainerTests: XCTestCase {
     
     // Log entries parsing is quite different depending on whether the container has a TTY
     func testStartingContainerAndRetrievingLogsTty() async throws {
-        let image = try await client.images.pullImage(byName: "hello-world", tag: "latest")
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(
             name: nil,
             spec: ContainerCreate(
@@ -159,7 +159,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testPruneContainers() async throws {
-        let image = try await client.images.pullImage(byName: "nginx", tag: "latest")
+        let image = try await client.images.pull(byName: "nginx", tag: "latest")
         let container = try await client.containers.create(image: image)
         try await client.containers.start(container.id)
         try await client.containers.stop(container.id)

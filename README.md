@@ -348,7 +348,7 @@ Remote daemon via HTTPS and client certificate:
   <summary>Pull an image</summary>
   
   ```swift
-  let image = try await docker.images.pullImage(byIdentifier: "hello-world:latest")
+  let image = try await docker.images.pull(byIdentifier: "hello-world:latest")
   ```
 </details>
 
