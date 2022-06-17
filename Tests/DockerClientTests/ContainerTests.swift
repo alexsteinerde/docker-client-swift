@@ -171,4 +171,39 @@ final class ContainerTests: XCTestCase {
         XCTAssert(pruned.reclaimedSpace > 0)
         XCTAssert(pruned.containersIds.contains(container.id))
     }
+    
+    func testPauseUnpauseContainers() async throws {
+        let image = try await client.images.pull(byName: "nginx", tag: "latest")
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        
+        try await client.containers.pause(container.id)
+        let paused = try await client.containers.get(container.id)
+        XCTAssert(paused.state.paused, "Ensure container is paused")
+        try await client.containers.unpause(container.id)
+        XCTAssert(paused.state.paused == false, "Ensure container is unpaused")
+        
+        try? await client.containers.remove(container.id, force: true)
+    }
+    
+    func testRenameContainer() async throws {
+        let image = try await client.images.pull(byName: "nginx", tag: "latest")
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        try await client.containers.rename(container.id, to: "renamed")
+        let renamed = try await client.containers.get(container.id)
+        XCTAssert(renamed.name == "/renamed", "Ensure container has new name")
+        
+        try? await client.containers.remove(container.id, force: true)
+    }
+    
+    func testProcessesContainer() async throws {
+        let image = try await client.images.pull(byName: "nginx", tag: "latest")
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        
+        let psInfo = try await client.containers.processes(container.id)
+        
+        try? await client.containers.remove(container.id, force: true)
+    }
 }

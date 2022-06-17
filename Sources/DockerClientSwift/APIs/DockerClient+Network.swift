@@ -35,7 +35,6 @@ extension DockerClient {
             let createResponse = try await client.run(CreateNetworkEndpoint(spec: spec))
             return try await client.networks.get(createResponse.Id)
         }
-        
     
         /// Removes an existing Network.
         /// - Parameters:
@@ -45,13 +44,11 @@ extension DockerClient {
             try await client.run(RemoveNetworkEndpoint(nameOrId: nameOrId))
         }
         
-        /*
         /// Deletes all unused networks.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns a `PrunedVolumes` details about removed volumes and the reclaimed space.
-        public func prune(all: Bool = false) async throws -> PrunedVolumes {
-            return try await client.run(PruneVolumesEndpoint())
+        /// - Returns: Returns the list of IDs of the networks that got deleted.
+        public func prune(all: Bool = false) async throws -> [String] {
+            return try await client.run(PruneNetworksEndpoint()).NetworksDeleted
         }
-         */
     }
 }

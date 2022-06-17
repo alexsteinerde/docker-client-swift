@@ -176,6 +176,16 @@ extension DockerClient {
         public func getFsChanges(_ nameOrId: String) async throws -> [ContainerFsChange] {
             return try await client.run(GetContainerChangesEndpoint(nameOrId: nameOrId))
         }
+        
+        /// Returns `ps`-like raw info about processes running in a container
+        /// - Parameters:
+        ///   - nameOrId: Name or Id of the`Container`.
+        ///   - psArgs: options to pass to the `ps` command. Defaults to `-ef`
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns a `ContainerTop`instance.
+        public func processes(_ nameOrId: String, psArgs: String = "-ef") async throws -> ContainerTop {
+            return try await client.run(ContainerTopEndpoint(nameOrId: nameOrId, psArgs: psArgs))
+        }
     }
 }
 

@@ -34,7 +34,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Pause/Unpause           | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
-|                             | Get process (top)       | ❌       |      TBD    |
+|                             | Get process (top)       | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             | Wait                    | ✅       |   untested  |
@@ -76,7 +76,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
-|                             | Prune                   | ❌       |    TBD      |
+|                             | Prune                   | ✅       |             |
 |                             | Connect/Disconnect container| ❌       |    TBD      |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
