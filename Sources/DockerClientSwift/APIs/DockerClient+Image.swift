@@ -61,7 +61,6 @@ extension DockerClient {
         ///   - nameOrId: Name or ID of an `Image` that should be removed.
         ///   - force: Should the image be removed by force? If `false` the image will only be removed if it's unused. If `true` existing containers will break. Default is `false`.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns an `EventLoopFuture` when the image has been removed or an error is thrown.
         public func remove(_ nameOrId: String, force: Bool = false) async throws {
             try await client.run(RemoveImageEndpoint(nameOrId: nameOrId, force: force))
         }
@@ -74,8 +73,16 @@ extension DockerClient {
             return try await client.run(InspectImagesEndpoint(nameOrId: nameOrId))
         }
         
+        /// Fetches the history (layers) information for an image.
+        /// - Parameter nameOrId: Name or id of an image that should be fetched.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns a list of `ImageLayer`.
+        public func history(_ nameOrId: String) async throws -> [ImageLayer] {
+            return try await client.run(GetImageHistoryEndpoint(nameOrId: nameOrId))
+        }
         
-        // WIP
+        
+        
         /// Builds an image.
         /// - Parameters:
         ///   - config: A `BuildConfig` instance specifying build options.
