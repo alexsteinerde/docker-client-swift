@@ -1,6 +1,7 @@
 # Docker Client
 [![Language](https://img.shields.io/badge/Swift-5.5-brightgreen.svg)](http://swift.org)
 [![Docker Engine API](https://img.shields.io/badge/Docker%20Engine%20API-%20%201.41-blue)](https://docs.docker.com/engine/api/v1.41/)
+[![Platforms](https://img.shields.io/badge/platform-linux--64%20%7C%20osx--64-blue)
 
 This is a low-level, **work in progress** Docker Client written in Swift. It very closely follows the Docker API.
 
@@ -46,7 +47,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | History                 | ✅       |             |
 |                             | Pull                    | ✅       | refactoring |
-|                             | Build                   | ✅       | basic implementation |
+|                             | Build                   | ✅       | basic support |
 |                             | Tag                     | ✅       |             |
 |                             | Push                    | ✅       |             |
 |                             | Create (container commit)| ❌       |             |
@@ -103,7 +104,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |          |             |
 | Plugins                     |                         | ❌       |    TBD      |
 |                             |                         |          |             |
-| Registries                  | Login                   | ✅       | basic implementation |
+| Registries                  | Login                   | ✅       | basic support |
 |                             |                         |          |             |
 | Docker error responses mgmt |                         | 🚧       |             |
 
