@@ -131,4 +131,3 @@ public protocol Decoder {
 }
 
 extension JSONDecoder : Decoder {}
-extension PropertyListDecoder : Decoder {}

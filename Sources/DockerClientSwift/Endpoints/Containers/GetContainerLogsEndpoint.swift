@@ -1,7 +1,6 @@
 import NIO
 import NIOHTTP1
 import Foundation
-import AsyncHTTPClient
 
 class GetContainerLogsEndpoint: StreamingEndpoint {
     typealias Body = NoBody
@@ -17,18 +16,6 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
     let timestamps: Bool
     let since: Int64
     let until: Int64
-    
-    init(containerId: String, stdout: Bool, stderr: Bool, timestamps: Bool, follow: Bool, tail: String, since: Date, until: Date) {
-        self.containerId = containerId
-        self.stdout = stdout
-        self.stderr = stderr
-        self.timestamps = timestamps
-        self.follow = follow
-        self.tail = tail
-        // TODO: looks like Swift adds an extra zero compared to `docker logs --since=xxx`
-        self.since = (since == .distantPast) ? 0 : Int64(since.timeIntervalSince1970)
-        self.until = Int64(until.timeIntervalSince1970)
-    }
     
     var path: String {
         """
@@ -48,6 +35,18 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
         let formatter = DateFormatter()
         formatter.dateFormat = format
         return formatter
+    }
+    
+    init(containerId: String, stdout: Bool, stderr: Bool, timestamps: Bool, follow: Bool, tail: String, since: Date, until: Date) {
+        self.containerId = containerId
+        self.stdout = stdout
+        self.stderr = stderr
+        self.timestamps = timestamps
+        self.follow = follow
+        self.tail = tail
+        // TODO: looks like Swift adds an extra zero compared to `docker logs --since=xxx`
+        self.since = (since == .distantPast) ? 0 : Int64(since.timeIntervalSince1970)
+        self.until = Int64(until.timeIntervalSince1970)
     }
     
     func map(response: Response, tty: Bool) async throws -> AsyncThrowingStream<DockerLogEntry, Error>  {

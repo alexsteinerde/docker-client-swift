@@ -89,9 +89,7 @@ final class ImageTests: XCTestCase {
     
     func testPruneImages() async throws {
         let image = try await client.images.pull(byName: "nginx", tag: "1.18-alpine")
-        
         let pruned = try await client.images.prune(all: true)
-        
         let images = try await client.images.list()
         
         XCTAssert(!images.map(\.id).contains(image.id))

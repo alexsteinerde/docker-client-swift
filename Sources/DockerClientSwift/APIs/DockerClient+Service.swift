@@ -79,20 +79,7 @@ extension DockerClient {
             return try await endpoint.map(response: response, tty: service.spec.taskTemplate.containerSpec.tty ?? false)
         }
         
-        /// Create a new service with a name and an image.
-        /// This is the minimal way of creating a new service.
-        /// - Parameters:
-        ///   - name: Name of the new service.
-        ///   - image: Instance of an `Image` for the service.
-        /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns the newly created `Service`.
-        /*public func create(serviceName name: String, image: Image) async throws -> Service {
-            let serviceId = try await client.run(CreateServiceEndpoint(name: name, image: image.id))
-            let service = try await client.run(InspectServiceEndpoint(nameOrId: serviceId.ID))
-            return service
-        }*/
-        
-        /// Create a new service.
+        /// Creates a new service.
         /// - Parameters:
         ///   - spec: the `ServiceSpec` describing the configuration of the service.
         /// - Throws: Errors that can occur when executing the request.

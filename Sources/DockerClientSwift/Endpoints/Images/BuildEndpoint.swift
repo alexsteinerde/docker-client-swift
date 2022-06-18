@@ -11,8 +11,9 @@ struct BuildEndpoint: UploadEndpoint {
     
     private let buildConfig: BuildConfig
     
-    // Some Query String have to be encoded as JSON
+    // Some Query String items have to be encoded as JSON
     private let encoder: JSONEncoder
+    // Decode build output message
     private let decoder = JSONDecoder()
     
     var path: String {
@@ -25,8 +26,7 @@ struct BuildEndpoint: UploadEndpoint {
         let buildArgs = String(data: try! encoder.encode(buildConfig.buildArgs), encoding: .utf8)
         let labels = String(data: try! encoder.encode(buildConfig.labels), encoding: .utf8)
         
-        return
-        """
+        return """
         build\
         ?dockerfile=\(buildConfig.dockerfile)\
         \(tags)\

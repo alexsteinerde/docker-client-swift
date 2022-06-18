@@ -46,45 +46,43 @@ extension HTTPClient {
         return AsyncThrowingStream<ByteBuffer, Error> { continuation in
             _Concurrency.Task {
                 var messageBuffer = ByteBuffer()
-                //var iterator = body.makeAsyncIterator()
                 var collectMore = false
                 var realMsgSize: UInt32 = 0
+                
                 for try await var buffer in body {
-                    if hasLengthHeader {
-                        if !collectMore {
-                            messageBuffer.clear(minimumCapacity: realMsgSize)
-                            guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
-                                continuation.finish(
-                                    throwing: DockerError.corruptedData("Error reading message size in a data stream having length header")
-                                )
-                                return
-                            }
-                            realMsgSize = msgSize + lengthHeaderSize
-                        }
-                                                
-                        //messageBuffer.writeBuffer(&buffer)
-                        let readable = buffer.readableBytes
-                        messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
-                        if messageBuffer.writerIndex < realMsgSize {
-                            collectMore = true
-                            //print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
-                        }
-                        else {
-                            //print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
-                            continuation.yield(messageBuffer)
-                        }
-                    }
-                    else {
+                    // if we have no msg length info, we assume the buffer contains exactly 1 message.
+                    if !hasLengthHeader {
                         messageBuffer = buffer
                         continuation.yield(messageBuffer)
+                        continue
                     }
                     
+                    if !collectMore {
+                        messageBuffer.clear(minimumCapacity: Int(realMsgSize))
+                        guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
+                            continuation.finish(
+                                throwing: DockerError.corruptedData("Error reading message size in data stream having length header")
+                            )
+                            return
+                        }
+                        realMsgSize = msgSize + lengthHeaderSize
+                    }
+                                            
+                    let readable = buffer.readableBytes
+                    messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
+                    if messageBuffer.writerIndex < realMsgSize {
+                        collectMore = true
+                        //print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
+                    }
+                    else {
+                        //print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
+                        continuation.yield(messageBuffer)
+                    }
                 }
                 continuation.finish()
             }
         }
     }
-    
     
     /*public func execute(_ method: HTTPMethod = .GET, daemonURL: URL, urlPath: String, body: Body? = nil, tlsConfig: TLSConfiguration?, deadline: NIODeadline? = nil, logger: Logger, headers: HTTPHeaders) async throws -> Response {
         guard let url = URL(string: daemonURL.absoluteString.trimmingCharacters(in: .init(charactersIn: "/")) + urlPath) else {

@@ -15,18 +15,13 @@ final class ContainerTests: XCTestCase {
     }
     
     func testCreateContainers() async throws {
-        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
-        let container = try await client.containers.create(image: image)
-        XCTAssertEqual(container.config.cmd, ["/hello"])
-    }
-    
-    func testCreateContainers2() async throws {
         let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let spec = ContainerCreate(
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
         )
-        try await client.containers.create(name: "tests", spec: spec)
+        let container = try await client.containers.create(name: "tests", spec: spec)
+        XCTAssertEqual(container.config.cmd, ["/hello"])
     }
     
     func testUpdateContainers() async throws {
@@ -83,7 +78,6 @@ final class ContainerTests: XCTestCase {
             XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
             XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
             output += line.message + "\n"
-            //print("testStartingContainerAndRetrievingLogsNoTty: '\(line.message)'\n")
         }
         // arm64v8 or amd64
         XCTAssertEqual(
@@ -209,7 +203,7 @@ final class ContainerTests: XCTestCase {
         try await client.containers.start(container.id)
         
         let psInfo = try await client.containers.processes(container.id)
-        
+        XCTAssert(psInfo.processes.count > 0, "Ensure processes are parsed")
         try? await client.containers.remove(container.id, force: true)
     }
 }
