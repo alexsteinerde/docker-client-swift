@@ -13,7 +13,7 @@ let package = Package(
         // Only used for parsing the multiple and inconsistent date formats returned by Docker
         .package(url: "https://github.com/marksands/BetterCodable.git", from: "0.4.0"),
         // Some Docker features receive or return TAR archives. Used by tests
-        .package(url: "https://github.com/kayembi/Tarscape.git", .branch("main")),
+        //.package(url: "https://github.com/kayembi/Tarscape.git", .branch("main")),
     ],
     targets: [
         .target(
@@ -25,7 +25,10 @@ let package = Package(
             ]),
         .testTarget(
             name: "DockerClientTests",
-            dependencies: ["DockerClientSwift", "Tarscape"]
+            dependencies: [
+                "DockerClientSwift",
+                //"Tarscape"
+            ]
         ),
     ]
 )
