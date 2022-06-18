@@ -50,15 +50,7 @@ extension HTTPClient {
                 var collectMore = false
                 var realMsgSize: UInt32 = 0
                 for try await var buffer in body {
-               // while true{
-                    //var msgSize = buffer.readableBytes
-                    /*guard let buffer = try await iterator.next() else {
-                        print("\n••• NOTHING TO REREAD")
-                        continuation.finish()
-                        return
-                    }*/
                     if hasLengthHeader {
-                        
                         if !collectMore {
                             messageBuffer.clear(minimumCapacity: realMsgSize)
                             guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
@@ -69,22 +61,15 @@ extension HTTPClient {
                             }
                             realMsgSize = msgSize + lengthHeaderSize
                         }
-                        
-                        //try await body.collect(upTo: Int(realMsgSize + lengthHeaderSize), into: &messageBuffer)
-                        
-                        //buffer.copyBytes(at: 0, to: buffer.readableBytes, length: 3)
+                                                
                         messageBuffer.writeBuffer(&buffer)
                         if messageBuffer.writerIndex < realMsgSize {
                             collectMore = true
                         }
                         else {
-                            print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.readableBytes)")
+                            print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
                             continuation.yield(messageBuffer)
                         }
-                        
-                        //while messageBuffer.writerIndex < realMsgSize + lengthHeaderSize {
-                        //    body.
-                        //}
                     }
                     else {
                         messageBuffer = buffer
