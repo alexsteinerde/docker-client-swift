@@ -71,6 +71,20 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
                             }
                         }
                         else {
+                            /*guard let sourceRaw: UInt8 = buffer.readInteger(endianness: .big, as: UInt8.self) else {
+                                throw DockerLogDecodingError.dataCorrupted("Unable to read log entry source stream header")
+                            }
+                            let msgSource = DockerLogEntry.Source.init(rawValue: sourceRaw) ?? .stdout
+                            let _ = buffer.readBytes(length: 3) // 3 unused bytes
+                            
+                            guard let msgSize: UInt32 = buffer.readInteger(endianness: .big, as: UInt32.self) else {
+                                throw DockerLogDecodingError.dataCorrupted("Unable to read log size header")
+                            }
+                            let currentDataLen = buffer.readableBytes
+                            let rawData = buffer.readData(length: currentDataLen)
+                            if currentDataLen < msgSize {
+                                rawData.append(data: )
+                            }*/
                             do {
                                 let entry = try getEntryNoTty(buffer: &buffer, timestamps: timestamps)
                                 continuation.yield(entry)
@@ -105,10 +119,10 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
         guard msgSize > 0 else {
             throw DockerLogDecodingError.noMessageFound
         }
-        if buffer.readableBytes < msgSize {
+        /*if buffer.readableBytes < msgSize {
             // TODO: does this happen during normal logs streaming behavior?
             throw DockerLogDecodingError.dataCorrupted("Readable bytes (\(buffer.readableBytes)) is less than msgSize (\(msgSize))")
-        }
+        }*/
         
         var timestamp: Date? = nil
         var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)
