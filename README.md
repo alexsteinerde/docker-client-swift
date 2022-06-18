@@ -193,8 +193,10 @@ Remote daemon via HTTPS and client certificate:
           hostConfig: .init()
       )
   )
+  ```
   
-  // We should get an event whose `action` is "create" and whose `type` is "container"
+  Now, we should get an event whose `action` is "create" and whose `type` is "container".
+  ```swift
   for try await event in try await events {
       print("\n••• event: \(event)")
   }
