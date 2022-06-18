@@ -83,7 +83,7 @@ final class ContainerTests: XCTestCase {
             XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
             XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
             output += line.message + "\n"
-            print("testStartingContainerAndRetrievingLogsNoTty: '\(line.message)'\n")
+            //print("testStartingContainerAndRetrievingLogsNoTty: '\(line.message)'\n")
         }
         // arm64v8 or amd64
         XCTAssertEqual(

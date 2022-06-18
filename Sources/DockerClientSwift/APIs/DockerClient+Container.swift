@@ -135,7 +135,8 @@ extension DockerClient {
                 endpoint,
                 // Arbitrary timeouts.
                 // TODO: should probably make these configurable
-                timeout: follow ? .hours(12) : .seconds(60)
+                timeout: follow ? .hours(12) : .seconds(60),
+                hasLengthHeader: container.config.tty
             )
             
             return try await endpoint.map(response: response, tty: container.config.tty)

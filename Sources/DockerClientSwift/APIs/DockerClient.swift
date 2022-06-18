@@ -107,7 +107,7 @@ public class DockerClient {
     }
     
     @discardableResult
-    internal func run<T: StreamingEndpoint>(_ endpoint: T, timeout: TimeAmount) async throws -> T.Response {
+    internal func run<T: StreamingEndpoint>(_ endpoint: T, timeout: TimeAmount, hasLengthHeader: Bool) async throws -> T.Response {
         logger.trace("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
         let stream = try await client.executeStream(
             endpoint.method,
@@ -120,7 +120,7 @@ public class DockerClient {
             timeout: timeout,
             logger: logger,
             headers: self.headers,
-            hasLengthHeader: true
+            hasLengthHeader: hasLengthHeader
         )
         return stream as! T.Response
     }

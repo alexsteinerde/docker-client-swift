@@ -33,7 +33,7 @@ extension DockerClient {
     
     public func events() async throws -> AsyncThrowingStream<DockerEvent, Error> {
         let endpoint = JSONStreamingEndpoint<DockerEvent>(path: "/events")
-        let stream = try await run(endpoint, timeout: .hours(12))
+        let stream = try await run(endpoint, timeout: .hours(12), hasLengthHeader: false)
         return try await endpoint.map(response: stream, as: DockerEvent.self)
     }
 }
