@@ -437,6 +437,9 @@ Remote daemon via HTTPS and client certificate:
 
 
 ### Nodes
+> This requires a Docker daemon with Swarm mode enabled.
+> Additionally, the client must be connected to a manager node.
+
 <details>
   <summary>List the Swarm nodes</summary>
   
