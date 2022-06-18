@@ -28,6 +28,7 @@ extension Digest: Codable {}
 public enum DockerError: Error {
     case message(String)
     case unknownResponse(String)
+    case corruptedData(String)
     case errorCode(Int, String?)
 }
 

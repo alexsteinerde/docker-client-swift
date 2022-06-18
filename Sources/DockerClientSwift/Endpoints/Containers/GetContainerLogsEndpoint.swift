@@ -119,10 +119,10 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
         guard msgSize > 0 else {
             throw DockerLogDecodingError.noMessageFound
         }
-        /*if buffer.readableBytes < msgSize {
+        if buffer.readableBytes < msgSize {
             // TODO: does this happen during normal logs streaming behavior?
             throw DockerLogDecodingError.dataCorrupted("Readable bytes (\(buffer.readableBytes)) is less than msgSize (\(msgSize))")
-        }*/
+        }
         
         var timestamp: Date? = nil
         var msgBuffer = ByteBuffer.init(bytes: buffer.readBytes(length: Int(msgSize))!)

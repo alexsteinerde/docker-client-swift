@@ -68,7 +68,7 @@ final class ContainerTests: XCTestCase {
         XCTAssertEqual(inspectedContainer.config.cmd, ["/hello"])
     }
     
-    func testStartingContainerAndRetrievingLogs() async throws {
+    func testStartingContainerAndRetrievingLogsNoTty() async throws {
         let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(image: image)
         try await client.containers.start(container.id)
