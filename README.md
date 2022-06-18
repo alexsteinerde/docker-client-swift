@@ -18,7 +18,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |-----------------------------|-------------------------|---------|-------------|
 | Client connection           | Local Unix socket       | ✅       |             |
 |                             | HTTP                    | ✅       |             |
-|                             | HTTPS + TLS client cert | 🚧       | untested, WIP |
+|                             | HTTPS + TLS client cert | 🚧       | WIP         |
 |                             |                         |          |             |
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
@@ -28,13 +28,13 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |          |             |
 | Containers                  | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
-|                             | Create                  | ✅       | refactoring |
+|                             | Create                  | ✅       |             |
 |                             | Update                  | ✅       |             |
 |                             | Rename                  | ✅       |             |
 |                             | Pause/Unpause           | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
-|                             | Get process (top)       | ✅       |             |
+|                             | Get processes (top)     | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             | Wait                    | ✅       |   untested  |
@@ -97,9 +97,9 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
-| Tasks                       | List                    | ❌       |    TBD      |
-|                             | Inspect                 | ❌       |    TBD      |
-|                             | Get logs                | 🚧       |             |
+| Tasks                       | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Get logs                | ✅       |             |
 |                             |                         |          |             |
 | Plugins                     |                         | ❌       |    TBD      |
 |                             |                         |          |             |

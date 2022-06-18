@@ -11,7 +11,7 @@ extension DockerClient {
     public struct ImagesAPI {
         fileprivate var client: DockerClient
         
-        /// Pulls an image by it's name. If a tag or digest is specified these are fetched as well.
+        /// Pulls an image from a remote registry
         /// If you want to customize the identifier of the image you can use `pullImage(byIdentifier:)` to do this.
         /// - Parameters:
         ///   - name: Image name that is fetched

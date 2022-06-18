@@ -10,7 +10,7 @@ extension DockerClient {
     public struct ServicesAPI {
         fileprivate var client: DockerClient
         
-        /// Lists all services running in the Docker instance.
+        /// Lists all services running in the Docker Swarm cluster.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `Service` instances.
         public func list() async throws -> [Service] {

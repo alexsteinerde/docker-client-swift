@@ -12,7 +12,7 @@ public struct SwarmTask: Codable {
     public let updatedAt: Date
     
     /// Name of the task.
-    public let name: String
+    //public let name: String
     
     /// User-defined key/value metadata.
     public let labels: [String:String]
@@ -26,11 +26,12 @@ public struct SwarmTask: Codable {
     public let slot: Int
     
     /// The ID of the node that this task is on.
-    public let nodeId: String
+    /// Not returned with listing tasks.
+    public let nodeId: String?
     
     public let status: TaskStatus
     
-    public let assignedGenericResources: [GenericResource]
+    public let assignedGenericResources: [GenericResource]?
     
     public let desiredState: TaskStatus.TaskState
     
@@ -41,9 +42,9 @@ public struct SwarmTask: Codable {
         case version = "Version"
         case createdAt = "CreatedAt"
         case updatedAt = "UpdatedAt"
-        case name = "Name"
+        //case name = "Name"
         case labels = "Labels"
-        case spec = "Sepc"
+        case spec = "Spec"
         case serviceId = "ServiceID"
         case slot = "Slot"
         case nodeId = "NodeID"
@@ -87,7 +88,7 @@ public struct SwarmTask: Codable {
         
         public let error: String?
         
-        public let containerStatus: ContainerStatus
+        public let containerStatus: ContainerStatus?
         
         enum CodingKeys: String, CodingKey {
             case timestamp = "Timestamp"

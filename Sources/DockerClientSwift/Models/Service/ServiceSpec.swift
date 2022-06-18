@@ -49,7 +49,8 @@ public struct ServiceSpec: Codable {
         public var forceUpdate: UInt?
         
         /// The type of runtime specified for the task executor.
-        public var runtime: Runtime = .container
+        /// Can be `nil` when listing `SwarmTask`s.
+        public var runtime: Runtime? = .container
         
         public var resources: Resources?
         

@@ -10,8 +10,22 @@ extension DockerClient {
     public struct TasksAPI {
         fileprivate var client: DockerClient
         
+        /// Lists all the tasks running in the Docker Swarm cluster.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns a list of `SwarmTask` instances.
+        public func list() async throws -> [SwarmTask] {
+            return try await client.run(ListTasksEndpoint())
+        }
         
-        /// Gets the logs of a task.
+        /// Gets a Swarm task by its id.
+        /// - Parameter id: ID of a task that should be fetched.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Return the `SwarmTask`.
+        public func get(_ id: String) async throws -> SwarmTask {
+            return try await client.run(InspectTaskEndpoint(id: id))
+        }
+        
+        /// Gets the logs of a Docker Swarm task.
         /// - Parameters:
         ///   - task: Instance of a `SwarmTask`.
         ///   - details: whether to return service labels.
