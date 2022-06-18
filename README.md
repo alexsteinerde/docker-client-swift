@@ -370,8 +370,8 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Build an image</summary>
   
-  The current implementation of this library is very bare-bones.
-  The Docker build context, containing the Dockerfile and any other resources required during the build, must be passed as a TAR archive.
+  > The current implementation of this library is very bare-bones.
+  > The Docker build context, containing the Dockerfile and any other resources required during the build, must be passed as a TAR archive.
   
   Supposing we already have a TAR archive of the build context:
   ```swift
@@ -394,7 +394,7 @@ Remote daemon via HTTPS and client certificate:
   ```
   
   You can use external libraries to create TAR archives of your build context.
-  Example with Tarscape (https://github.com/kayembi/Tarscape):
+  Example with Tarscape (only works on macOS) (https://github.com/kayembi/Tarscape):
   ```swift
   import Tarscape
   

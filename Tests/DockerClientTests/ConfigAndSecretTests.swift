@@ -32,7 +32,8 @@ final class ConfigAndSecretTests: XCTestCase {
         )
         XCTAssert(config.id != "", "Ensure ID is parsed")
         XCTAssert(config.spec.name == name, "Ensure name is set")
-        XCTAssert(config.spec.data == configData, "Ensure data is correct")
+        XCTAssert(config.spec.data == configData, "Ensure Config data is correct")
+        
         try await client.configs.remove(config.id)
     }
     
@@ -47,6 +48,7 @@ final class ConfigAndSecretTests: XCTestCase {
         )
         XCTAssert(secret.id != "", "Ensure ID is parsed")
         XCTAssert(secret.spec.name == name, "Ensure name is set")
+        
         try await client.secrets.remove(secret.id)
     }
     

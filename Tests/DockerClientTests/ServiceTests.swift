@@ -16,7 +16,6 @@ final class ServiceTests: XCTestCase {
     
     override func tearDownWithError() throws {
         try client.syncShutdown()
-        // Remove all services in a Docker system `docker service ls -q | xargs echo`
     }
     
     func testListingServices() async throws {
@@ -36,7 +35,6 @@ final class ServiceTests: XCTestCase {
         let _ = try await client.services.create(spec: spec)
         
         let services = try await client.services.list()
-        print("\n•••• testListingServices(): \(services)")
         XCTAssert(services.count >= 1)
     }
     
@@ -66,13 +64,6 @@ final class ServiceTests: XCTestCase {
         try await Task.sleep(nanoseconds: 3_000_000_000)
         XCTAssertEqual(service.spec.name, name)
     }
-    
-    /*func testCreateServiceSimple() async throws {
-        let name = UUID().uuidString
-        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:latest")))
-        
-        XCTAssertEqual(service.spec.name, name)
-    }*/
     
     func testCreateServiceAdvanced() async throws {
         let name = UUID().uuidString

@@ -165,7 +165,6 @@ final class ContainerTests: XCTestCase {
         try await client.containers.stop(container.id)
         
         let pruned = try await client.containers.prune()
-        
         let containers = try await client.containers.list(all: true)
         XCTAssert(!containers.map(\.id).contains(container.id))
         XCTAssert(pruned.reclaimedSpace > 0)
@@ -180,8 +179,10 @@ final class ContainerTests: XCTestCase {
         try await client.containers.pause(container.id)
         let paused = try await client.containers.get(container.id)
         XCTAssert(paused.state.paused, "Ensure container is paused")
+        
         try await client.containers.unpause(container.id)
-        XCTAssert(paused.state.paused == false, "Ensure container is unpaused")
+        let unpaused = try await client.containers.get(container.id)
+        XCTAssert(unpaused.state.paused == false, "Ensure container is unpaused")
         
         try? await client.containers.remove(container.id, force: true)
     }
@@ -204,6 +205,7 @@ final class ContainerTests: XCTestCase {
         
         let psInfo = try await client.containers.processes(container.id)
         XCTAssert(psInfo.processes.count > 0, "Ensure processes are parsed")
+        
         try? await client.containers.remove(container.id, force: true)
     }
 }

@@ -31,6 +31,8 @@ extension DockerClient {
         return try await run(DiskUsageInformationEndpoint())
     }
     
+    /// Stream real-time events from the Docker server.
+    /// Various objects within Docker report events when something happens to them.
     public func events() async throws -> AsyncThrowingStream<DockerEvent, Error> {
         let endpoint = JSONStreamingEndpoint<DockerEvent>(path: "/events")
         let stream = try await run(endpoint, timeout: .hours(12), hasLengthHeader: false)
