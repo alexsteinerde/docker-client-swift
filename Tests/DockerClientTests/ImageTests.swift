@@ -1,7 +1,9 @@
 import XCTest
 @testable import DockerClientSwift
 import Logging
+#if !os(Linux)
 import Tarscape
+#endif
 import NIO
 
 final class ImageTests: XCTestCase {
@@ -97,6 +99,7 @@ final class ImageTests: XCTestCase {
         XCTAssert(pruned.imageIds.contains(image.id))
     }
     
+#if !os(Linux)
     func testBuild() async throws {
         let fm = FileManager.default
         let tarContextPath = "/tmp/docker-build.tar"
@@ -127,5 +130,5 @@ final class ImageTests: XCTestCase {
         XCTAssert(image.containerConfig.labels != nil && image.containerConfig.labels!["test"] == "value", "Ensure labels are set")
         try await client.images.remove(imageId!)
     }
-    
+#endif
 }

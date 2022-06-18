@@ -182,7 +182,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Listen for Docker daemon events</summary>
   
-  We start by listening for docker events, then we create a container.
+  We start by listening for docker events, then we create a container:
   ```swift
   async let events = try await client.events()
   
