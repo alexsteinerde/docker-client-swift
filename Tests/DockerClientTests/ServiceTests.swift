@@ -99,7 +99,7 @@ final class ServiceTests: XCTestCase {
         let spec = ServiceSpec(
             name: name,
             taskTemplate: .init(
-                containerSpec: .init(image: "nginx:latest")
+                containerSpec: .init(image: "nginx:latest", tty: true)
             ),
             mode: .init(
                 replicated: .init(replicas: 1)
