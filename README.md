@@ -407,6 +407,77 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 
+### Networks
+<details>
+  <summary>List networks</summary>
+  
+  ```swift
+  let networks = try await docker.networks.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a network details</summary>
+  
+  ```swift
+  let network = try await docker.networks.get("nameOrId")
+  ```
+</details>
+
+<details>
+  <summary>Create a network</summary>
+  
+  ```swift
+  let network = try await docker.networks.create(
+    spec: .init(name: name)
+  )
+  ```
+</details>
+
+<details>
+  <summary>Delete a network</summary>
+  
+  ```swift
+  try await docker.networks.remove("nameOrId")
+  ```
+</details>
+
+### Volumes
+<details>
+  <summary>List volumes</summary>
+  
+  ```swift
+  let volumes = try await docker.volumes.list()
+  ```
+</details>
+
+<details>
+  <summary>Get a volume details</summary>
+  
+  ```swift
+  let volume = try await docker.volumes.get("nameOrId")
+  ```
+</details>
+
+<details>
+  <summary>Create a volume</summary>
+  
+  ```swift
+  let volume = try await docker.volumes.create(
+    spec: .init(name: "myVolume", labels: ["myLabel": "value"])
+  )
+  ```
+</details>
+
+<details>
+  <summary>Delete a volume</summary>
+  
+  ```swift
+  try await docker.volumes.remove("nameOrId")
+  ```
+</details>
+
+
 ### Swarm
 
 <details>
@@ -565,78 +636,6 @@ Remote daemon via HTTPS and client certificate:
   try await docker.services.remove("nameOrId")
   ```
 </details>
-
-
-### Networks
-<details>
-  <summary>List networks</summary>
-  
-  ```swift
-  let networks = try await docker.networks.list()
-  ```
-</details>
-
-<details>
-  <summary>Get a network details</summary>
-  
-  ```swift
-  let network = try await docker.networks.get("nameOrId")
-  ```
-</details>
-
-<details>
-  <summary>Create a network</summary>
-  
-  ```swift
-  let network = try await docker.networks.create(
-    spec: .init(name: name)
-  )
-  ```
-</details>
-
-<details>
-  <summary>Delete a network</summary>
-  
-  ```swift
-  try await docker.networks.remove("nameOrId")
-  ```
-</details>
-
-### Volumes
-<details>
-  <summary>List volumes</summary>
-  
-  ```swift
-  let volumes = try await docker.volumes.list()
-  ```
-</details>
-
-<details>
-  <summary>Get a volume details</summary>
-  
-  ```swift
-  let volume = try await docker.volumes.get("nameOrId")
-  ```
-</details>
-
-<details>
-  <summary>Create a volume</summary>
-  
-  ```swift
-  let volume = try await docker.volumes.create(
-    spec: .init(name: "myVolume", labels: ["myLabel": "value"])
-  )
-  ```
-</details>
-
-<details>
-  <summary>Delete a volume</summary>
-  
-  ```swift
-  try await docker.volumes.remove("nameOrId")
-  ```
-</details>
-
 
 ### Secrets
 > This requires a Docker daemon with Swarm mode enabled.
