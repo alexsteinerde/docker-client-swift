@@ -62,10 +62,12 @@ extension HTTPClient {
                             realMsgSize = msgSize + lengthHeaderSize
                         }
                                                 
-                        messageBuffer.writeBuffer(&buffer)
+                        //messageBuffer.writeBuffer(&buffer)
+                        let readable = buffer.readableBytes
+                        messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
                         if messageBuffer.writerIndex < realMsgSize {
                             collectMore = true
-                            print("\n••••• executeStream hasLengthHeader NEEC TO COLLECT MOMORE")
+                            print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
                         }
                         else {
                             print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
