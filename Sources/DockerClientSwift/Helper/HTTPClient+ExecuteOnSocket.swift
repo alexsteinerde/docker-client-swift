@@ -67,10 +67,10 @@ extension HTTPClient {
                         messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
                         if messageBuffer.writerIndex < realMsgSize {
                             collectMore = true
-                            //print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
+                            print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
                         }
                         else {
-                            //print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
+                            print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
                             continuation.yield(messageBuffer)
                         }
                     }
