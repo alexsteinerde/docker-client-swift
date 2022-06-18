@@ -77,7 +77,8 @@ final class ImageTests: XCTestCase {
     }*/
     
     func testInspectImage() async throws {
-        XCTAssertNoThrow(Task(priority: .medium) { try await client.images.get("nginx:latest") })
+        let image = try await client.images.get("nginx:latest")
+        XCTAssert(image.repoTags != nil && image.repoTags!.count > 0 && image.repoTags!.first == "nginx:latest", "Ensure repoTags exists")
     }
     
     func testImageHistory() async throws {
