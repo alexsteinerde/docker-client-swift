@@ -119,7 +119,8 @@ public class DockerClient {
             tlsConfig: self.tlsConfig,
             timeout: timeout,
             logger: logger,
-            headers: self.headers
+            headers: self.headers,
+            hasLengthHeader: true
         )
         return stream as! T.Response
     }

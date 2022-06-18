@@ -40,33 +40,57 @@ extension HTTPClient {
         request.method = method
         request.body = body
         
-        let lengthHeaderSize = 8
+        let lengthHeaderSize: UInt32 = 8
         let response = try await self.execute(request, timeout: timeout, logger: logger)
         let body = response.body
         return AsyncThrowingStream<ByteBuffer, Error> { continuation in
             _Concurrency.Task {
                 var messageBuffer = ByteBuffer()
+                //var iterator = body.makeAsyncIterator()
+                var collectMore = false
+                var realMsgSize: UInt32 = 0
                 for try await var buffer in body {
+               // while true{
                     //var msgSize = buffer.readableBytes
+                    /*guard let buffer = try await iterator.next() else {
+                        print("\n••• NOTHING TO REREAD")
+                        continuation.finish()
+                        return
+                    }*/
                     if hasLengthHeader {
-                        guard let realMsgSize = buffer.getInteger(at: 4, endianness: .big, as: Int.self) else {
-                            continuation.finish(
-                                throwing: DockerError.corruptedData("Error reading message size in a data stream having length header")
-                            )
-                            return
+                        
+                        if !collectMore {
+                            messageBuffer.clear(minimumCapacity: realMsgSize)
+                            guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
+                                continuation.finish(
+                                    throwing: DockerError.corruptedData("Error reading message size in a data stream having length header")
+                                )
+                                return
+                            }
+                            realMsgSize = msgSize + lengthHeaderSize
                         }
-                        messageBuffer.clear(minimumCapacity: realMsgSize)
-                        try await body.collect(upTo: realMsgSize + lengthHeaderSize, into: &messageBuffer)
+                        
+                        //try await body.collect(upTo: Int(realMsgSize + lengthHeaderSize), into: &messageBuffer)
+                        
                         //buffer.copyBytes(at: 0, to: buffer.readableBytes, length: 3)
-                        //messageBuffer.writeBuffer(&buffer)
+                        messageBuffer.writeBuffer(&buffer)
+                        if messageBuffer.writerIndex < realMsgSize {
+                            collectMore = true
+                        }
+                        else {
+                            print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.readableBytes)")
+                            continuation.yield(messageBuffer)
+                        }
+                        
                         //while messageBuffer.writerIndex < realMsgSize + lengthHeaderSize {
                         //    body.
                         //}
                     }
                     else {
                         messageBuffer = buffer
+                        continuation.yield(messageBuffer)
                     }
-                    continuation.yield(messageBuffer)
+                    
                 }
                 continuation.finish()
             }
