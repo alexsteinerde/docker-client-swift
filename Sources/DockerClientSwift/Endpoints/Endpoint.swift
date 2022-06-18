@@ -1,5 +1,6 @@
 import NIOHTTP1
 import NIO
+import NIOFoundationCompat
 import Foundation
 
 protocol Endpoint {
