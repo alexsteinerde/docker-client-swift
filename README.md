@@ -516,7 +516,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Remove the current Node from the Swarm</summary>
   
-  Note: `force` is needed if the node is a manager
+  > Note: `force` is needed if the node is a manager
   ```swift
   try await docker.swarm.leave(force: true)
   ```
@@ -538,7 +538,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Remove a Node from a Swarm</summary>
   
-  Note: `force` is needed if the node is a manager
+  > Note: `force` is needed if the node is a manager
   ```swift
   try await docker.nodes.delete(id: "xxxxxx", force: true)
   ```
