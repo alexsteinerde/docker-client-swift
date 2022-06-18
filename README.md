@@ -103,7 +103,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |          |             |
 | Plugins                     |                         | ❌       |    TBD      |
 |                             |                         |          |             |
-| Registries                  |                         | ❌       |     TBD     |
+| Registries                  | Login                   | ✅       | basic implementation |
 |                             |                         |          |             |
 | Docker error responses mgmt |                         | 🚧       |             |
 
