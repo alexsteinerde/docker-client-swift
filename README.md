@@ -634,8 +634,8 @@ Remote daemon via HTTPS and client certificate:
 
 ### Secrets
 > This requires a Docker daemon with Swarm mode enabled.
-
-The API is very similar for managing Docker Configs and the below examples also apply to them.
+> 
+> Note: The API for managing Docker Configs is very similar to the Secrets API and the below examples also apply to them.
 
 <details>
   <summary>List secrets</summary>
