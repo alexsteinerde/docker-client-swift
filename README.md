@@ -394,7 +394,7 @@ Remote daemon via HTTPS and client certificate:
   ```
   
   You can use external libraries to create TAR archives of your build context.
-  Example with Tarscape (only works on macOS) (https://github.com/kayembi/Tarscape):
+  Example with [Tarscape](https://github.com/kayembi/Tarscape) (only available on macOS):
   ```swift
   import Tarscape
   
@@ -724,5 +724,5 @@ This is a fork of the great work at https://github.com/alexsteinerde/docker-clie
 This project is released under the MIT license. See [LICENSE](LICENSE) for details.
 
 
-## Contribution
+## Contribute
 You can contribute to this project by submitting a detailed issue or by forking this project and sending a pull request. Contributions of any kind are very welcome :)
