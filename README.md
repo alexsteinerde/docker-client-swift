@@ -501,11 +501,16 @@ Remote daemon via HTTPS and client certificate:
   <summary>Make the Docker deamon to join an existing Swarm cluster</summary>
   
   ```swift
-  let swarm = try await client.swarm.get()
+  // This first client points to an existing Swarm cluster manager
+  let swarmClient = Dockerclient(...)
+  let swarm = try await swarmClient.swarm.get()
+  
+  // This client is the docker daemon we want to add to the Swarm cluster
+  let client = Dockerclient(...)
   try await client.swarm.join(
       config: .init(
           // To join the Swarm cluster as a Manager node
-          joinToken: swarm.joinTokens.manager,
+          joinToken: swarmClient.joinTokens.manager,
           // IP/Host of the existing Swarm managers
           remoteAddrs: ["10.0.0.1"]
       )
