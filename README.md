@@ -491,7 +491,7 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Get Swarm cluster details (inspect)</summary>
   
-  Note: Must be connected to a manager node.
+  > The client must be connected to a Swarm manager node.
   ```swift
   let swarm = try await docker.swarm.get()
   ```
@@ -506,7 +506,7 @@ Remote daemon via HTTPS and client certificate:
       config: .init(
           // To join the Swarm cluster as a Manager node
           joinToken: swarm.joinTokens.manager,
-          // IP/Host of the Swarm managers
+          // IP/Host of the existing Swarm managers
           remoteAddrs: ["10.0.0.1"]
       )
   )
