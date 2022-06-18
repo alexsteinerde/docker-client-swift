@@ -15,8 +15,13 @@ public struct InspectSwarmEndpoint: Endpoint {
     }
     
     public struct SwarmJoinTokens: Codable {
-        public let Manager: String
-        public let Worker: String
+        public let manager: String
+        public let worker: String
+        
+        enum CodingKeys: String, CodingKey {
+            case manager = "Manager"
+            case worker = "Worker"
+        }
     }
     
     public struct SwarmTLSInfo: Codable {
@@ -26,29 +31,43 @@ public struct InspectSwarmEndpoint: Endpoint {
     }
     
     public struct SwarmResponse: Codable {
-        let ID: String
+        let id: String
         
-        let CreatedAt: String
-        let UpdatedAt: String
+        let createdAt: String
+        let updatedAt: String
         
         /// DataPathPort specifies the data path port number for data traffic. Acceptable port range is 1024 to 49151.
         /// If no port is set or is set to 0, the default port (4789) is used.
-        let DataPathPort: UInt16
+        let dataPathPort: UInt16
         
-        let DefaultAddrPool: [String]
+        let defaultAddrPool: [String]
         
-        let JoinTokens: SwarmJoinTokens
+        let joinTokens: SwarmJoinTokens
         
         /// Whether there is currently a root CA rotation in progress for the swarm
-        let RootRotationInProgress: Bool
+        let rootRotationInProgress: Bool
         
-        let Spec: SwarmSpec
+        let spec: SwarmSpec
         
         /// SubnetSize specifies the subnet size of the networks created from the default subnet pool.
-        let SubnetSize: UInt8
+        let subnetSize: UInt8
         
-        let TLSInfo: SwarmTLSInfo
+        let tlsInfo: SwarmTLSInfo
         
-        let Version: SwarmResponseVersion
+        let version: SwarmResponseVersion
+        
+        enum CodingKeys: String, CodingKey {
+            case id = "ID"
+            case createdAt = "CreatedAt"
+            case updatedAt = "UpdatedAt"
+            case dataPathPort = "DataPathPort"
+            case defaultAddrPool = "DefaultAddrPool"
+            case joinTokens = "JoinTokens"
+            case rootRotationInProgress = "RootRotationInProgress"
+            case spec = "Spec"
+            case subnetSize = "SubnetSize"
+            case tlsInfo = "TLSInfo"
+            case version = "Version"
+        }
     }
 }

@@ -23,21 +23,22 @@ final class SwarmTests: XCTestCase {
         XCTAssertTrue(id != "" , "Ensure Swarm ID is returned")
         
         let swarm = try await client.swarm.get()
-        XCTAssertTrue(swarm.Spec.labels!["test.label"] == "value", "Ensure Swarm Labels are set")
+        XCTAssertTrue(swarm.spec.labels!["test.label"] == "value", "Ensure Swarm Labels are set")
     }
     
     func testInspect() async throws {
         let swarm = try await client.swarm.get()
-        XCTAssertTrue(swarm.ID.count == "4evkkpryustfhlcmkxl5oepns".count)
-        XCTAssertTrue(swarm.Spec.name == "default", "Ensure Swarm Name is returned")
+        XCTAssertTrue(swarm.id.count == "4evkkpryustfhlcmkxl5oepns".count)
+        XCTAssertTrue(swarm.spec.name == "default", "Ensure Swarm Name is returned")
     }
     
     func testUpdate() async throws {
         let swarm = try await client.swarm.get()
-        try await client.swarm.update(spec: swarm.Spec, version: swarm.Version.Index)
+        try await client.swarm.update(spec: swarm.spec, version: swarm.version.Index)
     }
     
     func testZLeave() async throws {
         try await client.swarm.leave(force: true)
+        
     }
 }

@@ -498,6 +498,22 @@ Remote daemon via HTTPS and client certificate:
 </details>
 
 <details>
+  <summary>Make the Docker deamon to join an existing Swarm cluster</summary>
+  
+  ```swift
+  let swarm = try await client.swarm.get()
+  try await client.swarm.join(
+      config: .init(
+          // To join the Swarm cluster as a Manager node
+          joinToken: swarm.joinTokens.manager,
+          // IP/Host of the Swarm managers
+          remoteAddrs: ["10.0.0.1"]
+      )
+  )
+  ```
+</details>
+
+<details>
   <summary>Remove the current Node from the Swarm</summary>
   
   Note: `force` is needed if the node is a manager
