@@ -348,9 +348,30 @@ Remote daemon via HTTPS and client certificate:
 <details>
   <summary>Pull an image</summary>
   
+  Pull an image from a public repository:
   ```swift
   let image = try await docker.images.pull(byIdentifier: "hello-world:latest")
   ```
+
+  Pull an image from a registry that requires authentication:
+  ```swift
+  var credentials = RegistryAuth(username: "myUsername", password: "....")
+  let registryAuth = try await docker.registries.login(credentials: &credentials)
+  let image = try await docker.images.pull(byIdentifier: "my-private-image:latest", credentials: registryAuth)
+  ```
+  > NOTE: `RegistryAuth` also accepts a `serverAddress` parameter in order to use a custom registry.
+</details>
+
+<details>
+  <summary>Push an image</summary>
+
+  Supposing that the Docker deamon has an image named "my-private-image:latest":
+  ```swift
+  var credentials = RegistryAuth(username: "myUsername", password: "....")
+  let registryAuth = try await docker.registries.login(credentials: &credentials)
+  try await docker.images.push("my-private-image:latest", credentials: registryAuth)
+  ```
+  > NOTE: `RegistryAuth` also accepts a `serverAddress` parameter in order to use a custom registry.
 </details>
 
 <details>
