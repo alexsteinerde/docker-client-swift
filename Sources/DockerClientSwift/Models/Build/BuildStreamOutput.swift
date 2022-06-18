@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Docker build output message
 public struct BuildStreamOutput: Codable {
-    /// Raw progress message from the Docker builder
+    /// Raw message from the Docker builder
     public let stream: String?
     
     /// Additional information. Used to return the built Image ID.

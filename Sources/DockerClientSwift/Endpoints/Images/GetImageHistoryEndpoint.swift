@@ -7,11 +7,11 @@ struct GetImageHistoryEndpoint: Endpoint {
     
     private var nameOrId: String
     
-    init(nameOrId: String) {
-        self.nameOrId = nameOrId
-    }
-    
     var path: String {
         "images/\(nameOrId)/history"
+    }
+    
+    init(nameOrId: String) {
+        self.nameOrId = nameOrId
     }
 }

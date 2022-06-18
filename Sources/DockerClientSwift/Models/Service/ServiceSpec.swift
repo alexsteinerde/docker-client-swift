@@ -56,6 +56,7 @@ public struct ServiceSpec: Codable {
         /// Specification for the restart policy which applies to containers created as part of this service.
         public var restartPolicy: ServiceRestartPolicy?
         
+        // TODO: implement
         //public var placement: Placement
         
         /// Specifies which networks the service should attach to.

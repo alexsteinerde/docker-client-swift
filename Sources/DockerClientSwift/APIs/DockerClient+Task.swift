@@ -23,8 +23,8 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  a  sequence of `DockerLogEntry`.
         public func logs(task: SwarmTask, details: Bool = false, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil, since: Date = .distantPast, until: Date = .distantFuture) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
-            let endpoint = GetServiceLogsEndpoint(
-                serviceId: task.id,
+            let endpoint = GetTaskLogsEndpoint(
+                taskId: task.id,
                 details: details,
                 stdout: stdOut,
                 stderr: stdErr,

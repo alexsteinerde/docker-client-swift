@@ -7,9 +7,20 @@ struct PullImageEndpoint: PipelineEndpoint {
     var method: HTTPMethod = .POST
     
     let imageName: String
+    let credentials: RegistryAuth?
     
     var path: String {
         "images/create?fromImage=\(imageName)"
+    }
+    
+    var headers: HTTPHeaders? = nil
+    
+    init(imageName: String, credentials: RegistryAuth?) {
+        self.imageName = imageName
+        self.credentials = credentials
+        if let credentials = credentials, let token = credentials.token {
+            self.headers = .init([("X-Registry-Auth", token)])
+        }
     }
     
     struct PullImageResponse: Codable {

@@ -66,6 +66,10 @@ public class DockerClient {
     @discardableResult
     internal func run<T: Endpoint>(_ endpoint: T) async throws -> T.Response {
         logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
+        var finalHeaders: HTTPHeaders = self.headers
+        if let additionalHeaders = endpoint.headers {
+            finalHeaders.add(contentsOf: additionalHeaders)
+        }
         return try await client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
@@ -73,7 +77,7 @@ public class DockerClient {
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
             tlsConfig: self.tlsConfig,
             logger: logger,
-            headers: self.headers
+            headers: finalHeaders
         )
         .logResponseBody(logger)
         .decode(as: T.Response.self, decoder: self.decoder)

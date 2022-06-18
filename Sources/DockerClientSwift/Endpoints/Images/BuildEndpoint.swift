@@ -15,12 +15,6 @@ struct BuildEndpoint: UploadEndpoint {
     private let encoder: JSONEncoder
     private let decoder = JSONDecoder()
     
-    init(buildConfig: BuildConfig, context: ByteBuffer) {
-        self.buildConfig = buildConfig
-        self.body = context
-        self.encoder = .init()
-    }
-    
     var path: String {
         var tags = ""
         for rt in self.buildConfig.repoTags ?? [] {
@@ -59,6 +53,12 @@ struct BuildEndpoint: UploadEndpoint {
         &buildargs=\(buildArgs?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")\
         &labels=\(labels?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
         """
+    }
+    
+    init(buildConfig: BuildConfig, context: ByteBuffer) {
+        self.buildConfig = buildConfig
+        self.body = context
+        self.encoder = .init()
     }
     
     func map(response: Response) async throws -> AsyncThrowingStream<BuildStreamOutput, Error>  {

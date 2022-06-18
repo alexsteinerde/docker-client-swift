@@ -7,11 +7,16 @@ protocol Endpoint {
     associatedtype Body: Codable
     var path: String { get }
     var method: HTTPMethod { get }
+    var headers: HTTPHeaders? {get}
     var body: Body? { get }
 }
 
 extension Endpoint {
     public var body: Body? {
+        return nil
+    }
+    
+    public var headers: HTTPHeaders? {
         return nil
     }
 }
@@ -35,6 +40,7 @@ extension StreamingEndpoint {
 }
 
 
+/// A Docker API endpoint that returns  a progressive stream of JSON objects separated by line returns
 class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
     internal init(path: String, method: HTTPMethod = .GET) {
         self.path = path
@@ -80,6 +86,7 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
 }
 
 
+/// A Docker API endpoint that receives a stream of bytes in the request body
 protocol UploadEndpoint {
     associatedtype Response: AsyncSequence
     var path: String { get }

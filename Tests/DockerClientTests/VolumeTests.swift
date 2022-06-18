@@ -27,4 +27,13 @@ final class VolumeTests: XCTestCase {
         // TODO: improve and check the actual content
         let _ = try await client.volumes.list()
     }
+    
+    func testPruneVolumes() async throws {
+        let name = UUID().uuidString
+        let volume = try await client.volumes.create(
+            spec: .init(name: name)
+        )
+        let pruned = try await client.volumes.prune()
+        XCTAssert(pruned.volumesDeleted.contains(volume.name), "Ensure created Volume got deleted")
+    }
 }

@@ -46,8 +46,9 @@ extension DockerClient {
         
         /// Deletes all unused networks.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns the list of IDs of the networks that got deleted.
-        public func prune(all: Bool = false) async throws -> [String] {
+        /// - Returns: Returns the list of **names** of the networks that got deleted.
+        /// - SeeAlso: https://docs.docker.com/engine/api/v1.41/#operation/NetworkPrune
+        public func prune() async throws -> [String] {
             return try await client.run(PruneNetworksEndpoint()).NetworksDeleted
         }
     }

@@ -27,6 +27,20 @@ final class ImageTests: XCTestCase {
         XCTAssertTrue(image.repoTags!.first == "hello-world:latest")
     }
     
+    func testPushImage() async throws {
+        guard let password = ProcessInfo.processInfo.environment["REGISTRY_PASSWORD"] else {
+            fatalError("REGISTRY_PASSWORD is not set")
+        }
+        var credentials = RegistryAuth(username: "mbarthelemy", password: password)
+        let registry = try await client.registries.login(credentials: &credentials)
+        
+        let tag = UUID().uuidString
+        let image = try await client.images.pull(byName: "hello-world", tag: "latest")
+        try await client.images.tag(image.id, repoName: "mbarthelemy/tests", tag: tag)
+        
+        try await client.images.push("mbarthelemy/tests", tag: tag, credentials: credentials)
+    }
+    
     func testListImage() async throws {
         let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         
