@@ -54,30 +54,6 @@ public struct SwarmTask: Codable {
         case jobIteration = "JobIteration"
     }
     
-    /*public struct TaskSpec: Codable {
-        public let containerSpec: ContainerSpec
-        
-        /// public let NetworkAttachmentSpec: NetworkAttachmentSpec
-        
-        public let resources: ServiceSpec.TaskTemplate.Resources
-        
-        public let restartPolicy: ServiceRestartPolicy
-        
-        // TODO: implement
-        //public let placement: Placement
-        
-        public let forceUpdate: Int
-        
-        public let runtime: String
-        
-        public let networks: [NetworkAttachmentConfig]?
-        
-        public let logDriver: 
-        enum CodingKeys: String, CodingKey {
-            case containerSpec = "ContainerSpec"
-        }
-    }*/
-    
     public struct TaskStatus: Codable {
     
         public let timestamp: Date
@@ -90,12 +66,16 @@ public struct SwarmTask: Codable {
         
         public let containerStatus: ContainerStatus?
         
+        // TODO: implement
+        // public let portStatus: PortStatus?
+        
         enum CodingKeys: String, CodingKey {
             case timestamp = "Timestamp"
             case state = "State"
             case message = "Message"
             case error = "Err"
             case containerStatus = "ContainerStatus"
+            //case portStatus = "PortStatus"
         }
         
         public enum TaskState: String, Codable {
