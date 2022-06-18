@@ -8,10 +8,10 @@ final class ServiceTests: XCTestCase {
     
     override func setUp() async throws {
         client = DockerClient.testable()
-        async let image = try await client.images.pull(byName: "nginx", tag: "latest")
+        async let image = try client.images.pull(byName: "nginx", tag: "latest")
         try? await client.swarm.leave(force: true)
         let _ = try! await client.swarm.initSwarm(config: SwarmConfig())
-        try await image
+        let _ = try await image
     }
     
     override func tearDownWithError() throws {
