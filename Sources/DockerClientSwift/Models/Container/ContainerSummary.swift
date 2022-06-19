@@ -27,7 +27,7 @@ public struct ContainerSummary: Codable {
     public let labels: [String:String]
     
     /// The state of this container (e.g. `exited`)
-    public let state: State
+    public let state: Container.State
     
     /// Additional human-readable status of this container (e.g. "Exit 0")
     public let status: String
@@ -35,9 +35,6 @@ public struct ContainerSummary: Codable {
     // TODO: HostConfig
     // TODO: NetworkSettings
     
-    public enum State: String, Codable {
-        case created, restarting, running, removing, paused, exited, dead
-    }
     
     public struct ExposedPort: Codable {
         public let ip: String?

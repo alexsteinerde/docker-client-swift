@@ -26,15 +26,18 @@ final class SystemTests: XCTestCase {
     }
     
     func testEvents() async throws {
+        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let name = UUID().uuidString
-        async let events = try await client.events()
-        let container = try await client.containers.create(
+        async let events = try client.events()
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+        let _ = try await client.containers.create(
             name: name,
             spec: .init(
                 config: .init(image: "hello-world:latest"),
                 hostConfig: .init()
             )
         )
+        
         for try await event in try await events {
             if event.action == .create && event.type == .container {
                 XCTAssert(event.actor.attributes?["name"] == name, "Ensure create event for this container is emitted")

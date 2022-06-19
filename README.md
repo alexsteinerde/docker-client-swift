@@ -15,11 +15,12 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 
 ## Current implementation status
 
-| Section                     | Operation               | Support | Notes       |
-|-----------------------------|-------------------------|---------|-------------|
+| Section                     | Operation               | Support  | Notes       |
+|-----------------------------|-------------------------|----------|-------------|
 | Client connection           | Local Unix socket       | ✅       |             |
+|                             | Local Unix socket + TLS | ❌       |             |
 |                             | HTTP                    | ✅       |             |
-|                             | HTTPS + TLS client cert | 🚧       | WIP         |
+|                             | HTTPS                   | ✅       |             |
 |                             |                         |          |             |
 | Docker deamon & System info | Ping                    | ✅       |             |
 |                             | Info                    | ✅       |             |
@@ -78,7 +79,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | Connect/Disconnect container| ❌       |    TBD      |
+|                             | (Dis)connect container  | ❌       |    TBD      |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -152,13 +153,25 @@ Local socket (defaults to `/var/run/docker.sock`):
 let docker = DockerClient()
 ```
 
-Remote daemon via HTTP:
+Remote daemon over HTTP:
 ```swift
 let docker = DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375")!)
 ```
 
-Remote daemon via HTTPS and client certificate:
+Remote daemon over HTTPS, using a client certificate for authentication:
+```swift
+var tlsConfig = TLSConfiguration.makeClientConfiguration()
+tlsConfig.privateKey = NIOSSLPrivateKeySource.file("client-key.pem")
+tlsConfig.certificateChain.append(NIOSSLCertificateSource.file("client-certificate.pem"))
+tlsConfig.additionalTrustRoots.append(.file("docker-daemon-ca.pem"))
+tlsConfig.certificateVerification = .noHostnameVerification
 
+let docker = DockerClient(
+    deamonURL: .init(string: "https://your.docker.daemon:2376")!,
+    tlsConfig: tlsConfig,
+    logger: logger
+)
+```
 
 ### Docker system info
 

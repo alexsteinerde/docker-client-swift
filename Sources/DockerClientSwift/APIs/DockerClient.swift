@@ -20,32 +20,48 @@ public class DockerClient {
     private let client: HTTPClient
     private let logger: Logger
     
+    
     /// Initialize the `DockerClient`.
     /// - Parameters:
     ///   - daemonURL: The URL where the Docker API is listening on. Default is `http+unix:///var/run/docker.sock`.
-    ///   - client: `HTTPClient` instance that is used to execute the requests. Default is `.init(eventLoopGroupProvider: .createNew)`.
     ///   - tlsConfig: `TLSConfiguration` for a Docker daemon requiring TLS authentication. Default is `nil`.
     ///   - logger: `Logger` for the `DockerClient`. Default is `.init(label: "docker-client")`.
+    ///   - clientThreads: Number of threads to use for the HTTP client EventLoopGroup. Defaults to 2.
+    ///   - timeout: Pass custom connect and read timeouts via a `HTTPClient.Configuration.Timeout` instance
+    ///   - proxy: Proxy settings, defaults to `nil`.
     public init(
         deamonURL: URL = URL(httpURLWithSocketPath: "/var/run/docker.sock")!,
-        client: HTTPClient = .init(eventLoopGroupProvider: .createNew),
         tlsConfig: TLSConfiguration? = nil,
-        logger: Logger = .init(label: "docker-client")) {
+        logger: Logger = .init(label: "docker-client"),
+        clientThreads: Int = 2,
+        timeout: HTTPClient.Configuration.Timeout = .init(),
+        proxy: HTTPClient.Configuration.Proxy? = nil
+    ) {
             
-        self.deamonURL = deamonURL
-        self.tlsConfig = tlsConfig
-        self.client = client
-        self.logger = logger
-        
-        // Docker uses a slightly custom format for returning dates
-        let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(formatter)
-        self.decoder = decoder
-    }
+            self.deamonURL = deamonURL
+            self.tlsConfig = tlsConfig
+            let clientConfig = HTTPClient.Configuration(
+                tlsConfiguration: tlsConfig,
+                timeout: timeout,
+                proxy: proxy,
+                ignoreUncleanSSLShutdown: true            )
+            let httpClient = HTTPClient(
+                eventLoopGroupProvider: .shared(MultiThreadedEventLoopGroup(numberOfThreads: clientThreads)),
+                configuration: clientConfig
+            )
+            //var lute = HTTPClient(eventLoopGroupProvider: <#T##HTTPClient.EventLoopGroupProvider#>, configuration: HTTPClient.Configuration
+            self.client = httpClient
+            self.logger = logger
+            
+            // Docker uses a slightly custom format for returning dates
+            let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
+            let formatter = DateFormatter()
+            formatter.dateFormat = format
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(formatter)
+            self.decoder = decoder
+        }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
     /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
@@ -75,7 +91,6 @@ public class DockerClient {
             daemonURL: self.deamonURL,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
-            tlsConfig: self.tlsConfig,
             logger: logger,
             headers: finalHeaders
         )
@@ -97,7 +112,6 @@ public class DockerClient {
             daemonURL: self.deamonURL,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body.map {HTTPClient.Body.data( try! $0.encode())},
-            tlsConfig: self.tlsConfig,
             logger: logger,
             headers: self.headers
         )
@@ -116,7 +130,6 @@ public class DockerClient {
             body: endpoint.body.map {
                 HTTPClientRequest.Body.bytes( try! $0.encode())
             },
-            tlsConfig: self.tlsConfig,
             timeout: timeout,
             logger: logger,
             headers: self.headers,
@@ -133,7 +146,6 @@ public class DockerClient {
             daemonURL: self.deamonURL,
             urlPath: "/\(apiVersion)/\(endpoint.path)",
             body: endpoint.body == nil ? nil : .bytes(endpoint.body!),
-            tlsConfig: self.tlsConfig,
             timeout: timeout,
             logger: logger,
             headers: self.headers

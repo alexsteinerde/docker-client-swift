@@ -189,6 +189,7 @@ public struct Container: Codable {
         
         public let restarting: Bool
         
+        // TODO: fix parsing these inconsistent dates (different format when set and not set)
         /// The time when this container was last started.
         //@DateValue<ISO8601Strategy>
         //private(set)public var startedAt: Date
@@ -197,7 +198,8 @@ public struct Container: Codable {
         //@DateValue<ISO8601Strategy>
         //private(set)public var finishedAt: Date
         
-        public let status: String
+        /// The state of this container (e.g. `exited`)
+        public let status: State
         
         enum CodingKeys: String, CodingKey {
             case dead = "Dead"
@@ -212,6 +214,10 @@ public struct Container: Codable {
             case restarting = "Restarting"
             //case startedAt = "StartedAt"
             case status = "Status"
+        }
+        
+        public enum State: String, Codable {
+            case created, restarting, running, removing, paused, exited, dead
         }
     }
     

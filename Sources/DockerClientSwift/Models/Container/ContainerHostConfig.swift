@@ -150,7 +150,7 @@ public struct ContainerHostConfig: Codable {
     public var memoryReservation: UInt64 = 0
     
     /// Total memory limit (memory + swap). Set as -1 to enable unlimited swap.
-    public var memorySwap: UInt64 = 0
+    public var memorySwap: Int64 = 0
     
     /// Tune a container's memory swappiness behavior. Accepts an integer between 0 and 100.
     public var memorySwappiness: Int8? = -1
