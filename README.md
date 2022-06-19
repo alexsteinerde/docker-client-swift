@@ -78,7 +78,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | (Dis)connect container  | ❌       |    TBD      |
+|                             | (Dis)connect container  | 🚧       |    WIP      |
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |

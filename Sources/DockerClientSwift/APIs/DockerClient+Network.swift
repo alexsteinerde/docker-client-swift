@@ -51,5 +51,17 @@ extension DockerClient {
         public func prune() async throws -> [String] {
             return try await client.run(PruneNetworksEndpoint()).NetworksDeleted
         }
+        
+        /// Disconnects an existing Container from the Network.
+        /// - Parameters:
+        ///   - nameOrId: Name or Id of the`Network`.
+        ///   - containerNameOrId: Name or Id of the`Container` to disconnect.
+        ///   - force: Force disconnection.
+        /// - Throws: Errors that can occur when executing the request.
+        public func disconnect(_ nameOrId: String, containerNameOrId: String, force: Bool = false) async throws {
+            try await client.run(
+                DisconnectContainerEndpoint(nameOrId: nameOrId, containerNameOrId: containerNameOrId, force: force)
+            )
+        }
     }
 }
