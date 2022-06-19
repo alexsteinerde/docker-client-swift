@@ -18,7 +18,6 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Section                     | Operation               | Support  | Notes       |
 |-----------------------------|-------------------------|----------|-------------|
 | Client connection           | Local Unix socket       | ✅       |             |
-|                             | Local Unix socket + TLS | ❌       |             |
 |                             | HTTP                    | ✅       |             |
 |                             | HTTPS                   | ✅       |             |
 |                             |                         |          |             |
@@ -616,6 +615,19 @@ let docker = DockerClient(
   )
   let service = try await docker.services.create(spec: spec)
   ```
+  
+  What if we then want to know when our service is fully running?
+  ```swift
+  repeat {
+      try await Task.sleep(nanoseconds: 1_000_000_000)
+      print("\n Service still not fully running!")
+      index += 1
+  } while try await docker.tasks.list()
+        .filter({$0.serviceId == service.id && $0.status.state == .running})
+        .count < 1 /* number of replicas */ && index < 15
+  print("\n Service is fully running!")
+  ```
+  
   TODO: add examples for specifying networks and volumes
 </details>
         
