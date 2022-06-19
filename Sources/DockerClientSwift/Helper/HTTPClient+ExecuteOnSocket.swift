@@ -41,14 +41,14 @@ extension HTTPClient {
         request.method = method
         request.body = body
         
-        let lengthHeaderSize: UInt32 = 8
+        let lengthHeaderSize = 8
         let response = try await self.execute(request, timeout: timeout, logger: logger)
         let body = response.body
         return AsyncThrowingStream<ByteBuffer, Error> { continuation in
             _Concurrency.Task {
                 var messageBuffer = ByteBuffer()
                 var collectMore = false
-                var realMsgSize: UInt32 = 0
+                var realMsgSize: Int = 0
                 
                 for try await var buffer in body {
                     print("\n••••• executeStream() 1. readableBytes=\(buffer.readableBytes)")
@@ -64,7 +64,7 @@ extension HTTPClient {
                             continuation.finish()
                             return
                         }
-                        guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
+                        guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: Int.self), msgSize > 0 else {
                             continuation.finish(
                                 throwing: DockerError.corruptedData("Error reading message size in data stream having length header")
                             )
