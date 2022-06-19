@@ -44,12 +44,12 @@ public class DockerClient {
                 tlsConfiguration: tlsConfig,
                 timeout: timeout,
                 proxy: proxy,
-                ignoreUncleanSSLShutdown: true            )
+                ignoreUncleanSSLShutdown: true
+            )
             let httpClient = HTTPClient(
                 eventLoopGroupProvider: .shared(MultiThreadedEventLoopGroup(numberOfThreads: clientThreads)),
                 configuration: clientConfig
             )
-            //var lute = HTTPClient(eventLoopGroupProvider: <#T##HTTPClient.EventLoopGroupProvider#>, configuration: HTTPClient.Configuration
             self.client = httpClient
             self.logger = logger
             
