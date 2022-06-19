@@ -365,6 +365,8 @@ let docker = DockerClient(
   let image = try await docker.images.pull(byIdentifier: "my-private-image:latest", credentials: registryAuth)
   ```
   > NOTE: `RegistryAuth` also accepts a `serverAddress` parameter in order to use a custom registry.
+  
+  > Creating images from a remote URL or from the standard input is currently not supported.
 </details>
 
 <details>
