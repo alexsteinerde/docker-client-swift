@@ -87,25 +87,39 @@ final class ServiceTests: XCTestCase {
     
     func testGetServiceLogs() async throws {
         let name = UUID().uuidString
+        let replicas = 1
         let spec = ServiceSpec(
             name: name,
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest", tty: false)
             ),
             mode: .init(
-                replicated: .init(replicas: 1)
+                replicated: .init(replicas: UInt32(replicas))
             )
         )
         let service = try await client.services.create(spec: spec)
         
-        // wait until service is running and Nginx has produced logs
-        // not sure how to improve that, might lead to flaky test
-        try await Task.sleep(nanoseconds: 5_000_000_000)
+        
+        var index = 0
+        repeat {
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            index += 1
+        } while try await client.tasks.list()
+            .filter({$0.serviceId == service.id && $0.status.state == .running})
+            .count < replicas && index < 15
+        
         // TODO: test with tty = false and timestamps = true once bug fixed
+        do {
         for try await line in try await client.services.logs(service: service, timestamps: true) {
             XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
             //XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
         }
+        }
+        catch(let error) {
+            print("\n••••• BOOM! \(error)")
+        }
+        
+        try await client.services.remove(service.id)
     }
     
     func textZzzLeaveSwarm() async throws {

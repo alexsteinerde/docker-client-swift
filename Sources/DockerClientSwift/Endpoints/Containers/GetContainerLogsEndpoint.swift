@@ -54,6 +54,7 @@ class GetContainerLogsEndpoint: StreamingEndpoint {
             Task {
                 for try await var buffer in response {
                     let totalDataSize = buffer.readableBytes
+                    print("\n••••• GetContainerLogsEndpoint.map() totalDataSize=\(totalDataSize), buffer.readerIndex=\(buffer.readerIndex)")
                     while buffer.readerIndex < totalDataSize {
                         if buffer.readableBytes == 0 {
                             continuation.finish()

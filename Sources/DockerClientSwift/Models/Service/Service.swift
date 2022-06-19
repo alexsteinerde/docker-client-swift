@@ -20,7 +20,8 @@ public struct Service {
     /// The status of a service update.
     public let updateStatus: UpdateStatus? = nil
     
-    /// The status of the service's tasks. Provided only when requested as part of a ServiceList operation.
+    /// The status of the service's tasks.
+    /// Provided only when requested as part of a ServiceList operation.
     public let serviceStatus: ServiceStatus? = nil
     
     /// The status of the service when it is in one of ReplicatedJob or GlobalJob modes.

@@ -27,7 +27,7 @@ public struct ContainerSummary: Codable {
     public let labels: [String:String]
     
     /// The state of this container (e.g. `exited`)
-    public let state: Container.State
+    public let state: Container.State.State
     
     /// Additional human-readable status of this container (e.g. "Exit 0")
     public let status: String

@@ -17,7 +17,7 @@ public struct IPAM: Codable {
     }
     
     public struct IPAMConfig: Codable {
-        public var subnet: String
+        public var subnet: String?
         public var ipRange: String?
         public var gateway: String
         public var auxiliaryAddresses: [String:String]? = [:]

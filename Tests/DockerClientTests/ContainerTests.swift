@@ -20,8 +20,11 @@ final class ContainerTests: XCTestCase {
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
         )
-        let container = try await client.containers.create(name: "tests", spec: spec)
+        let name = UUID.init().uuidString
+        let container = try await client.containers.create(name: name, spec: spec)
         XCTAssertEqual(container.config.cmd, ["/hello"])
+            
+        try await client.containers.remove(container.id)
     }
     
     func testUpdateContainers() async throws {
@@ -45,13 +48,13 @@ final class ContainerTests: XCTestCase {
     
     func testListContainers() async throws {
         let image = try await client.images.pull(byName: "hello-world", tag: "latest")
-        let _ = try await client.containers.create(image: image)
+        let container = try await client.containers.create(image: image)
         
         let containers = try await client.containers.list(all: true)
-    
         XCTAssert(containers.count >= 1)
         XCTAssert(containers.first!.createdAt > Date.distantPast)
-        
+            
+        try await client.containers.remove(container.id)
     }
     
     func testInspectContainer() async throws {

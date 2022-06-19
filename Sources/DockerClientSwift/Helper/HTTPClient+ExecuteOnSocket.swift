@@ -51,6 +51,7 @@ extension HTTPClient {
                 var realMsgSize: UInt32 = 0
                 
                 for try await var buffer in body {
+                    print("\n••••• executeStream() readableBytes=\(buffer.readableBytes)")
                     // if we have no msg length info, we assume the buffer contains exactly 1 message.
                     if !hasLengthHeader {
                         messageBuffer = buffer
@@ -73,10 +74,10 @@ extension HTTPClient {
                     messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
                     if messageBuffer.writerIndex < realMsgSize {
                         collectMore = true
-                        //print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
+                        print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
                     }
                     else {
-                        //print("\n••••• executeStream hasLengthHeader tries to collect \(realMsgSize) bytes, final buffer index=\(messageBuffer.writerIndex)")
+                        print("\n••••• executeStream returning final buffer with size=\(messageBuffer.writerIndex)")
                         continuation.yield(messageBuffer)
                     }
                 }

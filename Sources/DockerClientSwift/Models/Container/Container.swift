@@ -1,6 +1,7 @@
 import Foundation
 import BetterCodable
 
+// MARK: - Container
 /// Detailed information about a Container
 public struct Container: Codable {
     
@@ -42,7 +43,7 @@ public struct Container: Codable {
     
     public let name: String
     
-    // TODO: let NetworkSettings
+    public let networkSettings: NetworkSettings
     
     public let platform: String
     
@@ -78,6 +79,7 @@ public struct Container: Codable {
         case mountLabel = "MountLabel"
         case mounts = "Mounts"
         case name = "Name"
+        case networkSettings = "NetworkSettings"
         case platform = "Platform"
         case path = "Path"
         case processLabel = "ProcessLabel"
@@ -88,10 +90,12 @@ public struct Container: Codable {
         case state = "State"
     }
     
+    // MARK: - HealthStatus
     public enum HealthStatus: String, Codable {
         case none, starting, healthy, unhealthy
     }
     
+    // MARK: - HealthcheckResult
     public struct HealthcheckResult: Codable {
         var start: String
         var end: String
@@ -106,6 +110,7 @@ public struct Container: Codable {
         }
     }
     
+    // MARK: - HealthResponse
     public struct HealthResponse: Codable {
         public let status: HealthStatus
         
@@ -125,6 +130,7 @@ public struct Container: Codable {
         case bind, volume, tmpft, npipe
     }
     
+    // MARK: - ContainerMountPoint
     public struct ContainerMountPoint: Codable {
         public let type: ContainerMountType
         
@@ -166,6 +172,7 @@ public struct Container: Codable {
         }
     }
     
+    // MARK: - State
     public struct State: Codable {
         public let dead: Bool
         
@@ -221,6 +228,7 @@ public struct Container: Codable {
         }
     }
     
+    // MARK: - GraphDriver
     public struct GraphDriver: Codable {
         /// Name of the storage driver.
         public let name: String
@@ -230,6 +238,58 @@ public struct Container: Codable {
         enum CodingKeys: String, CodingKey {
             case name = "Name"
             case data = "Data"
+        }
+    }
+    
+    // MARK: - NetworkSettings
+    public struct NetworkSettings: Codable {
+        /// Name of the network'a bridge (for example, `docker0`).
+        public let bridge: String
+        
+        /// Uniquely represents a container's network stack.
+        public let sandboxId: String
+        
+        /// Indicates if hairpin NAT should be enabled on the virtual interface.
+        public let hairpinMode: Bool
+        
+        /// IPv6 unicast address using the link-local prefix.
+        public let linkLocalIPv6Address: String
+        
+        /// Prefix length of the IPv6 unicast address.
+        public let linkLocalIPv6PrefixLen: UInt16
+        
+        // TODO: implement
+        // public let ports:
+        
+        /// ID of the network sandbox
+        public let sandboxKey: String
+        
+        public let secondaryIPAddresses: [Address]?
+
+        public let secondaryIPv6Addresses: [Address]?
+        
+        public let networks: [String:IPAM.IPAMConfig]?
+        
+        enum CodingKeys: String, CodingKey {
+            case bridge = "Bridge"
+            case sandboxId = "SandboxID"
+            case hairpinMode = "HairpinMode"
+            case linkLocalIPv6Address = "LinkLocalIPv6Address"
+            case linkLocalIPv6PrefixLen = "LinkLocalIPv6PrefixLen"
+            case sandboxKey = "SandboxKey"
+            case secondaryIPAddresses = "SecondaryIPAddresses"
+            case secondaryIPv6Addresses = "SecondaryIPv6Addresses"
+            case networks = "Networks"
+        }
+        
+        public struct Address: Codable {
+            public let address: String
+            public let prefixLength: UInt16
+            
+            enum CodingKeys: String, CodingKey {
+                case address = "Addr"
+                case prefixLength = "PrefixLen"
+            }
         }
     }
 }
