@@ -4,7 +4,7 @@ struct DisconnectContainerEndpoint: Endpoint {
     typealias Body = DisconnectContainerRequest
     
     typealias Response = NoBody?
-    var method: HTTPMethod = .DELETE
+    var method: HTTPMethod = .POST
     
     private let nameOrId: String
     
