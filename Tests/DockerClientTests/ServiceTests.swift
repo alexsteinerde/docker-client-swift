@@ -99,7 +99,6 @@ final class ServiceTests: XCTestCase {
         )
         let service = try await client.services.create(spec: spec)
         
-        
         var index = 0
         repeat {
             try await Task.sleep(nanoseconds: 1_000_000_000)

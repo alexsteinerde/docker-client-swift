@@ -81,7 +81,7 @@ public class DockerClient {
     /// - Returns: Returns the expected result definied by the `Endpoint`.
     @discardableResult
     internal func run<T: Endpoint>(_ endpoint: T) async throws -> T.Response {
-        logger.trace("\(Self.self) execute Endpoint: \(endpoint.path)")
+        logger.debug("\(Self.self) execute Endpoint: \(endpoint.path)")
         var finalHeaders: HTTPHeaders = self.headers
         if let additionalHeaders = endpoint.headers {
             finalHeaders.add(contentsOf: additionalHeaders)
@@ -106,7 +106,7 @@ public class DockerClient {
     /// - Returns: Returns the expected result definied and transformed by the `PipelineEndpoint`.
     @discardableResult
     internal func run<T: PipelineEndpoint>(_ endpoint: T) async throws -> T.Response {
-        logger.trace("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
+        logger.debug("\(Self.self) execute PipelineEndpoint: \(endpoint.path)")
         return try await client.execute(
             endpoint.method,
             daemonURL: self.deamonURL,
@@ -122,7 +122,7 @@ public class DockerClient {
     
     @discardableResult
     internal func run<T: StreamingEndpoint>(_ endpoint: T, timeout: TimeAmount, hasLengthHeader: Bool) async throws -> T.Response {
-        logger.trace("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
+        logger.debug("\(Self.self) execute StreamingEndpoint: \(endpoint.path)")
         let stream = try await client.executeStream(
             endpoint.method,
             daemonURL: self.deamonURL,

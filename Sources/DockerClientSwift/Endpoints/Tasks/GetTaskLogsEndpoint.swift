@@ -12,7 +12,7 @@ class GetTaskLogsEndpoint: GetContainerLogsEndpoint {
     override var path: String {
         """
         tasks/\(taskId)/logs\
-        ?details\(details)\
+        ?details=\(details)\
         &stdout=\(stdout)\
         &stderr=\(stderr)\
         &follow=\(follow)\

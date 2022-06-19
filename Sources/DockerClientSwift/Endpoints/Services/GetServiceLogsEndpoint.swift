@@ -12,7 +12,7 @@ class GetServiceLogsEndpoint: GetContainerLogsEndpoint {
     override var path: String {
         """
         services/\(serviceId)/logs\
-        ?details\(details)\
+        ?details=\(details)\
         &stdout=\(stdout)\
         &stderr=\(stderr)\
         &follow=\(follow)\
