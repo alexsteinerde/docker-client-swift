@@ -52,7 +52,7 @@ extension DockerClient {
             return try await client.run(PruneNetworksEndpoint()).NetworksDeleted
         }
         
-        /// Disconnects an existing Container from the Network.
+        /// Disconnects an existing Container from a Network.
         /// - Parameters:
         ///   - nameOrId: Name or Id of the`Network`.
         ///   - containerNameOrId: Name or Id of the`Container` to disconnect.

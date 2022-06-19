@@ -51,7 +51,7 @@ extension HTTPClient {
                 var realMsgSize: UInt32 = 0
                 
                 for try await var buffer in body {
-                    print("\n••••• executeStream() readableBytes=\(buffer.readableBytes)")
+                    print("\n••••• executeStream() 1. readableBytes=\(buffer.readableBytes)")
                     // if we have no msg length info, we assume the buffer contains exactly 1 message.
                     if !hasLengthHeader {
                         messageBuffer = buffer
@@ -60,7 +60,10 @@ extension HTTPClient {
                     }
                     
                     if !collectMore {
-                        messageBuffer.clear(minimumCapacity: Int(realMsgSize))
+                        if buffer.readableBytes == 0 {
+                            continuation.finish()
+                            return
+                        }
                         guard let msgSize = buffer.getInteger(at: 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
                             continuation.finish(
                                 throwing: DockerError.corruptedData("Error reading message size in data stream having length header")
@@ -68,16 +71,19 @@ extension HTTPClient {
                             return
                         }
                         realMsgSize = msgSize + lengthHeaderSize
+                        print("\n••••• executeStream() 2. realMsgSize=\(realMsgSize)")
+                        messageBuffer.clear(minimumCapacity: Int(realMsgSize))
                     }
                                             
                     let readable = buffer.readableBytes
                     messageBuffer.writeBytes(buffer.readBytes(length: readable)!)
                     if messageBuffer.writerIndex < realMsgSize {
                         collectMore = true
-                        print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE")
+                        print("\n••••• executeStream hasLengthHeader NEED TO COLLECT MOMORE (current=\(messageBuffer.writerIndex), msgSize=\(realMsgSize))")
                     }
                     else {
                         print("\n••••• executeStream returning final buffer with size=\(messageBuffer.writerIndex)")
+                        collectMore = false
                         continuation.yield(messageBuffer)
                     }
                 }

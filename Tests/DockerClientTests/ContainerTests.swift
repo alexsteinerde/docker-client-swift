@@ -75,6 +75,7 @@ final class ContainerTests: XCTestCase {
                 hostConfig: .init())
         )
         try await client.containers.start(container.id)
+        try await Task.sleep(nanoseconds: 3_000_000_000)
         
         var output = ""
         for try await line in try await client.containers.logs(container: container, timestamps: true) {
@@ -111,6 +112,8 @@ final class ContainerTests: XCTestCase {
         
         """
         )
+        
+        try await client.containers.remove(container.id)
     }
     
     // Log entries parsing is quite different depending on whether the container has a TTY
