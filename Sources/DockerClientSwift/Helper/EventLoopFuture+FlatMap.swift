@@ -1,6 +1,6 @@
 import NIO
 
-extension EventLoopFuture {
+/*extension EventLoopFuture {
     /// `flatMap` functions that accepts a throwing callback.
     /// - Parameters:
     ///   - callback: Throwing closure that returns and `EventLoopFuture` of the result type.
@@ -14,4 +14,4 @@ extension EventLoopFuture {
             }
         }
     }
-}
+}*/

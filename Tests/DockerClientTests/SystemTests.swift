@@ -16,6 +16,7 @@ final class SystemTests: XCTestCase {
     func testDockerVersion() async throws {
         let version = try await client.version()
         XCTAssert(version.version != "", "Ensure Version field is set")
+        XCTAssert(version.buildTime > Date.distantPast, "Ensure BuildTime field is parsed")
     }
     
     func testDataUsage() async throws {

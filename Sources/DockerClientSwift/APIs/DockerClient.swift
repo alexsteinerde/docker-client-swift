@@ -57,7 +57,7 @@ public class DockerClient {
             let format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSS'Z'"
             let formatter = DateFormatter()
             formatter.dateFormat = format
-            
+
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .formatted(formatter)
             self.decoder = decoder

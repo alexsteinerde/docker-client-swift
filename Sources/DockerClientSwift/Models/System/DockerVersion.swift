@@ -33,8 +33,8 @@ public struct DockerVersion: Codable {
     public let kernelVersion: String?
     
     /// The date and time that the daemon was compiled.
-    /// /Note: this is a Date but is not encoded using the format used elsewhere in the Docker API.
-    public let buildTime: String
+    @DateValue<ISO8601WithFractionalSecondsStrategy>
+    private(set) public var buildTime: Date
     
     /// Indicates if the daemon is started with experimental features enabled.
     /// This field is omitted when empty / false.
