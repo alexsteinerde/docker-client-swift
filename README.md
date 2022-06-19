@@ -618,6 +618,7 @@ let docker = DockerClient(
   
   What if we then want to know when our service is fully running?
   ```swift
+  var index = 0 // Keep track of how long we've been waiting
   repeat {
       try await Task.sleep(nanoseconds: 1_000_000_000)
       print("\n Service still not fully running!")
