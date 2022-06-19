@@ -46,26 +46,7 @@ final class ServiceTests: XCTestCase {
         XCTAssertTrue(updatedService.version > service.version)
     }*/
     
-    func testInspectService() async throws {
-        let name = UUID().uuidString
-        let spec = ServiceSpec(
-            name: name,
-            taskTemplate: .init(
-                containerSpec: .init(image: "nginx:latest"),
-                resources: .init(
-                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
-                )
-            ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
-        )
-        let service = try await client.services.create(spec: spec)
-        try await Task.sleep(nanoseconds: 3_000_000_000)
-        XCTAssertEqual(service.spec.name, name)
-    }
-    
-    func testCreateServiceAdvanced() async throws {
+    func testCreateService() async throws {
         let name = UUID().uuidString
         let spec = ServiceSpec(
             name: name,
@@ -109,13 +90,14 @@ final class ServiceTests: XCTestCase {
         
         // TODO: test with tty = false and timestamps = true once bug fixed
         do {
-        for try await line in try await client.services.logs(service: service, timestamps: true) {
-            XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
-            //XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
-        }
+            for try await line in try await client.services.logs(service: service, timestamps: true) {
+                XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
+                //XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")
+            }
         }
         catch(let error) {
             print("\n••••• BOOM! \(error)")
+            throw error
         }
         
         try await client.services.remove(service.id)
