@@ -28,7 +28,7 @@ final class ServiceTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .replicatedService(1)
+            mode: .replicated(1)
         )
         let service = try await client.services.create(spec: spec)
         
@@ -48,7 +48,7 @@ final class ServiceTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .replicatedService(1)
+            mode: .replicated(1)
         )
         let service = try await client.services.create(spec: spec)
         
@@ -65,11 +65,11 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest", tty: false)
             ),
-            mode: .replicatedService(1)
+            mode: .replicated(1)
         )
         let service = try await client.services.create(spec: spec)
         
-        spec.mode = .replicatedService(2)
+        spec.mode = .replicated(2)
         try await client.services.update(service: service, version: service.version.index, spec: spec)
         let updated = try await client.services.get(service.id)
         
@@ -90,7 +90,7 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest", tty: false)
             ),
-            mode: .replicatedService(UInt32(replicas))
+            mode: .replicated(UInt32(replicas))
         )
         let service = try await client.services.create(spec: spec)
         

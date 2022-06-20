@@ -661,6 +661,19 @@ let docker = DockerClient(
   print("\n Service is fully running!")
   ```
   
+  What if we want to create a one-off job instead of a service?
+  ```swift
+  let spec = ServiceSpec(
+      name: "hello-world-job",
+      taskTemplate: .init(
+          containerSpec: .init(image: "hello-world:latest"),
+          ...
+      ),
+      mode: .job(1)
+  )
+  let job = try await docker.services.create(spec: spec)
+  ```
+  
   TODO: add examples for specifying networks and volumes
 </details>
  
@@ -679,7 +692,7 @@ let docker = DockerClient(
 <details>
   <summary>Get service logs</summary>
   
-  Logs are streamed progressively in an asynchronous way.
+  > Logs are streamed progressively in an asynchronous way.
   
   Get all logs:
   ```swift
@@ -745,7 +758,8 @@ let docker = DockerClient(
 <details>
   <summary>Get a secret details</summary>
   
-  Note: The Docker API doesn't return secret data/values.
+  > Note: The Docker API doesn't return secret data/values.
+  
   ```swift
   let secret = try await docker.secrets.get("nameOrId")
   ```
@@ -773,7 +787,8 @@ let docker = DockerClient(
 <details>
   <summary>Update a secret</summary>
   
-  Currently, only the `labels` field can be updated (Docker limitation).
+  > Currently, only the `labels` field can be updated (Docker limitation).
+  
   ```swift
   try await docker.secrets.update("nameOrId", labels: ["myKey": "myValue"])
   ```

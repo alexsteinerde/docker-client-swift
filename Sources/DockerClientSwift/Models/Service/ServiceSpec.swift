@@ -12,7 +12,7 @@ public struct ServiceSpec: Codable {
     public var taskTemplate: TaskTemplate
     
     /// Scheduling mode for the service.
-    public var mode: ServiceMode = .replicatedService(1)
+    public var mode: ServiceMode = .replicated(1)
     
     public var updateConfig: UpdateOrRollbackConfig?
     
@@ -191,14 +191,14 @@ public struct ServiceSpec: Codable {
         }
         
         /// Create a service having one task per Swarm.
-        public static func globalService() -> ServiceMode {
+        public static func global() -> ServiceMode {
             return ServiceMode(global: .init())
         }
         
         /// Create a classical Service that can have multiple replicas.
         /// - Parameters:
         ///   - replicas: Desired number of replicas (containers) to run.
-        public static func replicatedService(_ replicas: UInt32) -> ServiceMode {
+        public static func replicated(_ replicas: UInt32) -> ServiceMode {
             return ServiceMode(replicated: .init(replicas: replicas))
         }
         
@@ -213,7 +213,7 @@ public struct ServiceSpec: Codable {
         /// - Parameters:
         ///   - maxConcurrent: The maximum number of replicas (containers) to run simultaneously.
         ///   - totalCompletions: The total number of replicas desired to reach the Completed state. If unset, will default to the value of `maxConcurrent`
-        public static func replicatedJob(_ maxConcurrent: UInt, totalCompletions: UInt?) -> ServiceMode {
+        public static func job(_ maxConcurrent: UInt, totalCompletions: UInt? = nil) -> ServiceMode {
             return ServiceMode(replicatedJob: .init(maxConcurrent: maxConcurrent, totalCompletions: totalCompletions))
         }
         
