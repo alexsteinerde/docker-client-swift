@@ -78,7 +78,7 @@ final class ContainerTests: XCTestCase {
         try await Task.sleep(nanoseconds: 3_000_000_000)
         
         var output = ""
-        do{
+        do {
             for try await line in try await client.containers.logs(container: container, timestamps: true) {
                 XCTAssert(line.timestamp != Date.distantPast, "Ensure timestamp is parsed properly")
                 XCTAssert(line.source == .stdout, "Ensure stdout is properly detected")

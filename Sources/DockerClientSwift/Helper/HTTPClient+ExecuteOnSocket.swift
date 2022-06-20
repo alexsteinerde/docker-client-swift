@@ -59,7 +59,7 @@ extension HTTPClient {
                     availablebytes += buffer.readableBytes
                     messageBuffer.writeBuffer(&buffer)
                     //print("\n•••• executeStream: availablebytes=\(availablebytes), neededBytes=\(neededBytes), buffer.readableBytes=\(buffer.readableBytes)")
-                    while availablebytes >= neededBytes {
+                    while availablebytes >= neededBytes && availablebytes > 0 {
                         guard let msgSize = messageBuffer.getInteger(at: messageBuffer.readerIndex + 4, endianness: .big, as: UInt32.self), msgSize > 0 else {
                             continuation.finish(
                                 throwing: DockerError.corruptedData("Error reading message size in data stream having length header")
@@ -68,10 +68,11 @@ extension HTTPClient {
                         }
                         
                         neededBytes = Int(msgSize + lengthHeaderSize)
-                        if availablebytes > neededBytes {
+                        //print("\n•••• executeStream: availablebytes=\(availablebytes), neededBytes=\(neededBytes), buffer.readableBytes=\(buffer.readableBytes)")
+                        if availablebytes >= neededBytes {
                             guard let data = messageBuffer.readData(length: neededBytes) else {
                                 continuation.finish(
-                                    throwing: DockerError.corruptedData("Error reading data when expected to have enough in buffer")
+                                    throwing: DockerError.corruptedData("Error reading data when having enough in buffer")
                                 )
                                 return
                             }
