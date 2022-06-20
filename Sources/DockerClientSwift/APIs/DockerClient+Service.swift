@@ -25,16 +25,16 @@ extension DockerClient {
             return try await client.run(InspectServiceEndpoint(nameOrId: nameOrId))
         }
         
-        /// Updates a service with a new image.
+        /// Updates a service.
         /// - Parameters:
         ///   - service: Instance of a `Service` that should be updated.
-        ///   - newImage: Instance of an `Image` that should be used as the new image for the service.
+        ///   - spec: the `ServiceSpec` describing the new configuration of the service.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the updated `Service`.
-        /*public func update(service: Service, newImage: Image) async throws -> Service {
-            try await client.run(UpdateServiceEndpoint(nameOrId: service.id, name: service.name, version: service.version, image: newImage.id.value))
-            return try await self.get(serviceByNameOrId: service.id)
-        }*/
+        public func update(service: Service, version: UInt64, spec: ServiceSpec) async throws -> Service {
+            try await client.run(UpdateServiceEndpoint(nameOrId: service.id, version: version, spec: spec, rollback: false))
+            return try await self.get(service.id)
+        }
         
         
         
@@ -43,7 +43,7 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         public func rollback(_ nameOrId: String) async throws {
             let service = try await get(nameOrId)
-            try await client.run(UpdateServiceEndpoint(nameOrId: nameOrId, name: "", version: service.version.index, image: nil, rollback: true) )
+            try await client.run(UpdateServiceEndpoint(nameOrId: nameOrId, version: service.version.index, spec: nil, rollback: true) )
         }
         
         /// Gets the logs of a service.
@@ -85,7 +85,7 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the newly created `Service` ID.
         public func create(spec: ServiceSpec) async throws -> Service {
-            let createResponse = try await client.run(CreateServiceAdvancedEndpoint(spec: spec))
+            let createResponse = try await client.run(CreateServiceEndpoint(spec: spec))
             let service = try await get(createResponse.ID)
             return service
         }

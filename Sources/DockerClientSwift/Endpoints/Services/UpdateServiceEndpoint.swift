@@ -4,22 +4,20 @@ struct UpdateServiceEndpoint: Endpoint {
     var body: Body?
     
     typealias Response = NoBody?
-    typealias Body = Service.UpdateServiceBody
+    typealias Body = ServiceSpec?
     var method: HTTPMethod = .POST
     
     private let nameOrId: String
     private let version: UInt64
     private let rollback: Bool
-    private let image: String?
-    private let name: String
+
     
-    init(nameOrId: String, name: String, version: UInt64, image: String?, rollback: Bool?) {
+    
+    init(nameOrId: String, version: UInt64, spec: ServiceSpec?, rollback: Bool) {
         self.nameOrId = nameOrId
-        self.name = name
+        self.body = spec
+        self.rollback = rollback
         self.version = version
-        self.image = image
-        self.rollback = rollback ?? false
-        self.body = .init(Name: name, TaskTemplate: .init(ContainerSpec: .init(Image: image)))
     }
     
     var path: String {
@@ -27,17 +25,3 @@ struct UpdateServiceEndpoint: Endpoint {
     }
 }
 
-// TODO: refactor
-extension Service {
-    struct UpdateServiceBody: Codable {
-        let Name: String
-        let TaskTemplate: TaskTemplateBody
-        struct TaskTemplateBody: Codable {
-            let ContainerSpec: ContainerSpecBody
-        }
-        
-        struct ContainerSpecBody: Codable {
-            let Image: String?
-        }
-    }
-}

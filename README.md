@@ -69,7 +69,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
 |                             | Get logs                | ✅       |             |
-|                             | Update                  | 🚧       | refactoring |
+|                             | Update                  | ✅       | untested    |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
