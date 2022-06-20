@@ -11,7 +11,7 @@ public struct ContainerCreate: Codable {
         case hostConfig = "HostConfig"
     }
     
-    internal init(config: ContainerConfig, hostConfig: ContainerHostConfig) {
+    internal init(config: ContainerConfig, hostConfig: ContainerHostConfig = .init()) {
         self.config = config
         self.hostConfig = hostConfig
     }

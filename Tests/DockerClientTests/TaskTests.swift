@@ -29,9 +29,7 @@ final class TaskTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
+            mode: .replicatedService(1)
         )
         let _ = try await client.services.create(spec: spec)
         
@@ -50,9 +48,7 @@ final class TaskTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
+            mode: .replicatedService(1)
         )
         let service = try await client.services.create(spec: spec)
         let tasks = try await client.tasks.list()
@@ -72,9 +68,7 @@ final class TaskTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
+            mode: .replicatedService(1)
         )
         let _ = try await client.services.create(spec: spec)
         let tasks = try await client.tasks.list()

@@ -12,7 +12,7 @@ public struct ServiceSpec: Codable {
     public var taskTemplate: TaskTemplate
     
     /// Scheduling mode for the service.
-    public var mode: Mode
+    public var mode: ServiceMode = .replicatedService(1)
     
     public var updateConfig: UpdateOrRollbackConfig?
     
@@ -141,15 +141,18 @@ public struct ServiceSpec: Codable {
     }
     
     /// Scheduling mode for a Docker service.
-    public struct Mode: Codable {
+    public struct ServiceMode: Codable {
         /// A service that can have one or many instances (replicas) expected to run permanently.
         public var replicated: Replicated?
         
         /// A service with a finite number of tasks that run to a completed state.
         public var replicatedJob: ReplicatedJob? = nil
         
-        // public var GlobalJob
-        // public var Global
+        /// Run a “one-off” job  globally which means each node in the cluster will run a task for this job
+        public var GlobalJob: GlobalJob? = nil
+        
+        /// A service with one task per node that run until reaching a completed state.
+        public var Global: Global? = nil
         
         enum CodingKeys: String, CodingKey {
             case replicated = "Replicated"
@@ -165,6 +168,10 @@ public struct ServiceSpec: Codable {
             }
         }
         
+        public struct Global: Codable {
+            
+        }
+        
         public struct ReplicatedJob: Codable {
             /// The maximum number of replicas to run simultaneously.
             public var maxConcurrent: UInt = 1
@@ -178,6 +185,44 @@ public struct ServiceSpec: Codable {
                 case totalCompletions = "TotalCompletions"
             }
         }
+        
+        public struct GlobalJob: Codable {
+            
+        }
+        
+        /// Create a service having one task per Swarm.
+        public static func globalService() -> ServiceMode {
+            return ServiceMode(global: .init())
+        }
+        
+        /// Create a classical Service that can have multiple replicas.
+        /// - Parameters:
+        ///   - replicas: Desired number of replicas (containers) to run.
+        public static func replicatedService(_ replicas: UInt32) -> ServiceMode {
+            return ServiceMode(replicated: .init(replicas: replicas))
+        }
+        
+        /// Create a Job that runs one task per Swarm node.
+        /// Unlike a service which is expected to run continuously, a Job's task containers are expected to exit when their work is finished.
+        public static func globalJob() -> ServiceMode {
+            return ServiceMode(global: .init())
+        }
+        
+        /// Create a Job that runs a specified number of one-off tasks.
+        /// Unlike a service which is expected to run continuously, a Job's task containers are expected to exit when their work is finished.
+        /// - Parameters:
+        ///   - maxConcurrent: The maximum number of replicas (containers) to run simultaneously.
+        ///   - totalCompletions: The total number of replicas desired to reach the Completed state. If unset, will default to the value of `maxConcurrent`
+        public static func replicatedJob(_ maxConcurrent: UInt, totalCompletions: UInt?) -> ServiceMode {
+            return ServiceMode(replicatedJob: .init(maxConcurrent: maxConcurrent, totalCompletions: totalCompletions))
+        }
+        
+        private init(replicated: ServiceSpec.ServiceMode.Replicated? = nil, replicatedJob: ServiceSpec.ServiceMode.ReplicatedJob? = nil, global: Global? = nil) {
+            self.replicated = replicated
+            self.replicatedJob = replicatedJob
+        }
+        
+        private init(){}
     }
     
     // MARK: - UpdateOrRollbaclConfig

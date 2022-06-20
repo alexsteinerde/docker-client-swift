@@ -69,7 +69,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
 |                             | Get logs                | ✅       |             |
-|                             | Update                  | ✅       | untested    |
+|                             | Update                  | ✅       |             |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             |                         |          |             |
@@ -126,7 +126,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .package(url: "https://github.com/nuw-run/docker-client-swift.git", .branch("main")),
+        .package(url: "https://github.com/m-barthelemy/docker-client-swift.git", .branch("main")),
     ],
     targets: [
         .target(name: "App", dependencies: [
@@ -140,7 +140,7 @@ let package = Package(
 
 ### Xcode Project
 To add DockerClientSwift to your existing Xcode project, select File -> Swift Packages -> Add Package Dependancy. 
-Enter `https://github.com/nuw-run/docker-client-swift.git` for the URL.
+Enter `https://github.com/m-barthelemy/docker-client-swift.git` for the URL.
 
 
 ## Usage Examples
@@ -173,7 +173,6 @@ let docker = DockerClient(
 ```
 
 ### Docker system info
-
 <details>
   <summary>Get detailed information about the Docker daemon</summary>
   
@@ -218,7 +217,6 @@ let docker = DockerClient(
 
  
 ### Containers
-
 <details>
   <summary>List containers</summary>
   
@@ -239,18 +237,43 @@ let docker = DockerClient(
 <details>
   <summary>Create a container</summary>
   
-  Note: you will also need to start it for the container to actually run.
+  > Note: you will also need to start it for the container to actually run.
+  
+  The simplest way of creating a new container is to only specify the image to run:
   ```swift
   let spec = ContainerCreate(
-      config: ContainerConfig(
-          image: "hello-world:latest",
-          ...
-      ),
-      hostConfig: ContainerHostConfig(
-          ...
-      )
+      config: .init(image: "hello-world:latest")
   )
   let container = try await docker.containers.create(name: "test", spec: spec)
+  ```
+  
+  Docker allows customizing many parameters:
+  ```swift
+  let memory: UInt64 = 64 * 1024 * 1024
+  let spec = ContainerCreate(
+      config: .init(
+          // Override the default command of the Image
+          command: ["/custom/command", "--option"],
+          // Add new environment variables
+          environmentVars: ["HELLO=hi"],
+          // Expose port 80
+          exposedPorts: ["80/tcp": .init()],
+          image: "nginx:latest",
+          // Set custon container labels
+          labels: ["label1": "value1", "label2": "value2"]
+      ),
+      hostConfig: .init(
+          // Maximum memory the container can use
+          memoryLimit: memory,
+          // Memory the container is allocated when starting
+          memoryReservation: memory/2,
+          // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
+          memorySwap: Int64(memory),
+          // Let's publish the port we exposed in `config`
+          portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
+      )
+  )
+  let container = try await docker.containers.create(name: "nginx-test", spec: spec)
   ```
 </details>
 
@@ -333,7 +356,6 @@ let docker = DockerClient(
 
 
 ### Images
-
 <details>
   <summary>List the Docker images</summary>
   
@@ -441,9 +463,22 @@ let docker = DockerClient(
 <details>
   <summary>Create a network</summary>
   
+  Create a new network without any custom options:
   ```swift
   let network = try await docker.networks.create(
-    spec: .init(name: name)
+    spec: .init(name: "my-network")
+  )
+  ```
+  
+  Create a new network with custom IPs range:
+  ```swift
+  let network = try await client.networks.create(
+      spec: .init(
+          name: "my-network",
+          ipam: .init(
+              config: [.init(subnet: "192.168.2.0/24", gateway: "192.168.2.1")]
+          )
+      )
   )
   ```
 </details>
@@ -455,6 +490,7 @@ let docker = DockerClient(
   try await docker.networks.remove("nameOrId")
   ```
 </details>
+
 
 ### Volumes
 <details>
@@ -493,7 +529,6 @@ let docker = DockerClient(
 
 
 ### Swarm
-
 <details>
   <summary>Initialize Swarm mode</summary>
   
@@ -587,21 +622,18 @@ let docker = DockerClient(
 <details>
   <summary>Create a service</summary>
   
-  Simplest possible example, we just specify the image and a number of replicas:
+  Simplest possible example, we only specify the name of the service and the image to use:
   ```swift
   let spec = ServiceSpec(
       name: "my-nginx",
       taskTemplate: .init(
           containerSpec: .init(image: "nginx:latest")
-      ),
-      mode: .init(
-          replicated: .init(replicas: 1)
       )
   )
   let service = try await docker.services.create(spec: spec)
   ```
   
-  Let's specify a memory limit of 64MB for our service containers:
+  Let's specify a number of replicas and a memory limit of 64MB for our service:
   ```swift
   let spec = ServiceSpec(
       name: "my-nginx",
@@ -611,9 +643,7 @@ let docker = DockerClient(
               limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
           )
       ),
-      mode: .init(
-          replicated: .init(replicas: 1)
-      )
+      mode: .replicated(2)
   )
   let service = try await docker.services.create(spec: spec)
   ```
@@ -633,7 +663,19 @@ let docker = DockerClient(
   
   TODO: add examples for specifying networks and volumes
 </details>
-        
+ 
+<details>
+  <summary>Update a service</summary>
+  
+  Let's scale an existing service up to 3 replicas
+  ```swift
+  let service = try await docker.services.get("nameOrId")
+  var updatedSpec = service.spec
+  updatedSpec.mode = .replicated(3)
+  try await client.services.update(service: service, version: service.version.index, spec: updatedSpec)
+  ```
+</details>
+       
 <details>
   <summary>Get service logs</summary>
   
@@ -685,6 +727,7 @@ let docker = DockerClient(
   try await docker.services.remove("nameOrId")
   ```
 </details>
+
 
 ### Secrets
 > This requires a Docker daemon with Swarm mode enabled.

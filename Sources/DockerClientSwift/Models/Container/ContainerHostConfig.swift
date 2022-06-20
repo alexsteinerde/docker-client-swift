@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - ContainerHostConfig
 public struct ContainerHostConfig: Codable {
     
     /// Whether to automatically delete the container when it exits.
@@ -178,8 +179,8 @@ public struct ContainerHostConfig: Codable {
     /// - `host`: use the host's PID namespace inside the container
     public var pidMode: String = ""
     
-    // let PortBindings
-    // default when create: {}
+    /// Maps container exposed ports to ports on the host. This is the API equivalent of the docker CLI `--publish` option.
+    public var portBindings: [String:PortBinding] = [:]
     
     /// Gives the container full access to the host.
     public var privileged: Bool = false
@@ -281,6 +282,7 @@ public struct ContainerHostConfig: Codable {
         case oomScoreAdj = "OomScoreAdj"
         case pidsLimit = "PidsLimit"
         case pidMode = "PidMode"
+        case portBindings = "PortBindings"
         case privileged = "Privileged"
         case publishAllPorts = "PublishAllPorts"
         case readonlyPaths = "ReadonlyPaths"
@@ -298,6 +300,7 @@ public struct ContainerHostConfig: Codable {
         case volumesFrom = "VolumesFrom"
     }
     
+    // MARK: - BlkioWeight
     public struct BlkioWeight: Codable {
         public var path: String
         public var weight: UInt
@@ -308,6 +311,7 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
+    // MARK: - BlkioRateLimit
     public struct BlkioRateLimit: Codable {
         public var path: String
         public var rate: UInt
@@ -318,6 +322,7 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
+    // MARK: -
     public struct DeviceMapping: Codable {
         public let cgroupPermissions: String
         public let pathInContainer: String
@@ -330,6 +335,7 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
+    // MARK: - ContainerMount
     public struct ContainerMount: Codable {
         public var bindOptions: BindOptions? = nil
         public var consistency: MountConsistency? = nil
@@ -395,6 +401,21 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
+    // MARK: - PortBinding
+    public struct PortBinding: Codable {
+        /// Host IP address that the container's port is mapped to.
+        public var hostIp: String
+        
+        /// Host port number that the container's port is mapped to.
+        public var hostPort: UInt16
+        
+        enum CodingKeys: String, CodingKey {
+            case hostIp = "HostIp"
+            case hostPort = "HostPort"
+        }
+    }
+    
+    // MARK: - Ulimit
     public struct Ulimit: Codable {
         public var name: String
         public var soft: UInt64

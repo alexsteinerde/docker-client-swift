@@ -16,13 +16,34 @@ final class ContainerTests: XCTestCase {
     
     func testCreateContainers() async throws {
         let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
+        let memory: UInt64 = 64 * 1024 * 1024
         let spec = ContainerCreate(
-            config: ContainerConfig(image: "hello-world:latest"),
-            hostConfig: ContainerHostConfig()
+            config: .init(
+                // Override the default command of the Image
+                command: ["/custom/command", "--option"],
+                // Add new environment variables
+                environmentVars: ["HELLO=hi"],
+                // Expose port 80
+                exposedPorts: ["80/tcp": .init()],
+                image: "hello-world:latest",
+                // Set custon container labels
+                labels: ["label1": "value1", "label2": "value2"]
+            ),
+            hostConfig: .init(
+                // Maximum memory the container can use
+                memoryLimit: memory,
+                // Memory the container is allocated when starting
+                memoryReservation: memory/2,
+                // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
+                memorySwap: Int64(memory),
+                // Let's publish the port we exposed in `config`
+                portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
+            )
         )
         let name = UUID.init().uuidString
         let container = try await client.containers.create(name: name, spec: spec)
-        XCTAssertEqual(container.config.cmd, ["/hello"])
+        XCTAssert(container.name == "/\(name)", "Ensure name is set")
+        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command id set")
             
         try await client.containers.remove(container.id)
     }
@@ -63,7 +84,7 @@ final class ContainerTests: XCTestCase {
         let inspectedContainer = try await client.containers.get(container.id)
         
         XCTAssertEqual(inspectedContainer.id, container.id)
-        XCTAssertEqual(inspectedContainer.config.cmd, ["/hello"])
+        XCTAssertEqual(inspectedContainer.config.command, ["/hello"])
     }
     
     func testStartingContainerAndRetrievingLogsNoTty() async throws {

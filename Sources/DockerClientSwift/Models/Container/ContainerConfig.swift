@@ -7,15 +7,17 @@ public struct ContainerConfig: Codable {
     
     public var attachStdout: Bool = true
     
-    public var cmd: [String]? = nil
+    /// Custom command to run, overrides the value of the Image if any
+    public var command: [String]? = nil
     
     public var domainname: String = ""
     
+    /// Custom entrypoint to run, overrides the value of the Image if any
     public var entrypoint: [String]? = nil
     
     /// A list of environment variables to set inside the container in the form `["VAR=value", ...].`
     /// A variable without `=` is removed from the environment, rather than to have an empty value.
-    public var env: [String]? = nil
+    public var environmentVars: [String]? = nil
     
     /// An object mapping ports to an empty object in the form:
     /// `{"<port>/<tcp|udp|sctp>": {}}`
@@ -71,10 +73,10 @@ public struct ContainerConfig: Codable {
         case attachStderr = "AttachStderr"
         case attachStdout = "AttachStdout"
         case attachStdin = "AttachStdin"
-        case cmd = "Cmd"
+        case command = "Cmd"
         case domainname = "Domainname"
         case entrypoint = "Entrypoint"
-        case env = "Env"
+        case environmentVars = "Env"
         case exposedPorts = "ExposedPorts"
         case healthcheck = "Healthcheck"
         case hostname = "Hostname"

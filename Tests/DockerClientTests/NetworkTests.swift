@@ -28,10 +28,16 @@ final class NetworkTests: XCTestCase {
     func testCreateNetwork() async throws {
         let name = UUID().uuidString
         let network = try await client.networks.create(
-            spec: .init(name: name)
+            spec: .init(
+                name: name,
+                ipam: .init(
+                    config: [.init(subnet: "192.168.2.0/24", gateway: "192.168.2.1")]
+                )
+            )
         )
         XCTAssert(network.id != "", "Ensure Network ID is parsed")
         XCTAssert(network.name == name, "Ensure Network name is set")
+        XCTAssert(network.ipam.config[0].subnet == "192.168.2.0/24", "Ensure custom subnet is set")
         
         try await client.networks.remove(network.id)
     }

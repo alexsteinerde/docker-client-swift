@@ -28,23 +28,15 @@ final class ServiceTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
+            mode: .replicatedService(1)
         )
-        let _ = try await client.services.create(spec: spec)
+        let service = try await client.services.create(spec: spec)
         
         let services = try await client.services.list()
         XCTAssert(services.count >= 1)
-    }
-    
-    /*func testUpdateService() async throws {
-        let name = UUID().uuidString
-        let service = try await client.services.create(serviceName: name, image: Image(id: .init("nginx:alpine")))
-        let updatedService = try await client.services.update(service: service, newImage: Image(id: "nginx:latest"))
         
-        XCTAssertTrue(updatedService.version > service.version)
-    }*/
+        try await client.services.remove(service.id)
+    }
     
     func testCreateService() async throws {
         let name = UUID().uuidString
@@ -56,14 +48,38 @@ final class ServiceTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .init(
-                replicated: .init(replicas: 1)
-            )
+            mode: .replicatedService(1)
         )
         let service = try await client.services.create(spec: spec)
         
         XCTAssert(service.spec.name == name, "Ensure custom service name is set")
         XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == 64 * 1024 * 1024, "Ensure memory limit is set")
+        
+        try await client.services.remove(service.id)
+    }
+    
+    func testUpdateService() async throws {
+        let name = UUID().uuidString
+        var spec = ServiceSpec(
+            name: name,
+            taskTemplate: .init(
+                containerSpec: .init(image: "nginx:latest", tty: false)
+            ),
+            mode: .replicatedService(1)
+        )
+        let service = try await client.services.create(spec: spec)
+        
+        spec.mode = .replicatedService(2)
+        try await client.services.update(service: service, version: service.version.index, spec: spec)
+        let updated = try await client.services.get(service.id)
+        
+        XCTAssertTrue(updated.version.index > service.version.index)
+        XCTAssert(
+            updated.spec.mode.replicated != nil && updated.spec.mode.replicated!.replicas == 2,
+            "Ensure number of replicas has been updated"
+        )
+        
+        try await client.services.remove(service.id)
     }
     
     func testGetServiceLogs() async throws {
@@ -74,9 +90,7 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest", tty: false)
             ),
-            mode: .init(
-                replicated: .init(replicas: UInt32(replicas))
-            )
+            mode: .replicatedService(UInt32(replicas))
         )
         let service = try await client.services.create(spec: spec)
         
