@@ -9,6 +9,7 @@ extension DockerClient {
     static func testable() -> DockerClient {
         var logger = Logger(label: "docker-client-tests")
         logger.logLevel = .debug
+        
         // Local Unix socket
         return DockerClient(logger: logger)
         
