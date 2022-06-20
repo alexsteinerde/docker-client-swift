@@ -24,7 +24,7 @@ final class ContainerTests: XCTestCase {
                 // Add new environment variables
                 environmentVars: ["HELLO=hi"],
                 // Expose port 80
-                exposedPorts: ["80/tcp": .init()],
+                //exposedPorts: ["80/tcp": .init()],
                 image: "hello-world:latest",
                 // Set custon container labels
                 labels: ["label1": "value1", "label2": "value2"]
@@ -35,9 +35,9 @@ final class ContainerTests: XCTestCase {
                 // Memory the container is allocated when starting
                 memoryReservation: memory/2,
                 // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
-                memorySwap: Int64(memory),
+                memorySwap: Int64(memory)
                 // Let's publish the port we exposed in `config`
-                portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
+                //portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
             )
         )
         let name = UUID.init().uuidString

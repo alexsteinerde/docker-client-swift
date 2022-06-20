@@ -180,7 +180,7 @@ public struct ContainerHostConfig: Codable {
     public var pidMode: String = ""
     
     /// Maps container exposed ports to ports on the host. This is the API equivalent of the docker CLI `--publish` option.
-    public var portBindings: [String:PortBinding] = [:]
+    public var portBindings: [String:PortBinding]? = [:]
     
     /// Gives the container full access to the host.
     public var privileged: Bool = false
