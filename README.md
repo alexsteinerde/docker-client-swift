@@ -33,7 +33,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Update                  | ✅       |             |
 |                             | Rename                  | ✅       |             |
 |                             | Pause/Unpause           | ✅       |             |
-|                             | Get logs                | 🚧       |             |
+|                             | Get logs                | ✅       |             |
 |                             | Get stats               | ❌       |      TBD    |
 |                             | Get processes (top)     | ✅       |             |
 |                             | Delete                  | ✅       |             |
@@ -68,7 +68,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 | Services                    | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
 |                             | Create                  | ✅       |             |
-|                             | Get logs                | 🚧       |             |
+|                             | Get logs                | ✅       |             |
 |                             | Update                  | 🚧       | refactoring |
 |                             | Rollback                | ✅       |             |
 |                             | Delete                  | ✅       |             |
@@ -100,7 +100,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             |                         |          |             |
 | Tasks                       | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
-|                             | Get logs                | 🚧       |             |
+|                             | Get logs                | ✅       |             |
 |                             |                         |          |             |
 | Plugins                     |                         | ❌       |    TBD      |
 |                             |                         |          |             |
