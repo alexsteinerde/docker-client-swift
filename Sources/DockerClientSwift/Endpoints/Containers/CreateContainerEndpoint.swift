@@ -32,13 +32,13 @@ struct SimpleCreateContainerEndpoint: Endpoint {
 
 struct CreateContainerEndpoint: Endpoint {
     typealias Response = CreateContainerResponse
-    typealias Body = ContainerCreate
+    typealias Body = ContainerSpec
     var method: HTTPMethod = .POST
     
-    var body: ContainerCreate?
+    var body: ContainerSpec?
     private let name: String?
     
-    init(name: String? = nil, spec: ContainerCreate) {
+    init(name: String? = nil, spec: ContainerSpec) {
         self.name = name
         self.body = spec
     }

@@ -180,7 +180,10 @@ public struct ContainerHostConfig: Codable {
     public var pidMode: String = ""
     
     /// Maps container exposed ports to ports on the host. This is the API equivalent of the docker CLI `--publish` option.
-    public var portBindings: [String:PortBinding]? = [:]
+    /// It is a `Dictionary` whose keys are `ExposedPortSpec` and values are lists of `PortBinding`.
+    /// Example: `[ .tcp(80) : [.publishTo(hostIp: "0.0.0.0", hostPort: 8000)] ]`
+    @PublishedPortCoding
+    public var portBindings: [ExposedPortSpec:[PortBinding]?]? = [:]
     
     /// Gives the container full access to the host.
     public var privileged: Bool = false
@@ -322,7 +325,7 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
-    // MARK: -
+    // MARK: - DeviceMapping
     public struct DeviceMapping: Codable {
         public let cgroupPermissions: String
         public let pathInContainer: String
@@ -412,6 +415,34 @@ public struct ContainerHostConfig: Codable {
         enum CodingKeys: String, CodingKey {
             case hostIp = "HostIp"
             case hostPort = "HostPort"
+        }
+        
+        internal init(hostIp: String, hostPort: UInt16) {
+            self.hostIp = hostIp
+            self.hostPort = hostPort
+        }
+        
+        public static func publishTo(hostIp: String, hostPort: UInt16) -> PortBinding {
+            return PortBinding(hostIp: hostIp, hostPort: hostPort)
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: Self.CodingKeys)
+            try container.encode("\(self.hostPort)", forKey: .hostPort)
+            try container.encode(self.hostIp, forKey: .hostIp)
+        }
+        
+        public init(from decoder: Swift.Decoder) throws {
+            let container = try decoder.container(keyedBy: Self.CodingKeys)
+            self.hostIp = try container.decode(String.self, forKey: .hostIp)
+            let portString = try? container.decode(String.self, forKey: .hostPort)
+            guard let port = UInt16(portString ?? "") else {
+                throw DecodingError.typeMismatch(
+                    UInt16.self,
+                        .init(codingPath: [Self.CodingKeys.hostPort], debugDescription: "Must be parseable as a UInt16 value", underlyingError: nil))
+                
+            }
+            self.hostPort = port
         }
     }
     

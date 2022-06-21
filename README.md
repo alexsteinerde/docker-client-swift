@@ -257,7 +257,7 @@ let docker = DockerClient(
           // Add new environment variables
           environmentVars: ["HELLO=hi"],
           // Expose port 80
-          exposedPorts: ["80/tcp": .init()],
+          exposedPorts: [.tcp(80)],
           image: "nginx:latest",
           // Set custon container labels
           labels: ["label1": "value1", "label2": "value2"]
@@ -270,7 +270,7 @@ let docker = DockerClient(
           // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
           memorySwap: Int64(memory),
           // Let's publish the port we exposed in `config`
-          portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
+          portBindings: [.tcp(80): [.publishTo(hostIp: "0.0.0.0", hostPort: 8000)]]
       )
   )
   let container = try await docker.containers.create(name: "nginx-test", spec: spec)

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ContainerCreate: Codable {
+public struct ContainerSpec: Codable {
     /// Configuration specific to the container, and independent from the host it is running on.
     internal var config: ContainerConfig?
     
