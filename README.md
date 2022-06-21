@@ -775,7 +775,7 @@ let docker = DockerClient(
   )
   ```
   
-  You can also pass a `Data` value to store as a Secret:
+  You can also pass a `Data` value to be stored as a Secret:
   ```swift
   let data: Data = ...
   let secret = try await docker.secrets.create(
