@@ -48,9 +48,9 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
         self.method = method
     }
     
-    var path: String
+    private (set) internal var path: String
     
-    var method: HTTPMethod = .GET
+    private (set) internal var method: HTTPMethod = .GET
     
     typealias Response = AsyncThrowingStream<ByteBuffer, Error>
     
@@ -76,8 +76,13 @@ class JSONStreamingEndpoint<T>: StreamingEndpoint where T: Codable {
                             continuation.finish(throwing: DockerError.unknownResponse("Expected json terminated by line return"))
                             return
                         }
-                        let model = try decoder.decode(T.self, from: splat.first!)
-                        continuation.yield(model)
+                        do {
+                            let model = try decoder.decode(T.self, from: splat.first!)
+                            continuation.yield(model)
+                        }
+                        catch(let error) {
+                            continuation.finish(throwing: error)
+                        }
                     }
                 }
                 continuation.finish()

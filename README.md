@@ -34,7 +34,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Rename                  | ✅       |             |
 |                             | Pause/Unpause           | ✅       |             |
 |                             | Get logs                | ✅       |             |
-|                             | Get stats               | ❌       |      TBD    |
+|                             | Get stats               | ✅       |             |
 |                             | Get processes (top)     | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |

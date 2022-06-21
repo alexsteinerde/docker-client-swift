@@ -162,7 +162,7 @@ extension DockerClient {
         }
         
         /// Blocks until a container stops, then returns the exit code.
-        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Parameter nameOrId: Name or ID of the`Container`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the exit code of the`Container` (`0` meaning success/no error).
         public func wait(_ nameOrId: String) async throws -> Int {
@@ -171,7 +171,7 @@ extension DockerClient {
         }
         
         /// Returns which files in a container's filesystem have been added, deleted, or modified.
-        /// - Parameter nameOrId: Name or Id of the`Container`.
+        /// - Parameter nameOrId: Name or ID of the`Container`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a list of `ContainerFsChange`.
         public func getFsChanges(_ nameOrId: String) async throws -> [ContainerFsChange] {
@@ -180,12 +180,25 @@ extension DockerClient {
         
         /// Returns `ps`-like raw info about processes running in a container
         /// - Parameters:
-        ///   - nameOrId: Name or Id of the`Container`.
+        ///   - nameOrId: Name or ID of the`Container`.
         ///   - psArgs: options to pass to the `ps` command. Defaults to `-ef`
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a `ContainerTop`instance.
         public func processes(_ nameOrId: String, psArgs: String = "-ef") async throws -> ContainerTop {
             return try await client.run(ContainerTopEndpoint(nameOrId: nameOrId, psArgs: psArgs))
+        }
+        
+        /// Returns a stream of metrics about a running container.
+        /// - Parameters:
+        ///   - nameOrId: Name or ID of the`Container`.
+        ///   - stream: Whether to containuously poll the container for metrics and stream them
+        ///   - oneShot: Set to `true`to only get a single stat instead of waiting for 2 cycles. Must be used with `stream`=`false`.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns a stream of `ContainerStats`instances.
+        public func stats(_ nameOrId: String, stream: Bool = true, oneShot: Bool = false) async throws -> AsyncThrowingStream<ContainerStats, Error> {
+            let endpoint = GetContainerStatsEndpoint(nameOrId: nameOrId, stream: stream, oneShot: oneShot)
+            let stream = try await client.run(endpoint, timeout: .hours(12), hasLengthHeader: false)
+            return try await endpoint.map(response: stream, as: ContainerStats.self)
         }
     }
 }

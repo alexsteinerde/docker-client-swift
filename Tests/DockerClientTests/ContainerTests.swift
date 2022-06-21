@@ -242,4 +242,21 @@ final class ContainerTests: XCTestCase {
         
         try? await client.containers.remove(container.id, force: true)
     }
+    
+    func testStatsContainer() async throws {
+        let image = try await client.images.pull(byName: "nginx", tag: "latest")
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+        do {
+            for try await stats in try await client.containers.stats(container.id, stream: false, oneShot: true) {
+                XCTAssert(stats.pids.current > 0, "Ensure stats response can be parsed")
+            }
+        }
+        catch(let error) {
+            print("\n••• BOOM! \(error)")
+            throw error
+        }
+        try await client.containers.remove(container.id, force: true)
+    }
 }
