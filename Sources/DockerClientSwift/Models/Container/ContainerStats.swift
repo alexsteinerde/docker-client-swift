@@ -3,25 +3,28 @@ import BetterCodable
 
 // MARK: - ContainerStats
 public struct ContainerStats: Codable {
-    // TODO: parse as date; format= "2022-06-21T00:10:14.790058549Z"
+    /// Date and time when the statistics were read
     @DateValue<WeirdDockerStrategy>
     private(set) public var readAt: Date
     
     @DateValue<WeirdDockerStrategy>
     private(set) public var previousReadAt: Date
     
+    /// Number of processes
     public let pids: PidStats
     
+    /// Networking stats
     public let networks: [String:NetworkStats]
     
     public let memory: MemoryStats
     
-    /// Block device stats
+    /// Block devices stats
     public let io: BlkioStats?
     
+    /// CPU stats
     public let cpu: CpuStats
     
-    /// The CPU statistics of the _previous_ read
+    /// CPU statistics of the _previous_ read
     public let previousCpu: CpuStats
     
     enum CodingKeys: String, CodingKey {

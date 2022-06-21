@@ -191,7 +191,7 @@ extension DockerClient {
         /// Returns a stream of metrics about a running container.
         /// - Parameters:
         ///   - nameOrId: Name or ID of the`Container`.
-        ///   - stream: Whether to containuously poll the container for metrics and stream them
+        ///   - stream: Whether to continuously poll the container for metrics and stream them.
         ///   - oneShot: Set to `true`to only get a single stat instead of waiting for 2 cycles. Must be used with `stream`=`false`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns a stream of `ContainerStats`instances.

@@ -324,7 +324,7 @@ let docker = DockerClient(
 <details>
   <summary>Get container logs</summary>
   
-  Logs are streamed progressively in an asynchronous way.
+  > Logs are streamed progressively in an asynchronous way.
   
   Get all logs:
   ```swift
@@ -680,7 +680,7 @@ let docker = DockerClient(
 <details>
   <summary>Update a service</summary>
   
-  Let's scale an existing service up to 3 replicas
+  Let's scale an existing service up to 3 replicas:
   ```swift
   let service = try await docker.services.get("nameOrId")
   var updatedSpec = service.spec
