@@ -771,7 +771,7 @@ let docker = DockerClient(
   Create a Secret containing a `String` value:
   ```swift
   let secret = try await docker.secrets.create(
-    spec: .init(name: "myVolume", data: "test secret value 💥")
+    spec: .init(name: "myVolume", value: "test secret value 💥")
   )
   ```
   

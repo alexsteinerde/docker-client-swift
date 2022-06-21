@@ -21,9 +21,9 @@ public struct ConfigSpec: Codable {
     }
     
     /// Create a new `ConfigSpec` containing a `String` value
-    public init(name: String, data: String, labels: [String:String] = [:], templating: DriverConfig? = nil) {
+    public init(name: String, value: String, labels: [String:String] = [:], templating: DriverConfig? = nil) {
         self.name = name
-        self.data = data.data(using: .utf8)!
+        self.data = value.data(using: .utf8)!
         self.labels = labels
         self.templating = templating
     }

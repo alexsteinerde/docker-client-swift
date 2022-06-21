@@ -26,9 +26,9 @@ public struct SecretSpec: Encodable {
     }
     
     /// Create a new `SecretSpec` containing a `String` value
-    public init(name: String, data: String, labels: [String:String] = [:], driver: DriverConfig? = nil, templating: DriverConfig? = nil) {
+    public init(name: String, value: String, labels: [String:String] = [:], driver: DriverConfig? = nil, templating: DriverConfig? = nil) {
         self.name = name
-        self.data = data.data(using: .utf8)!
+        self.data = value.data(using: .utf8)!
         self.labels = labels
         self.driver = driver
         self.templating = templating
