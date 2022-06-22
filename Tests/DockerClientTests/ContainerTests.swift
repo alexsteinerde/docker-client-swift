@@ -14,17 +14,17 @@ final class ContainerTests: XCTestCase {
         try client.syncShutdown()
     }
     
-    func testCreateContainers() async throws {
-        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
+    func testCreateContainer() async throws {
+        //let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let memory: UInt64 = 64 * 1024 * 1024
-        let spec = ContainerCreate(
+        let spec = ContainerSpec(
             config: .init(
                 // Override the default command of the Image
                 command: ["/custom/command", "--option"],
                 // Add new environment variables
                 environmentVars: ["HELLO=hi"],
                 // Expose port 80
-                //exposedPorts: ["80/tcp": .init()],
+                exposedPorts: [.tcp(80)],
                 image: "hello-world:latest",
                 // Set custon container labels
                 labels: ["label1": "value1", "label2": "value2"]
@@ -35,23 +35,31 @@ final class ContainerTests: XCTestCase {
                 // Memory the container is allocated when starting
                 memoryReservation: memory/2,
                 // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
-                memorySwap: Int64(memory)
+                memorySwap: Int64(memory),
                 // Let's publish the port we exposed in `config`
-                //portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
+                portBindings: [.tcp(80): [.publishTo(hostIp: "0.0.0.0", hostPort: 8008)]]
             )
         )
+        
         let name = UUID.init().uuidString
         let container = try await client.containers.create(name: name, spec: spec)
         XCTAssert(container.name == "/\(name)", "Ensure name is set")
-        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command id set")
-            
+        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command is set")
+        XCTAssert(
+            container.config.exposedPorts != nil && container.config.exposedPorts![0].port == 80,
+            "Ensure Exposed Port was set and retrieved"
+        )
+        XCTAssert(
+            container.hostConfig.portBindings != nil && container.hostConfig.portBindings![.tcp(80)] != nil,
+            "Ensure Published Port was set and retrieved"
+        )
         try await client.containers.remove(container.id)
     }
     
     func testUpdateContainers() async throws {
         let name = UUID.init().uuidString
         let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
-        let spec = ContainerCreate(
+        let spec = ContainerSpec(
             config: ContainerConfig(image: "hello-world:latest"),
             hostConfig: ContainerHostConfig()
         )
@@ -91,7 +99,7 @@ final class ContainerTests: XCTestCase {
         let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(
             name: nil,
-            spec: ContainerCreate(
+            spec: ContainerSpec(
                 config: ContainerConfig(image: image.id, tty: false),
                 hostConfig: .init())
         )
@@ -149,7 +157,7 @@ final class ContainerTests: XCTestCase {
         let image = try await client.images.pull(byName: "hello-world", tag: "latest")
         let container = try await client.containers.create(
             name: nil,
-            spec: ContainerCreate(
+            spec: ContainerSpec(
                 config: ContainerConfig(image: image.id, tty: true),
                 hostConfig: .init())
         )

@@ -21,7 +21,9 @@ public struct ContainerConfig: Codable {
     
     /// An object mapping ports to an empty object in the form:
     /// `{"<port>/<tcp|udp|sctp>": {}}`
-    public var exposedPorts: [String:EmptyObject]? = [:]
+    //public var exposedPorts: [String:EmptyObject]? = [:]
+    @ExposedPortCoding
+    public var exposedPorts: [ExposedPortSpec]? = []
     
     /// A test to perform to periodically check that the container is healthy.
     public var healthcheck: HealthCheckConfig? = nil

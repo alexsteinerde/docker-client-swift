@@ -40,11 +40,7 @@ public struct ContainerSummary: Codable {
         public let ip: String?
         public let privatePort: UInt16
         public let publicPort: UInt16?
-        public let type: PortProtocol
-        
-        public enum PortProtocol: String, Codable {
-            case tcp, udp, sctp
-        }
+        public let type: ExposedPortSpec.PortProtocol
         
         enum CodingKeys: String, CodingKey {
             case ip = "IP"
