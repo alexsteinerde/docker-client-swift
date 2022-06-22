@@ -41,14 +41,10 @@ final class ContainerTests: XCTestCase {
             )
         )
         
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        let data = try encoder.encode(spec)
-        
         let name = UUID.init().uuidString
         let container = try await client.containers.create(name: name, spec: spec)
         XCTAssert(container.name == "/\(name)", "Ensure name is set")
-        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command id set")
+        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command is set")
         XCTAssert(
             container.config.exposedPorts != nil && container.config.exposedPorts![0].port == 80,
             "Ensure Exposed Port was set and retrieved"
