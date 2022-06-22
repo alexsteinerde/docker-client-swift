@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Plugin
-public struct Plugin{ Codable {
+public struct Plugin: Codable {
     
     public let id: String
     
@@ -37,7 +37,7 @@ public struct Plugin{ Codable {
         public let devices: [PluginDevice]
         
         enum CodingKeys: String, CodingKey {
-            case mounts = "mounts"
+            case mounts = "Mounts"
             case environmentVars = "Env"
             case arguments = "Args"
             case devices = "Devices"
@@ -66,7 +66,7 @@ public struct Plugin{ Codable {
         public struct PluginDevice: Codable {
             public let name: String
             public let description: String
-            public let settable: [String]
+            public let settable: [String]?
             public let path: String
             
             enum CodingKeys: String, CodingKey {
@@ -90,13 +90,29 @@ public struct Plugin{ Codable {
         /// The interface between Docker and the plugin
         public let interface: Interface
         
-        public let entryPoint: [String]
+        public let entryPoint: [String]?
         
         public let workDir: String
         
         public let user: User
         
         public let network: NetworkType
+        
+        public let linux: Linux
+        
+        public let propagatedMount: String
+        
+        public let ipcHost: Bool
+        
+        public let pidHost: Bool
+        
+        public let mounts: [Settings.PluginMount]
+        
+        public let environmentVars: [PluginEnv]
+        
+        public let arguments: PluginArg
+        
+        public let rootFs: RootFS
         
         enum CodingKeys: String, CodingKey {
             case dockerVersion = "DockerVersion"
@@ -106,19 +122,30 @@ public struct Plugin{ Codable {
             case entryPoint = "EntryPoint"
             case workDir = "WorkDir"
             case user = "User"
+            case network = "Network"
+            case linux = "Linux"
+            case propagatedMount = "PropagatedMount"
+            case ipcHost = "IpcHost"
+            case pidHost = "PidHost"
+            case mounts = "Mounts"
+            case environmentVars = "Env"
+            case arguments = "Args"
+            case rootFs = "rootfs"
         }
         
+        // MARK: - Interface
         public struct Interface: Codable {
-            public let types: [PluginInterfaceType]
+            /// The kinds of Docker plugins that the plugin provides.
+            public let types: [PluginType]
             
             public let socket: String
             
             /// Protocol to use for clients connecting to the plugin.
             /// Valid values: "" and "moby.plugins.http/v1"
-            public let protocolScheme: String
+            public let protocolScheme: String?
             
             enum CodingKeys: String, CodingKey {
-                case types = "types"
+                case types = "Types"
                 case socket = "Socket"
                 case protocolScheme = "ProtocolScheme"
             }
@@ -134,11 +161,27 @@ public struct Plugin{ Codable {
                     case version = "Version"
                 }
             }
+            
+            public enum PluginType: String, Codable {
+                /// Docker storage/volume plugin
+                case volume = "docker.volumedriver/1.0"
+                /// Docker networking plugin
+                case network = "docker.networkdriver/1.0"
+                /// Docker IPAM (IP addresses Management) plugin
+                case ipam = "docker.ipamdriver/1.0"
+                /// Docker authorization plugin
+                case authz = "docker.authz/1.0"
+                /// Docker log driver
+                case logs = "docker.logdriver/1.0"
+                /// Docker metrics plugin
+                case metrics = "docker.metricscollector/1.0"
+            }
         }
         
+        // MARK: - User
         public struct User: Codable {
-            public let uid: UInt64
-            public let gid: UInt64
+            public let uid: UInt64?
+            public let gid: UInt64?
             
             enum CodingKeys: String, CodingKey {
                 case uid = "UID"
@@ -146,12 +189,72 @@ public struct Plugin{ Codable {
             }
         }
         
+        // MARK: - NetworkType
         public struct NetworkType: Codable {
-            public let `type`: String
+            /// Network type used by the Plugn.
+            public let `type`: NetworkType
             
             enum CodingKeys: String, CodingKey {
                 case `type` = "Type"
             }
+            
+            public enum NetworkType: String, Codable {
+                case none, bridge, host
+            }
+        }
+        
+        // MARK: - Linux
+        public struct Linux: Codable {
+            /// Capabilities required by the plugin (Linux only)
+            public let capabilities: [String]
+            
+            /// If /dev is bind mounted from the host, and allowAllDevices is set to true, the plugin will have rwm access to all devices on the host.
+            public let allowAllDevices: Bool
+            
+            public let devices: [Settings.PluginDevice]
+            
+            enum CodingKeys: String, CodingKey {
+                case capabilities = "Capabilities"
+                case allowAllDevices = "AllowAllDevices"
+                case devices = "Devices"
+            }
+        }
+        
+        // MARK: - PluginEnv
+        public struct PluginEnv: Codable {
+            public let name: String
+            public let description: String
+            public let settable: [String]
+            public let value: String
+            
+            enum CodingKeys: String, CodingKey {
+                case name = "Name"
+                case description = "Description"
+                case settable = "Settable"
+                case value = "Value"
+            }
+        }
+        
+        // MARK: - PluginArg
+        public struct PluginArg: Codable {
+            public let name: String
+            public let description: String
+            public let settable: [String]?
+            public let value: [String]?
+            
+            enum CodingKeys: String, CodingKey {
+                case name = "Name"
+                case description = "Description"
+                case settable = "Settable"
+                case value = "Value"
+            }
+        }
+        
+        // MARK: - RootFS
+        public struct RootFS: Codable {
+            public let type: String
+            public let diff_ids: [String]
+            
         }
     }
     
