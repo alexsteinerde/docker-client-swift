@@ -241,7 +241,7 @@ let docker = DockerClient(
   
   The simplest way of creating a new container is to only specify the image to run:
   ```swift
-  let spec = ContainerCreate(
+  let spec = ContainerSpec(
       config: .init(image: "hello-world:latest")
   )
   let container = try await docker.containers.create(name: "test", spec: spec)
@@ -250,7 +250,7 @@ let docker = DockerClient(
   Docker allows customizing many parameters:
   ```swift
   let memory: UInt64 = 64 * 1024 * 1024
-  let spec = ContainerCreate(
+  let spec = ContainerSpec(
       config: .init(
           // Override the default command of the Image
           command: ["/custom/command", "--option"],

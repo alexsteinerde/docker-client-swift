@@ -63,6 +63,7 @@ public struct Image : Codable {
     
     //public let sharedSize: Int
     
+    /// User-defined key/value metadata.
     public let labels: [String:String]?
     
     /// Information about the storage driver used to store the container's and image's filesystem.
@@ -113,6 +114,8 @@ public struct Image : Codable {
     
     public struct RootFS: Codable {
         public let `type`: String
+        
+        /// The image layer IDs.
         public let layers: [String]
         
         enum CodingKeys: String, CodingKey {
