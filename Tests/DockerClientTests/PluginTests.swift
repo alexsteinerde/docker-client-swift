@@ -24,6 +24,7 @@ final class PluginTests: XCTestCase {
     func testInspectPlugin() async throws {
         let privileges = try await client.plugins.getPrivileges("vieux/sshfs:latest")
         try? await client.plugins.install(remote: "vieux/sshfs:latest", privileges: privileges)
+        try await client.plugins.enable("vieux/sshfs:latest")
         let plugin = try await client.plugins.get("vieux/sshfs:latest")
         try await client.plugins.remove("vieux/sshfs:latest", force: true)
     }

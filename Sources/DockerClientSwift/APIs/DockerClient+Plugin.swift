@@ -52,6 +52,22 @@ extension DockerClient {
             try await client.run(endpoint)
         }
         
+        /// Enables an installed plugin.
+        /// - Parameters:
+        ///   - name: Name of the `Plugin` to enable.
+        /// - Throws: Errors that can occur when executing the request.
+        public func enable(_ name: String) async throws {
+            try await client.run(EnableDisablePluginEndpoint(name: name, enable: true))
+        }
+        
+        /// Disabled an installed plugin.
+        /// - Parameters:
+        ///   - name: Name of the `Plugin` to disable.
+        /// - Throws: Errors that can occur when executing the request.
+        public func disable(_ name: String) async throws {
+            try await client.run(EnableDisablePluginEndpoint(name: name, enable: false))
+        }
+        
         /// Removes an existing plugin.
         /// - Parameters:
         ///   - name: Name of the `Plugin` to delete.

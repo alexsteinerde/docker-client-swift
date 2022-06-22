@@ -831,6 +831,9 @@ let docker = DockerClient(
   
   // Now, we can install it
   try await docker.plugins.install(remote: "vieux/sshfs:latest", privileges: privileges)
+  
+  // finally, we need to enable it before using it
+  try await docker.plugins.enable(remote: "vieux/sshfs:latest")
   ```
 </details>
 
