@@ -48,7 +48,8 @@ final class ServiceTests: XCTestCase {
                     limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
                 )
             ),
-            mode: .replicated(1)
+            mode: .replicated(1),
+            endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
         )
         let service = try await client.services.create(spec: spec)
         

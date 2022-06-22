@@ -633,7 +633,7 @@ let docker = DockerClient(
   let service = try await docker.services.create(spec: spec)
   ```
   
-  Let's specify a number of replicas and a memory limit of 64MB for our service:
+  Let's specify a number of replicas, a published port and a memory limit of 64MB for our service:
   ```swift
   let spec = ServiceSpec(
       name: "my-nginx",
@@ -641,7 +641,9 @@ let docker = DockerClient(
           containerSpec: .init(image: "nginx:latest"),
           resources: .init(
               limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
-          )
+          ),
+          // Uses default Docker routing mesh mode
+          endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
       ),
       mode: .replicated(2)
   )

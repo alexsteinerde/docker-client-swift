@@ -11,7 +11,10 @@ public struct ServiceEndpointSpec: Codable {
     }
     
     public enum EndpointMode: String, Codable {
-        case vip, dnsrr
+        /// Uses the Docker routing mesh (port published on all nodes, transparent load-balancing)
+        case vip
+        /// Sets a DNS record containing all the IPs on the nodes running the service, no load-balancing.
+        case dnsrr
     }
     
     public struct EndpointPortConfig: Codable {

@@ -143,16 +143,16 @@ public struct ServiceSpec: Codable {
     /// Scheduling mode for a Docker service.
     public struct ServiceMode: Codable {
         /// A service that can have one or many instances (replicas) expected to run permanently.
-        public var replicated: Replicated?
+        private(set) public var replicated: Replicated?
         
         /// A service with a finite number of tasks that run to a completed state.
-        public var replicatedJob: ReplicatedJob? = nil
+        private(set) public var replicatedJob: ReplicatedJob? = nil
         
         /// Run a “one-off” job  globally which means each node in the cluster will run a task for this job
-        public var GlobalJob: GlobalJob? = nil
+        private(set) public var GlobalJob: GlobalJob? = nil
         
         /// A service with one task per node that run until reaching a completed state.
-        public var Global: Global? = nil
+        private(set) public var Global: Global? = nil
         
         enum CodingKeys: String, CodingKey {
             case replicated = "Replicated"
@@ -168,10 +168,10 @@ public struct ServiceSpec: Codable {
             }
         }
         
-        public struct Global: Codable {
-            
-        }
+        // A global service that runs one instance on each Swarm node.
+        public struct Global: Codable {}
         
+        // A global service that runs a configurable number of instances.
         public struct ReplicatedJob: Codable {
             /// The maximum number of replicas to run simultaneously.
             public var maxConcurrent: UInt = 1
@@ -186,9 +186,7 @@ public struct ServiceSpec: Codable {
             }
         }
         
-        public struct GlobalJob: Codable {
-            
-        }
+        public struct GlobalJob: Codable {}
         
         /// Create a service having one task per Swarm.
         public static func global() -> ServiceMode {
