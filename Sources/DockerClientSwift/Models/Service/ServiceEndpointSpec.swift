@@ -18,7 +18,7 @@ public struct ServiceEndpointSpec: Codable {
         
         public var name: String
         
-        public var `protocol`: EndpointPortProtocol = .tcp
+        public var `protocol`: ExposedPortSpec.PortProtocol = .tcp
         
         /// The port inside the container.
         public var targetPort: UInt16
@@ -39,12 +39,8 @@ public struct ServiceEndpointSpec: Codable {
             case publishMode = "PublishMode"
         }
         
-        public enum EndpointPortProtocol: String, Codable {
-            case tcp, udp, sctp
-        }
-        
         public enum EndpointPortPublishMode: String, Codable {
             case ingress, host
         }
     }
-    }
+}
