@@ -14,7 +14,7 @@ final class ContainerTests: XCTestCase {
         try client.syncShutdown()
     }
     
-    func testCreateContainers() async throws {
+    func testCreateContainer() async throws {
         //let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let memory: UInt64 = 64 * 1024 * 1024
         let spec = ContainerSpec(
@@ -37,7 +37,6 @@ final class ContainerTests: XCTestCase {
                 // Needs to be either disabled (-1) or be equal to, or greater than, `memoryLimit`
                 memorySwap: Int64(memory),
                 // Let's publish the port we exposed in `config`
-                //portBindings: ["80/tcp": .init(hostIp: "0.0.0.0", hostPort: 8000)]
                 portBindings: [.tcp(80): [.publishTo(hostIp: "0.0.0.0", hostPort: 8008)]]
             )
         )
@@ -45,7 +44,6 @@ final class ContainerTests: XCTestCase {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         let data = try encoder.encode(spec)
-        print("\n•••••••spec=\n\(String(data: data, encoding: .utf8)!)")
         
         let name = UUID.init().uuidString
         let container = try await client.containers.create(name: name, spec: spec)
@@ -55,7 +53,10 @@ final class ContainerTests: XCTestCase {
             container.config.exposedPorts != nil && container.config.exposedPorts![0].port == 80,
             "Ensure Exposed Port was set and retrieved"
         )
-        print("\n•••••• portBindings= \(container.hostConfig.portBindings)")
+        XCTAssert(
+            container.hostConfig.portBindings != nil && container.hostConfig.portBindings![.tcp(80)] != nil,
+            "Ensure Published Port was set and retrieved"
+        )
         try await client.containers.remove(container.id)
     }
     
