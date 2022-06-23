@@ -7,7 +7,7 @@ import Logging
 
 /// The entry point for Docker client commands.
 public class DockerClient {
-    private let apiVersion = "v1.41"
+    internal let apiVersion = "v1.41"
     private let headers = HTTPHeaders([
         ("Host", "localhost"), // Required by Docker
         ("Accept", "application/json;charset=utf-8"),
@@ -15,8 +15,8 @@ public class DockerClient {
     ])
     private let decoder: JSONDecoder
     
-    private let deamonURL: URL
-    private let tlsConfig: TLSConfiguration?
+    internal let deamonURL: URL
+    internal let tlsConfig: TLSConfiguration?
     private let client: HTTPClient
     private let logger: Logger
     
