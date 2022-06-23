@@ -102,7 +102,16 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Inspect                 | ✅       |             |
 |                             | Get logs                | ✅       |             |
 |                             |                         |          |             |
-| Plugins                     |                         | ❌       |    TBD      |
+| Plugins                     | List                    | ✅       |             |
+|                             | Inspect                 | ✅       |             |
+|                             | Get Privileges          | ✅       |             |
+|                             | Install                 | ✅       |             |
+|                             | Remove                  | ✅       |             |
+|                             | Enable/disable          | ✅       |             |
+|                             | Upgrade                 | ❌       |      TBD    |
+|                             | Configure               | ❌       |      TBD    |
+|                             | Create                  | ❌       |      TBD    |
+|                             | Push                    | ❌       |      TBD    |
 |                             |                         |          |             |
 | Registries                  | Login                   | ✅       | basic support |
 |                             |                         |          |             |
@@ -241,7 +250,7 @@ let docker = DockerClient(
   
   The simplest way of creating a new container is to only specify the image to run:
   ```swift
-  let spec = ContainerCreate(
+  let spec = ContainerSpec(
       config: .init(image: "hello-world:latest")
   )
   let container = try await docker.containers.create(name: "test", spec: spec)
@@ -250,7 +259,7 @@ let docker = DockerClient(
   Docker allows customizing many parameters:
   ```swift
   let memory: UInt64 = 64 * 1024 * 1024
-  let spec = ContainerCreate(
+  let spec = ContainerSpec(
       config: .init(
           // Override the default command of the Image
           command: ["/custom/command", "--option"],
@@ -804,6 +813,32 @@ let docker = DockerClient(
   ```
 </details>
 
+
+### Plugins
+<details>
+  <summary>List installed plugins</summary>
+  
+  ```swift
+  let plugins = try await docker.plugins.list()
+  ```
+</details>
+
+<details>
+  <summary>Install a plugin</summary>
+  
+  > Note: the `install()` method can be passed a `credentials` parameter containing credentials for a private registry.
+  > See "Pull an image" for more information.
+  ```swift
+  // First, we fetch the privileges required by the plugin:
+  let privileges = try await docker.plugins.getPrivileges("vieux/sshfs:latest")
+  
+  // Now, we can install it
+  try await docker.plugins.install(remote: "vieux/sshfs:latest", privileges: privileges)
+  
+  // finally, we need to enable it before using it
+  try await docker.plugins.enable(remote: "vieux/sshfs:latest")
+  ```
+</details>
 
 ## Credits
 This is a fork of the great work at https://github.com/alexsteinerde/docker-client-swift

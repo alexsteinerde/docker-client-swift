@@ -33,8 +33,12 @@ public struct ContainerSummary: Codable {
     public let status: String
     
     // TODO: HostConfig
-    // TODO: NetworkSettings
     
+    /// List of mount points in use by a container.
+    public let mounts: [Container.ContainerMountPoint]
+    
+    /// A summary of the container's network settings
+    public let networkSettings: NetworkSettings
     
     public struct ExposedPort: Codable {
         public let ip: String?
@@ -50,6 +54,14 @@ public struct ContainerSummary: Codable {
         }
     }
     
+    public struct NetworkSettings: Codable {
+        public let networks: [String:IPAM.IPAMConfig]
+        
+        enum CodingKeys: String, CodingKey {
+            case networks = "Networks"
+        }
+    }
+    
     enum CodingKeys: String, CodingKey {
         case id = "Id"
         case names = "Names"
@@ -59,7 +71,9 @@ public struct ContainerSummary: Codable {
         case createdAt = "Created"
         case ports = "Ports"
         case labels = "Labels"
+        case mounts = "Mounts"
         case state = "State"
+        case networkSettings = "NetworkSettings"
         case status = "Status"
     }
 }

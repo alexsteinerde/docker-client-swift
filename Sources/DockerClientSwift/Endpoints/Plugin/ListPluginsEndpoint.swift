@@ -1,14 +1,14 @@
 import Foundation
 import NIOHTTP1
 
-struct ListSecretsEndpoint: Endpoint {
+struct ListPluginsEndpoint: Endpoint {
     typealias Body = NoBody
-    typealias Response = [Secret]
+    typealias Response = [Plugin]
     var method: HTTPMethod = .GET
     
     init() {}
     
     var path: String {
-        "secrets"
+        "plugins"
     }
 }

@@ -7,12 +7,12 @@ struct CreateSecretEndpoint: Endpoint {
     typealias Body = SecretSpec
     var method: HTTPMethod = .POST
     
-    init(spec: SecretSpec) {
-        self.body = spec
-    }
-    
     var path: String {
         "secrets/create"
+    }
+    
+    init(spec: SecretSpec) {
+        self.body = spec
     }
     
     struct CreateSecretResponse: Codable {
