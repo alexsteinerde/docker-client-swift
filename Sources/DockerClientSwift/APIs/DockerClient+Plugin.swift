@@ -60,7 +60,7 @@ extension DockerClient {
             try await client.run(EnableDisablePluginEndpoint(name: name, enable: true))
         }
         
-        /// Disabled an installed plugin.
+        /// Disables an installed plugin.
         /// - Parameters:
         ///   - name: Name of the `Plugin` to disable.
         /// - Throws: Errors that can occur when executing the request.
