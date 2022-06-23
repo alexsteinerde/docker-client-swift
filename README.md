@@ -40,7 +40,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Prune                   | ✅       |             |
 |                             | Wait                    | ✅       |   untested  |
 |                             | Filesystem changes      | ✅       |   untested  |
-|                             | Attach                  | ❌       |      TBD    |
+|                             | Attach                  | 🚧       |    WIP      |
 |                             | Exec                    | ❌       |  unlikely   |
 |                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
@@ -176,8 +176,7 @@ tlsConfig.certificateVerification = .noHostnameVerification
 
 let docker = DockerClient(
     deamonURL: .init(string: "https://your.docker.daemon:2376")!,
-    tlsConfig: tlsConfig,
-    logger: logger
+    tlsConfig: tlsConfig
 )
 ```
 
