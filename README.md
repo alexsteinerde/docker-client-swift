@@ -108,8 +108,8 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Install                 | ✅       |             |
 |                             | Remove                  | ✅       |             |
 |                             | Enable/disable          | ✅       |             |
-|                             | Upgrade                 | ✅       |             |
-|                             | Configure               | ❌       |      TBD    |
+|                             | Upgrade                 | ✅       |   untested  |
+|                             | Configure               | ✅       |   untested  |
 |                             | Create                  | ❌       |      TBD    |
 |                             | Push                    | ❌       |      TBD    |
 |                             |                         |          |             |

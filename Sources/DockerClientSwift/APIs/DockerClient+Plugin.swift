@@ -52,6 +52,19 @@ extension DockerClient {
             try await client.run(endpoint)
         }
         
+        /// Passes configuration values to an installed plugin.
+        /// - Parameters:
+        ///   - name: Name of the installed plugin. Example: `vieux/sshfs:latest`
+        ///   - config: List of values to set. Example: `["DEBUG=1"]`
+        /// - Throws: Errors that can occur when executing the request.
+        public func configure(name: String, config: [String]) async throws {
+            let endpoint = ConfigurePluginEndpoint(
+                name: name,
+                config: config
+            )
+            try await client.run(endpoint)
+        }
+        
         /// Enables an installed plugin.
         /// - Parameters:
         ///   - name: Name of the `Plugin` to enable.
