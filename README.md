@@ -205,9 +205,9 @@ let docker = DockerClient(
   
   We start by listening for docker events, then we create a container:
   ```swift
-  async let events = try await client.events()
+  async let events = try await docker.events()
   
-  let container = try await client.containers.create(
+  let container = try await docker.containers.create(
       name: "hello",
       spec: .init(
           config: .init(image: "hello-world:latest"),
@@ -293,7 +293,7 @@ let docker = DockerClient(
   ```swift
   let newMemory = 64 * 1024 * 1024 // 64MB
   let newConfig = ContainerUpdate(memoryLimit: newMemory, memorySwap: newMemory)
-  try await client.containers.update("nameOrId", spec: newConfig)
+  try await docker.containers.update("nameOrId", spec: newConfig)
   ```
 </details>
 
@@ -309,7 +309,7 @@ let docker = DockerClient(
   <summary>Stop a container</summary>
   
   ```swift
-  try await client.containers.stop("nameOrId")
+  try await docker.containers.stop("nameOrId")
   ```
 </details>
 
@@ -317,7 +317,7 @@ let docker = DockerClient(
   <summary>Rename a container</summary>
   
   ```swift
-  try await client.containers.rename("nameOrId", to: "hahi")
+  try await docker.containers.rename("nameOrId", to: "hahi")
   ```
 </details>
 
@@ -481,7 +481,7 @@ let docker = DockerClient(
   
   Create a new network with custom IPs range:
   ```swift
-  let network = try await client.networks.create(
+  let network = try await docker.networks.create(
       spec: .init(
           name: "my-network",
           ipam: .init(
@@ -696,7 +696,7 @@ let docker = DockerClient(
   let service = try await docker.services.get("nameOrId")
   var updatedSpec = service.spec
   updatedSpec.mode = .replicated(3)
-  try await client.services.update(service: service, version: service.version.index, spec: updatedSpec)
+  try await docker.services.update(service: service, version: service.version.index, spec: updatedSpec)
   ```
 </details>
        
