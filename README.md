@@ -176,8 +176,7 @@ tlsConfig.certificateVerification = .noHostnameVerification
 
 let docker = DockerClient(
     deamonURL: .init(string: "https://your.docker.daemon:2376")!,
-    tlsConfig: tlsConfig,
-    logger: logger
+    tlsConfig: tlsConfig
 )
 ```
 
