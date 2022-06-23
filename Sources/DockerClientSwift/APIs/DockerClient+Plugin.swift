@@ -35,7 +35,7 @@ extension DockerClient {
         }
         
         /// Pulls a Plugin from a remote registry and installs it.
-        /// Note: the plugin must then be nabled in order to be used.
+        /// Note: the plugin must then be enabled in order to be used.
         /// - Parameters:
         ///   - remote: Image name of the plugin. Example: `vieux/sshfs:latest`
         ///   - alias: Optional custom local name  for the pulled plugin.
@@ -66,6 +66,23 @@ extension DockerClient {
         /// - Throws: Errors that can occur when executing the request.
         public func disable(_ name: String) async throws {
             try await client.run(EnableDisablePluginEndpoint(name: name, enable: false))
+        }
+        
+        /// Upgrades an installed Plugin.
+        /// - Parameters:
+        ///   - name: Name of the installed plugin, Example: `vieux/sshfs:v1`
+        ///   - remote: Image name of the new plugin version. Example: `vieux/sshfs:v2`
+        ///   - privileges: Optional privileges to grant to the plugin. The list of privileges requested by the plugin can be obtained by calling `getPrivileges()`.
+        ///   - credentials: Optional `RegistryAuth` as returned by `registries.login()`
+        /// - Throws: Errors that can occur when executing the request.
+        public func upgrade(name: String, remote: String, privileges: [PluginPrivilege]? = [], credentials: RegistryAuth? = nil) async throws {
+            let endpoint = UpgradePluginEndpoint(
+                name: name,
+                remote: remote,
+                privileges: privileges,
+                credentials: credentials
+            )
+            try await client.run(endpoint)
         }
         
         /// Removes an existing plugin.

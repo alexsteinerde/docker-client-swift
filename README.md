@@ -108,7 +108,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Install                 | ✅       |             |
 |                             | Remove                  | ✅       |             |
 |                             | Enable/disable          | ✅       |             |
-|                             | Upgrade                 | ❌       |      TBD    |
+|                             | Upgrade                 | ✅       |             |
 |                             | Configure               | ❌       |      TBD    |
 |                             | Create                  | ❌       |      TBD    |
 |                             | Push                    | ❌       |      TBD    |
@@ -836,7 +836,7 @@ let docker = DockerClient(
   try await docker.plugins.install(remote: "vieux/sshfs:latest", privileges: privileges)
   
   // finally, we need to enable it before using it
-  try await docker.plugins.enable(remote: "vieux/sshfs:latest")
+  try await docker.plugins.enable("vieux/sshfs:latest")
   ```
 </details>
 
