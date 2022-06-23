@@ -107,8 +107,11 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Get Privileges          | ✅       |             |
 |                             | Install                 | ✅       |             |
 |                             | Remove                  | ✅       |             |
-|                             | Enable/disable          | ❌       |      TBD    |
+|                             | Enable/disable          | ✅       |             |
+|                             | Upgrade                 | ❌       |      TBD    |
 |                             | Configure               | ❌       |      TBD    |
+|                             | Create                  | ❌       |      TBD    |
+|                             | Push                    | ❌       |      TBD    |
 |                             |                         |          |             |
 | Registries                  | Login                   | ✅       | basic support |
 |                             |                         |          |             |

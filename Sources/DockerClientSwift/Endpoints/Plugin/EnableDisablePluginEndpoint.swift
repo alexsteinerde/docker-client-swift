@@ -16,6 +16,6 @@ struct EnableDisablePluginEndpoint: Endpoint {
     }
     
     var path: String {
-        "plugins/\(name)/\(enable ? "enable" : "disable")"
+        "plugins/\(name.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!)/\(enable ? "enable" : "disable")?timeout=30"
     }
 }

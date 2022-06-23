@@ -85,13 +85,16 @@ public struct Plugin: Codable {
         
         public let description: String
         
+        /// Link to the documentation about the plugin.
         public let documentation: String
         
         /// The interface between Docker and the plugin
         public let interface: Interface
         
+        /// Entrypoint of the plugin, see Dockerfile `ENTRYPOINT`.
         public let entryPoint: [String]?
         
+        /// Workdir of the plugin, see Dockerfile `WORKDIR`.
         public let workDir: String
         
         public let user: User
@@ -100,16 +103,22 @@ public struct Plugin: Codable {
         
         public let linux: Linux
         
+        /// Path to be mounted as `rshared`, so that mounts under that path are visible to Docker. This is useful for volume plugins.
+        /// This path will be bind-mounted outside of the plugin rootfs so it’s contents are preserved on upgrade.
         public let propagatedMount: String
         
+        /// Access to host ipc namespace
         public let ipcHost: Bool
         
+        /// Access to host pid namespace.
         public let pidHost: Bool
         
         public let mounts: [Settings.PluginMount]
         
+        /// Environment variables of the plugin.
         public let environmentVars: [PluginEnv]
         
+        /// Args of the plugin
         public let arguments: PluginArg
         
         public let rootFs: RootFS
@@ -138,6 +147,7 @@ public struct Plugin: Codable {
             /// The kinds of Docker plugins that the plugin provides.
             public let types: [PluginType]
             
+            /// Name of the socket the engine should use to communicate with the plugins. the socket will be created in `/run/docker/plugins`.
             public let socket: String
             
             /// Protocol to use for clients connecting to the plugin.
