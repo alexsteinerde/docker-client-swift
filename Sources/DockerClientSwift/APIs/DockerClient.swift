@@ -17,7 +17,7 @@ public class DockerClient {
     
     internal let deamonURL: URL
     internal let tlsConfig: TLSConfiguration?
-    private let client: HTTPClient
+    internal let client: HTTPClient
     private let logger: Logger
     
     
@@ -64,13 +64,13 @@ public class DockerClient {
         }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
-    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    /// - Throws: Throws an error if the `DockerClient` can not be shutdown.
     public func syncShutdown() throws {
         try client.syncShutdown()
     }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
-    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    /// - Throws: Throws an error if the `DockerClient` can not be shutdown.
     public func shutdown() async throws {
         try await client.shutdown()
     }

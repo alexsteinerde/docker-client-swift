@@ -14,8 +14,24 @@ final class ContainerTests: XCTestCase {
         try client.syncShutdown()
     }
     
+    
+    func testattach() async throws {
+        let image = try await client.images.get("nginx:latest")
+        let container = try await client.containers.create(image: image)
+        try await client.containers.start(container.id)
+        let ep = ContainerAttachEndpoint(client: client, nameOrId: container.id, stream: true, stdin: true, stdout: true, stderr: true)
+        do {
+        try await ep.connect()
+        print("\n••• before sleep")
+        try await Task.sleep(nanoseconds: 5_000_000_000)
+        }
+        catch(let error) {
+            print("\n••••• BOOM! \(error)")
+        }
+    }
+    
     func testCreateContainer() async throws {
-        //let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
+        let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let memory: UInt64 = 64 * 1024 * 1024
         let spec = ContainerSpec(
             config: .init(

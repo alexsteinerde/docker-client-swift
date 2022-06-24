@@ -1,9 +1,9 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
     name: "docker-client-swift",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v12)],
     products: [
         .library(name: "DockerClientSwift", targets: ["DockerClientSwift"]),
     ],

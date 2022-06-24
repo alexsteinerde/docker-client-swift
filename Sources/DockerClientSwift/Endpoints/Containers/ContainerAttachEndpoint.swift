@@ -12,6 +12,7 @@ class ContainerAttachEndpoint {
     private let dockerClient: DockerClient
     private let nameOrId: String
     private let stream: Bool
+    private let logs: Bool = true
     private let stdin: Bool
     private let stdout: Bool
     private let stderr: Bool
@@ -25,10 +26,11 @@ class ContainerAttachEndpoint {
 
     var query: String {
         """
-        stdin=\(stdin)\
+        ?stdin=\(stdin)\
         &stdout=\(stdout)\
         &stderr=\(stderr)\
-        &stream=\(stream)
+        &stream=\(stream)\
+        &logs=\(logs)
         """
     }
     
@@ -41,9 +43,28 @@ class ContainerAttachEndpoint {
         self.stderr = stderr
     }
     
-    func connect(elg: EventLoopGroup) async throws {
-        let config = WebSocketClient.Configuration.init(tlsConfiguration: self.dockerClient.tlsConfig)
-        WebSocket.connect(
+    func connect() async throws {
+        let config = WebSocketClient.Configuration(tlsConfiguration: self.dockerClient.tlsConfig)
+        
+        /*let endpoint = """
+        \(self.dockerClient.deamonURL.scheme == "https" ? "wss" : "ws")://\
+        \(self.dockerClient.deamonURL.host ?? self.dockerClient.deamonURL.path):\
+        \(self.dockerClient.deamonURL.port ?? (self.dockerClient.deamonURL.scheme == "https" ? 2376 : 2375))\
+        \(self.dockerClient.deamonURL.path)/\(self.dockerClient.apiVersion)/\(self.path)
+        ?\(self.query)
+        """
+        try await WebSocket.connect(
+            to: endpoint,
+            headers: [:],
+            configuration: config,
+            on: elg
+        ) { ws in
+            self.ws = ws
+        }*/
+        print("\n••• SCHEME: \(self.dockerClient.deamonURL.scheme == "https" ? "wss" : "ws")")
+        print("\n••• HOST: \(self.dockerClient.deamonURL.host ?? self.dockerClient.deamonURL.path)")
+        print("\n••• PATH: \(self.dockerClient.deamonURL.path)/\(self.dockerClient.apiVersion)/\(self.path)")
+        try await WebSocket.connect(
             scheme: self.dockerClient.deamonURL.scheme == "https" ? "wss" : "ws",
             host: self.dockerClient.deamonURL.host ?? self.dockerClient.deamonURL.path,
             port: self.dockerClient.deamonURL.port ?? (self.dockerClient.deamonURL.scheme == "https" ? 2376 : 2375),
@@ -51,11 +72,26 @@ class ContainerAttachEndpoint {
             query: self.query,
             headers: [:],
             configuration: config,
-            on: elg
-        ) { ws in
+            on: self.dockerClient.client.eventLoopGroup
+        ) { ws async in
+            print("\n••• CONNECTED?")
             self.ws = ws
+            //try await ws.send("hello")
+            ws.onBinary { ws, buffer in
+                let rawData = String(data: Data(buffer: buffer), encoding: .utf8)
+                print("\n••••••• BUFFER=\(rawData!) ")
+            }
         }
         
+    }
+    
+    func send(_ text: String) async throws {
+        guard let ws = self.ws else {
+            throw DockerError.message("Not connected")
+        }
+        
+        try await ws.send(text)
+        //try await ws.send(Array(text.utf8))
     }
     
 }
