@@ -78,7 +78,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | (Dis)connect container  | 🚧       |    WIP      |
+|                             | (Dis)connect container  | 🚧       |    WIP <sup>2</sup>|
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -128,6 +128,9 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 Note: various Docker endpoints such as list or prune support *filters*. These are currently not implemented.
 
 <sup>1</sup> Attach is currently not supported when connecting to Docker via local Unix socket.
+
+<sup>2</sup> Only Disconnect is currently implemented.
+
 
 ## Installation
 ### Package.swift 
