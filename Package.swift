@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.18.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.10.0"),
         // Container attach endpoint
-        .package(url: "https://github.com/vapor/websocket-kit.git", from: "2.4.1"),
+        .package(url: "https://github.com/m-barthelemy/websocket-kit.git", .branch("main")),
         // Only used for parsing the multiple and inconsistent date formats returned by Docker
         .package(url: "https://github.com/marksands/BetterCodable.git", from: "0.4.0"),
         // Some Docker features receive or return TAR archives. Used by tests

@@ -40,7 +40,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Prune                   | ✅       |             |
 |                             | Wait                    | ✅       |   untested  |
 |                             | Filesystem changes      | ✅       |   untested  |
-|                             | Attach                  | 🚧       |    WIP      |
+|                             | Attach                  | 🚧       | basic support <sup>1</sup>|
 |                             | Exec                    | ❌       |  unlikely   |
 |                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
@@ -127,6 +127,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 
 Note: various Docker endpoints such as list or prune support *filters*. These are currently not implemented.
 
+<sup>1</sup> Attach is currently not supported when connecting to Docker via local Unix socket.
 
 ## Installation
 ### Package.swift 

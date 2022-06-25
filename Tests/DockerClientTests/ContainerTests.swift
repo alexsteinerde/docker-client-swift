@@ -15,7 +15,7 @@ final class ContainerTests: XCTestCase {
     }
     
     
-    func testattach() async throws {
+    func testAttach() async throws {
         let image = try await client.images.get("nginx:latest")
         let container = try await client.containers.create(image: image)
         try await client.containers.start(container.id)
