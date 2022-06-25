@@ -11,13 +11,13 @@ extension DockerClient {
         logger.logLevel = .debug
         
         // Local Unix socket
-        return DockerClient(logger: logger)
+        //return DockerClient(logger: logger)
         
         // Remote via simple HTTP
         //return DockerClient(deamonURL: .init(string: "http://127.0.0.1:2375")!, logger: logger)
         
         // Remote daemon, using HTTPS and client certs authentication
-        /*var tlsConfig = TLSConfiguration.makeClientConfiguration()
+        var tlsConfig = TLSConfiguration.makeClientConfiguration()
         tlsConfig.privateKey = NIOSSLPrivateKeySource.file("client-key.pem")
         tlsConfig.certificateChain.append(NIOSSLCertificateSource.file("client-certificate.pem"))
         tlsConfig.additionalTrustRoots.append(.file("ca-public.pem"))
@@ -26,6 +26,6 @@ extension DockerClient {
             deamonURL: .init(string: "https://51.15.19.7:2376")!,
             tlsConfig: tlsConfig,
             logger: logger
-        )*/
+        )
     }
 }

@@ -1,11 +1,12 @@
 import Foundation
 
 public struct ContainerConfig: Codable {
-    public var attachStderr: Bool = true
     
     public var attachStdin: Bool = false
     
     public var attachStdout: Bool = true
+    
+    public var attachStderr: Bool = true
     
     /// Custom command to run, overrides the value of the Image if any
     public var command: [String]? = nil

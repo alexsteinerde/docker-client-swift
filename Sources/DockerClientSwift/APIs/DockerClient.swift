@@ -7,7 +7,7 @@ import Logging
 
 /// The entry point for Docker client commands.
 public class DockerClient {
-    private let apiVersion = "v1.41"
+    internal let apiVersion = "v1.41"
     private let headers = HTTPHeaders([
         ("Host", "localhost"), // Required by Docker
         ("Accept", "application/json;charset=utf-8"),
@@ -15,9 +15,9 @@ public class DockerClient {
     ])
     private let decoder: JSONDecoder
     
-    private let deamonURL: URL
-    private let tlsConfig: TLSConfiguration?
-    private let client: HTTPClient
+    internal let deamonURL: URL
+    internal let tlsConfig: TLSConfiguration?
+    internal let client: HTTPClient
     private let logger: Logger
     
     
@@ -64,13 +64,13 @@ public class DockerClient {
         }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
-    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    /// - Throws: Throws an error if the `DockerClient` can not be shutdown.
     public func syncShutdown() throws {
         try client.syncShutdown()
     }
     
     /// The client needs to be shutdown otherwise it can crash on exit.
-    /// - Throws: Throws an error if the `HTTPClient` can not be shutdown.
+    /// - Throws: Throws an error if the `DockerClient` can not be shutdown.
     public func shutdown() async throws {
         try await client.shutdown()
     }
