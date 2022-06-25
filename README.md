@@ -728,6 +728,7 @@ let docker = DockerClient(
   - connected to a custom Network
   - storing data into a custom Volume, for each container
   - requiring a Secret
+  - publishing the port 80 of the containers to the port 8000 of each Docker Swarm node
   ```swift
   let network = try await docker.networks.create(spec: .init(name: "myNet", driver: "overlay"))
   let secret = try await docker.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
