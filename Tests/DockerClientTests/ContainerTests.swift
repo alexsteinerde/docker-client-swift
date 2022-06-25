@@ -55,7 +55,7 @@ final class ContainerTests: XCTestCase {
     }
     
     func testCreateContainer() async throws {
-        let memory: UInt64 = 64 * 1024 * 1024
+        let memory: UInt64 = .mb(64)
         let cmd = ["/custom/command", "--option"]
         let spec = ContainerSpec(
             config: .init(

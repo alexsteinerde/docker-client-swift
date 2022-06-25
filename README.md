@@ -263,7 +263,7 @@ let docker = DockerClient(
   
   Docker allows customizing many parameters:
   ```swift
-  let memory: UInt64 = 64 * 1024 * 1024
+  let memory: UInt64 = .mb(128) // 128MB
   let spec = ContainerSpec(
       config: .init(
           // Override the default command of the Image
@@ -296,8 +296,8 @@ let docker = DockerClient(
   
   Let's update the memory limits for an existing container:
   ```swift
-  let newMemory = 64 * 1024 * 1024 // 64MB
-  let newConfig = ContainerUpdate(memoryLimit: newMemory, memorySwap: newMemory)
+  let newMemory: UInt64 = .mb(64) // 64MB
+  let newConfig = ContainerUpdate(memoryLimit: newMemory, memorySwap: Int64(newMemory)
   try await docker.containers.update("nameOrId", spec: newConfig)
   ```
 </details>
@@ -688,7 +688,7 @@ let docker = DockerClient(
       taskTemplate: .init(
           containerSpec: .init(image: "nginx:latest"),
           resources: .init(
-              limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+              limits: .init(memoryBytes: .mb(64))
           ),
           // Uses default Docker routing mesh mode
           endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
@@ -743,7 +743,7 @@ let docker = DockerClient(
               secrets: [.init(secret)]
           ),
           resources: .init(
-              limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+              limits: .init(memoryBytes: .mb(64 * 1024))
           )
       ),
       mode: .replicated(1),

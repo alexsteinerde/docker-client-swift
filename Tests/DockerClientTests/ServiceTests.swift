@@ -27,7 +27,7 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest"),
                 resources: .init(
-                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+                    limits: .init(memoryBytes: .mb(64))
                 )
             ),
             mode: .replicated(1)
@@ -47,7 +47,7 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(image: "nginx:latest"),
                 resources: .init(
-                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+                    limits: .init(memoryBytes: .mb(64))
                 )
             ),
             mode: .replicated(1),
@@ -56,7 +56,7 @@ final class ServiceTests: XCTestCase {
         let service = try await client.services.create(spec: spec)
         
         XCTAssert(service.spec.name == name, "Ensure custom service name is set")
-        XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == 64 * 1024 * 1024, "Ensure memory limit is set")
+        XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == .mb(64), "Ensure memory limit is set")
         
         try await client.services.remove(service.id)
     }
@@ -72,12 +72,12 @@ final class ServiceTests: XCTestCase {
                     image: "nginx:latest",
                     mounts: [
                         .volume(name: "myVolume", to: "/mnt"),
-                        .tmpFs(options: .init(sizeBytes: UInt64(64*1024*1024)))
+                        .tmpFs(options: .init(sizeBytes: .mb(64)))
                     ],
                     secrets: [.init(secret)]
                 ),
                 resources: .init(
-                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+                    limits: .init(memoryBytes: .mb(64))
                 )
             ),
             mode: .replicated(1),
