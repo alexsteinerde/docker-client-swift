@@ -726,28 +726,28 @@ let docker = DockerClient(
   
   What if we want to use a specific Network and pass secrets to the service?
   ```swift
-    let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
-    let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
-    let spec = ServiceSpec(
-        name: name,
-        taskTemplate: .init(
-            containerSpec: .init(
-                image: "nginx:latest",
-                // Add our Secret. Will appear as `/run/secrets/myPassword` in the containers.
-                secrets: [.init(secret)]
-            ),
-            resources: .init(
-                limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
-            )
-        ),
-        mode: .replicated(1),
-        // Add our custom Network
-        networks: [.init(target: network.id)],
-        // Publish our Nginx image port 80 to 8000 on the Docker Swarm nodes
-        endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
-    )
+  let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
+  let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
+  let spec = ServiceSpec(
+      name: name,
+      taskTemplate: .init(
+          containerSpec: .init(
+              image: "nginx:latest",
+              // Add our Secret. Will appear as `/run/secrets/myPassword` in the containers.
+              secrets: [.init(secret)]
+          ),
+          resources: .init(
+              limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+          )
+      ),
+      mode: .replicated(1),
+      // Add our custom Network
+      networks: [.init(target: network.id)],
+      // Publish our Nginx image port 80 to 8000 on the Docker Swarm nodes
+      endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
+  )
     
-    let service = try await client.services.create(spec: spec)
+  let service = try await client.services.create(spec: spec)
   ```
   TODO: add examples for specifying networks and volumes
 </details>
