@@ -163,6 +163,7 @@ public struct ServiceSpec: Codable {
         }
     }
     
+    // MARK: - NetworkAttachmentConfig
     public struct NetworkAttachmentConfig: Codable {
         public init(target: String, aliases: [String]? = [], driverOpts: [String : String]? = [:]) {
             self.target = target
@@ -186,6 +187,7 @@ public struct ServiceSpec: Codable {
         }
     }
     
+    // MARK: - ServiceMode
     /// Scheduling mode for a Docker service.
     public struct ServiceMode: Codable {
         /// A service that can have one or many instances (replicas) expected to run permanently.
