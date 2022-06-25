@@ -31,7 +31,7 @@ final class ContainerTests: XCTestCase {
         do {
             Task {
                 for try await output in attach.output {
-                   XCTAssert(output == "Linux", "Ensure command output is properly read")
+                    XCTAssert(output == "Linux\n", "Ensure command output is properly read")
                 }
             }
             try await client.containers.start(container.id)
