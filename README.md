@@ -373,7 +373,7 @@ let docker = DockerClient(
   
   Let's create a container that defaults to running a shell, and attach to it:
   ```swift
-  let _ = try await docker.images.pull(byName: "alpine", tag: "latest")
+  let _ = try await docker.images.pull(byIdentifier: "alpine:latest")
   let spec = ContainerSpec(
       config: .init(
           attachStdin: true,
