@@ -33,10 +33,7 @@ final class SystemTests: XCTestCase {
         try await Task.sleep(nanoseconds: 2_000_000_000)
         let _ = try await client.containers.create(
             name: name,
-            spec: .init(
-                config: .init(image: "hello-world:latest"),
-                hostConfig: .init()
-            )
+            spec: .init(config: .init(image: "hello-world:latest"))
         )
         
         for try await event in try await events {
@@ -61,7 +58,7 @@ final class SystemTests: XCTestCase {
         try? await client.swarm.leave(force: true)
         let _ = try! await client.swarm.initSwarm(config: SwarmConfig())
         let info = try await client.info()
+        XCTAssert(info.swarm != nil, "Ensure Swarm info is present")
         try? await client.swarm.leave(force: true)
-        //print("\n••••••••• DOCKER system info=\(info)")
     }
 }

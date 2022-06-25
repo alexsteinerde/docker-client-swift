@@ -6,7 +6,7 @@ import Foundation
 /// Attach to a container via Websocket
 final class ContainerAttachEndpoint {
     typealias Body = NoBody
-    typealias Response = ContainerAttach //AsyncThrowingStream<ByteBuffer, Error>
+    typealias Response = ContainerAttach
     
     private var method: HTTPMethod = .GET
     private var path: String {
@@ -66,9 +66,7 @@ final class ContainerAttachEndpoint {
         guard scheme == "http" || scheme == "https" else {
             throw DockerError.unsupportedScheme("Attach only supports connecting to docker daemons via HTTP or HTTPS")
         }
-        /*print("\n••• SCHEME: \(self.dockerClient.deamonURL.scheme == "https" ? "wss" : "ws")")
-        print("\n••• HOST: \(self.dockerClient.deamonURL.host ?? self.dockerClient.deamonURL.path)")
-        print("\n••• PATH: \(self.dockerClient.deamonURL.path)/\(self.dockerClient.apiVersion)/\(self.path)")*/
+
         let output = AsyncThrowingStream<String, Error> { continuation in
             Task {
                 try await WebSocket.connect(
