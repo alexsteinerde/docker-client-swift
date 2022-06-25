@@ -113,11 +113,11 @@ extension DockerClient {
         /// Gets the logs of a container.
         /// - Parameters:
         ///   - container: Instance of an `Container`.
-        ///   - stdErr: whether to return log lines from the standard error.
-        ///   - stdOut: whether to return log lines from the standard output.
-        ///   - timestamps: whether to return the timestamp of each log line
-        ///   - follow: whether to wait for new logs to become available and stream them.
-        ///   - tail: number of last existing log lines to return. Default: all.
+        ///   - stdErr: Whether to return log lines from the standard error.
+        ///   - stdOut: Whether to return log lines from the standard output.
+        ///   - timestamps: Whether to return the timestamp of each log line
+        ///   - follow: Whether to wait for new logs to become available and stream them.
+        ///   - tail: Number of last existing log lines to return. Default: all.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns  a  sequence of `DockerLogEntry`.
         public func logs(container: Container, stdErr: Bool = true, stdOut: Bool = true, timestamps: Bool = true, follow: Bool = false, tail: UInt? = nil, since: Date = .distantPast, until: Date = .distantFuture) async throws -> AsyncThrowingStream<DockerLogEntry, Error> {
@@ -140,6 +140,19 @@ extension DockerClient {
             )
             
             return try await endpoint.map(response: response, tty: container.config.tty)
+        }
+        
+        /// Attaches to a container. Allows to retrieve a stream of the container output, and sending commands if it listens on the standard input.
+        /// - Parameters:
+        ///   - container: Instance of an `Container`.
+        ///   - stream: Whether to return stream
+        ///   - logs: Whether to return log lines from the standard output.
+        ///   - detachKeys: Override the key sequence for detaching a container. Format is a single character `[a-Z]`, or` ctrl-<value>` where `<value>` is one of: a-z, @, ^, [, ,, or _.
+        /// - Throws: Errors that can occur when executing the request.
+        /// - Returns: Returns  a `ContainerAttach` allowing to fetch the container output as well as sending input/commands to it.
+        public func attach(container: Container, stream: Bool, logs: Bool, detachKeys: String? = nil) async throws -> ContainerAttach {
+            let ep = ContainerAttachEndpoint(client: client, nameOrId: container.id, stream: true, logs: false)
+            return try await ep.connect()
         }
         
         /// Deletes all stopped containers.

@@ -16,27 +16,46 @@ final class ContainerTests: XCTestCase {
     
     
     func testAttach() async throws {
-        let image = try await client.images.get("nginx:latest")
-        let container = try await client.containers.create(image: image)
-        try await client.containers.start(container.id)
-        let ep = ContainerAttachEndpoint(client: client, nameOrId: container.id, stream: true, stdin: true, stdout: true, stderr: true)
+        let _ = try await client.images.pull(byName: "alpine", tag: "latest")
+        let spec = ContainerSpec(
+            config: .init(
+                attachStdin: true,
+                attachStdout: true,
+                attachStderr: true,
+                image: "alpine:latest",
+                openStdin: true
+            )
+        )
+        let container = try await client.containers.create(spec: spec)
+        let attach = try await client.containers.attach(container: container, stream: true, logs: true)
         do {
-        try await ep.connect()
-        print("\n••• before sleep")
-        try await Task.sleep(nanoseconds: 5_000_000_000)
+            Task {
+                for try await output in attach.output {
+                   XCTAssert(output == "Linux", "Ensure command output is properly read")
+                }
+            }
+            try await client.containers.start(container.id)
+            
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            try await attach.send("uname")
+            try await Task.sleep(nanoseconds: 1_000_000_000)
         }
         catch(let error) {
             print("\n••••• BOOM! \(error)")
+            throw error
         }
+        
+        try await client.containers.remove(container.id, force: true)
     }
     
     func testCreateContainer() async throws {
         let _ = try await client.images.pull(byName: "hello-world", tag: "latest")
         let memory: UInt64 = 64 * 1024 * 1024
+        let cmd = ["/custom/command", "--option"]
         let spec = ContainerSpec(
             config: .init(
                 // Override the default command of the Image
-                command: ["/custom/command", "--option"],
+                command: cmd,
                 // Add new environment variables
                 environmentVars: ["HELLO=hi"],
                 // Expose port 80
@@ -60,15 +79,18 @@ final class ContainerTests: XCTestCase {
         let name = UUID.init().uuidString
         let container = try await client.containers.create(name: name, spec: spec)
         XCTAssert(container.name == "/\(name)", "Ensure name is set")
-        XCTAssert(container.config.command == ["/custom/command", "--option"], "ensure custom command is set")
+        XCTAssert(container.config.command == cmd, "Ensure custom command is set")
         XCTAssert(
             container.config.exposedPorts != nil && container.config.exposedPorts![0].port == 80,
             "Ensure Exposed Port was set and retrieved"
         )
+        
         XCTAssert(
             container.hostConfig.portBindings != nil && container.hostConfig.portBindings![.tcp(80)] != nil,
             "Ensure Published Port was set and retrieved"
         )
+        XCTAssert(container.hostConfig.memoryLimit == memory, "Ensure MemoryLimit is set")
+        
         try await client.containers.remove(container.id)
     }
     
