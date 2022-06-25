@@ -1,7 +1,6 @@
 import Foundation
 
 public struct ContainerConfig: Codable {
-    
     public var attachStdin: Bool = false
     
     public var attachStdout: Bool = true
@@ -71,6 +70,32 @@ public struct ContainerConfig: Codable {
     
     /// The working directory for commands to run in.
     public var workingDir: String = ""
+    
+    public init(image: String, attachStdin: Bool = false, attachStdout: Bool = true, attachStderr: Bool = true, command: [String]? = nil, domainname: String = "", entrypoint: [String]? = nil, environmentVars: [String]? = nil, healthcheck: ContainerConfig.HealthCheckConfig? = nil, hostname: String = "", labels: [String : String]? = [:], macAddress: String? = nil, networkDisabled: Bool? = nil, onBuild: [String]? = nil, openStdin: Bool = false, shell: [String]? = nil, stdinOnce: Bool = false, stopSignal: ContainerConfig.StopSignal? = nil, stopTimeout: UInt? = 10, tty: Bool = false, user: String = "", volumes: [String : ContainerConfig.EmptyObject]? = [:], workingDir: String = "") {
+        self.attachStdin = attachStdin
+        self.attachStdout = attachStdout
+        self.attachStderr = attachStderr
+        self.command = command
+        self.domainname = domainname
+        self.entrypoint = entrypoint
+        self.environmentVars = environmentVars
+        self.healthcheck = healthcheck
+        self.hostname = hostname
+        self.image = image
+        self.labels = labels
+        self.macAddress = macAddress
+        self.networkDisabled = networkDisabled
+        self.onBuild = onBuild
+        self.openStdin = openStdin
+        self.shell = shell
+        self.stdinOnce = stdinOnce
+        self.stopSignal = stopSignal
+        self.stopTimeout = stopTimeout
+        self.tty = tty
+        self.user = user
+        self.volumes = volumes
+        self.workingDir = workingDir
+    }
     
     enum CodingKeys: String, CodingKey {
         case attachStderr = "AttachStderr"

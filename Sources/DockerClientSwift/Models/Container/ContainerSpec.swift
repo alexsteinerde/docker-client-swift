@@ -2,16 +2,16 @@ import Foundation
 
 public struct ContainerSpec: Codable {
     /// Configuration specific to the container, and independent from the host it is running on.
-    internal var config: ContainerConfig?
+    public var config: ContainerConfig?
     
     /// Host specific configuration for the container.
-    internal var hostConfig: ContainerHostConfig
+    public var hostConfig: ContainerHostConfig
     
     enum CodingKeys: String, CodingKey {
         case hostConfig = "HostConfig"
     }
     
-    internal init(config: ContainerConfig, hostConfig: ContainerHostConfig = .init()) {
+    public init(config: ContainerConfig, hostConfig: ContainerHostConfig = .init()) {
         self.config = config
         self.hostConfig = hostConfig
     }
