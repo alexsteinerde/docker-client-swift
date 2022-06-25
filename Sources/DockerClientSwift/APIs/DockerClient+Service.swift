@@ -68,12 +68,22 @@ extension DockerClient {
                 since: since,
                 until: until
             )
+            
+            var tty: Bool!
+            if let hasTty = service.spec.taskTemplate.containerSpec.tty {
+                tty = hasTty
+            }
+            else {
+                let image = try await self.client.images.get(service.spec.taskTemplate.containerSpec.image)
+                tty = image.containerConfig.tty
+            }
+            
             let response = try await client.run(
                 endpoint,
                 // Arbitrary timeouts.
                 // TODO: should probably make these configurable
                 timeout: follow ? .hours(12) : .seconds(60),
-                hasLengthHeader: !(service.spec.taskTemplate.containerSpec.tty ?? false)
+                hasLengthHeader: !tty
             )
             return try await endpoint.map(response: response, tty: service.spec.taskTemplate.containerSpec.tty ?? false)
         }
