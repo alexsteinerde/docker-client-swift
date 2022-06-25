@@ -38,10 +38,10 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Get processes (top)     | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | Wait                    | ✅       |   untested  |
-|                             | Filesystem changes      | ✅       |   untested  |
+|                             | Wait                    | ✅       | untested    |
+|                             | Filesystem changes      | ✅       | untested    |
 |                             | Attach                  | 🚧       | basic support <sup>1</sup>|
-|                             | Exec                    | ❌       |  unlikely <sup>2</sup>   |
+|                             | Exec                    | ❌       | unlikely <sup>2</sup>|
 |                             |                         |          |             |
 | Images                      | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -50,7 +50,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Build                   | ✅       | basic support |
 |                             | Tag                     | ✅       |             |
 |                             | Push                    | ✅       |             |
-|                             | Create (container commit)| ❌       |             |
+|                             | Create (container commit)| ❌       | TBD         |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
 |                             |                         |          |             |
@@ -78,7 +78,7 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Create                  | ✅       |             |
 |                             | Delete                  | ✅       |             |
 |                             | Prune                   | ✅       |             |
-|                             | (Dis)connect container  | 🚧       |    WIP <sup>3</sup>|
+|                             | (Dis)connect container  | 🚧       | WIP <sup>3</sup>|
 |                             |                         |          |             |
 | Volumes                     | List                    | ✅       |             |
 |                             | Inspect                 | ✅       |             |
@@ -108,10 +108,10 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 |                             | Install                 | ✅       |             |
 |                             | Remove                  | ✅       |             |
 |                             | Enable/disable          | ✅       |             |
-|                             | Upgrade                 | ✅       |   untested  |
-|                             | Configure               | ✅       |   untested  |
-|                             | Create                  | ❌       |      TBD    |
-|                             | Push                    | ❌       |      TBD    |
+|                             | Upgrade                 | ✅       | untested    |
+|                             | Configure               | ✅       | untested    |
+|                             | Create                  | ❌       | TBD         |
+|                             | Push                    | ❌       | TBD         |
 |                             |                         |          |             |
 | Registries                  | Login                   | ✅       | basic support |
 |                             |                         |          |             |
@@ -127,9 +127,9 @@ Currently no backwards compatibility is supported; previous versions of the Dock
 
 Note: various Docker endpoints such as list or prune support *filters*. These are currently not implemented.
 
-<sup>1</sup> Attach is currently not supported when connecting to Docker via local Unix socket.
+<sup>1</sup> Attach is currently not supported when connecting to Docker via local Unix socket, or when using a proxy.
 
-<sup>2</sup> Docker exec is using an unconventional protocol that requires raw access to the socket. Significant work required to support it.
+<sup>2</sup> Docker exec is using an unconventional protocol that requires raw access to the TCP socket. Significant work needed in order to support it.
 
 <sup>3</sup> Only Disconnect is currently implemented.
 
