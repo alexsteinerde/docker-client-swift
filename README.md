@@ -729,8 +729,8 @@ let docker = DockerClient(
   - storing data into a custom Volume, for each container
   - requiring a Secret
   ```swift
-  let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
-  let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
+  let network = try await docker.networks.create(spec: .init(name: "myNet", driver: "overlay"))
+  let secret = try await docker.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
   let spec = ServiceSpec(
       name: "my-nginx",
       taskTemplate: .init(
@@ -752,7 +752,7 @@ let docker = DockerClient(
       endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
   )
     
-  let service = try await client.services.create(spec: spec)
+  let service = try await docker.services.create(spec: spec)
   ```
 </details>
  
