@@ -3,6 +3,13 @@ import Foundation
 
 /// Structure to specify the configuration for creating a Volume.
 public struct VolumeSpec: Codable {
+    public init(name: String? = nil, driver: String = "local", driverOptions: [String : String] = [:], labels: [String : String] = [:]) {
+        self.name = name
+        self.driver = driver
+        self.driverOptions = driverOptions
+        self.labels = labels
+    }
+    
     /// The new volume's name. If not specified, Docker generates a name.
     public var name: String?
     

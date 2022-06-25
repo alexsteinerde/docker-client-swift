@@ -142,7 +142,7 @@ public struct SwarmSpec: Codable {
     
     public init(){}
     
-    internal init(caConfig: SwarmCAConfig? = nil, dispatcher: SwarmDispatcher? = nil, encryptionConfig: SwarmEncryptionConfig? = nil, name: String = "default", labels: [String : String]? = nil, orchestration: SwarmOrchestration? = nil, raft: Raft? = nil, taskDefaults: SwarmTaskDefaults? = nil) {
+    public init(caConfig: SwarmCAConfig? = nil, dispatcher: SwarmDispatcher? = nil, encryptionConfig: SwarmEncryptionConfig? = nil, name: String = "default", labels: [String : String]? = nil, orchestration: SwarmOrchestration? = nil, raft: Raft? = nil, taskDefaults: SwarmTaskDefaults? = nil) {
         self.caConfig = caConfig
         self.dispatcher = dispatcher
         self.encryptionConfig = encryptionConfig
@@ -213,7 +213,4 @@ public struct SwarmConfig : Codable {
         self.spec = spec
         self.subnetSize = subnetSize
     }
-    
-    
-
 }

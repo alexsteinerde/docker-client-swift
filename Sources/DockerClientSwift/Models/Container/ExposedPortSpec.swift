@@ -39,7 +39,6 @@ public struct ExposedPortCoding: OptionalCodableWrapper {
 }
 
 extension ExposedPortCoding: Decodable {
-    
     public init(from decoder: Swift.Decoder) throws {
         let container = try decoder.singleValueContainer()
         guard let dict = try? container.decode([String:ExposedPortSpec.Empty]?.self) else {

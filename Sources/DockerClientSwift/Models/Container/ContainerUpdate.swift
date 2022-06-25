@@ -1,7 +1,6 @@
 import Foundation
 
 public struct ContainerUpdate: Codable {
-    
     /// Block IO weight (relative weight).
     /// Allowed values range: [ 0 .. 1000 ]
     public var blkioWeight: UInt16? = nil
@@ -104,9 +103,40 @@ public struct ContainerUpdate: Codable {
     /// A list of resource limits to set in the container
     public var ulimits: [ContainerHostConfig.Ulimit]? = nil
     
-    // let RestartPolicy
-    // default when create: {\"Name\":\"no\",\"MaximumRetryCount\":0}
-    
+    public var restartPolicy: ContainerHostConfig.RestartPolicy? = nil
+        
+    public init(blkioWeight: UInt16? = nil, blkioWeightDevice: [ContainerHostConfig.BlkioWeight]? = nil, blkioDeviceReadBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceReadIOps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteIOps: ContainerHostConfig.BlkioRateLimit? = nil, cgroupParent: String? = nil, cpuCount: UInt8? = nil, cpuPercent: UInt8? = nil, cpuPeriod: UInt64? = nil, cpuQuota: UInt64? = nil, cpuRealtimePeriod: UInt64? = nil, cpuRealtimeRuntime: UInt64? = nil, cpusetCpus: String? = nil, cpusetMems: String? = nil, cpuShares: UInt? = nil, devices: [ContainerHostConfig.DeviceMapping]? = nil, deviceCgroupRules: [String]? = nil, init: Bool? = nil, kernelMemory: UInt64? = nil, kernelMemoryTcp: UInt64? = nil, memoryLimit: UInt64? = nil, memoryReservation: UInt64? = nil, memorySwap: UInt64? = nil, memorySwappiness: Int8? = nil, nanoCpus: UInt64? = nil, oomKillDisable: Bool? = nil, pidsLimit: UInt64? = nil, restartPolicy: ContainerHostConfig.RestartPolicy? = nil, ulimits: [ContainerHostConfig.Ulimit]? = nil) {
+        self.blkioWeight = blkioWeight
+        self.blkioWeightDevice = blkioWeightDevice
+        self.blkioDeviceReadBps = blkioDeviceReadBps
+        self.blkioDeviceWriteBps = blkioDeviceWriteBps
+        self.blkioDeviceReadIOps = blkioDeviceReadIOps
+        self.blkioDeviceWriteIOps = blkioDeviceWriteIOps
+        self.cgroupParent = cgroupParent
+        self.cpuCount = cpuCount
+        self.cpuPercent = cpuPercent
+        self.cpuPeriod = cpuPeriod
+        self.cpuQuota = cpuQuota
+        self.cpuRealtimePeriod = cpuRealtimePeriod
+        self.cpuRealtimeRuntime = cpuRealtimeRuntime
+        self.cpusetCpus = cpusetCpus
+        self.cpusetMems = cpusetMems
+        self.cpuShares = cpuShares
+        self.devices = devices
+        self.deviceCgroupRules = deviceCgroupRules
+        self.`init` = `init`
+        self.kernelMemory = kernelMemory
+        self.kernelMemoryTcp = kernelMemoryTcp
+        self.memoryLimit = memoryLimit
+        self.memoryReservation = memoryReservation
+        self.memorySwap = memorySwap
+        self.memorySwappiness = memorySwappiness
+        self.nanoCpus = nanoCpus
+        self.oomKillDisable = oomKillDisable
+        self.pidsLimit = pidsLimit
+        self.restartPolicy = restartPolicy
+        self.ulimits = ulimits
+    }
     
     enum CodingKeys: String, CodingKey {
         case blkioWeight = "BlkioWeight"
@@ -136,6 +166,7 @@ public struct ContainerUpdate: Codable {
         case nanoCpus = "NanoCpus"
         case oomKillDisable = "OomKillDisable"
         case pidsLimit = "PidsLimit"
+        case restartPolicy = "RestartPolicy"
         case ulimits = "Ulimits"
     }
 }

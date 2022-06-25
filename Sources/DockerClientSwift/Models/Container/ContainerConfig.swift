@@ -71,7 +71,7 @@ public struct ContainerConfig: Codable {
     /// The working directory for commands to run in.
     public var workingDir: String = ""
     
-    public init(image: String, attachStdin: Bool = false, attachStdout: Bool = true, attachStderr: Bool = true, command: [String]? = nil, domainname: String = "", entrypoint: [String]? = nil, environmentVars: [String]? = nil, healthcheck: ContainerConfig.HealthCheckConfig? = nil, hostname: String = "", labels: [String : String]? = [:], macAddress: String? = nil, networkDisabled: Bool? = nil, onBuild: [String]? = nil, openStdin: Bool = false, shell: [String]? = nil, stdinOnce: Bool = false, stopSignal: ContainerConfig.StopSignal? = nil, stopTimeout: UInt? = 10, tty: Bool = false, user: String = "", volumes: [String : ContainerConfig.EmptyObject]? = [:], workingDir: String = "") {
+    public init(image: String, attachStdin: Bool = false, attachStdout: Bool = true, attachStderr: Bool = true, command: [String]? = nil, domainname: String = "", entrypoint: [String]? = nil, environmentVars: [String]? = nil, exposedPorts: [ExposedPortSpec]? = [], healthcheck: ContainerConfig.HealthCheckConfig? = nil, hostname: String = "", labels: [String : String]? = [:], macAddress: String? = nil, networkDisabled: Bool? = nil, onBuild: [String]? = nil, openStdin: Bool = false, shell: [String]? = nil, stdinOnce: Bool = false, stopSignal: ContainerConfig.StopSignal? = nil, stopTimeout: UInt? = 10, tty: Bool = false, user: String = "", volumes: [String : ContainerConfig.EmptyObject]? = [:], workingDir: String = "") {
         self.attachStdin = attachStdin
         self.attachStdout = attachStdout
         self.attachStderr = attachStderr
@@ -79,6 +79,7 @@ public struct ContainerConfig: Codable {
         self.domainname = domainname
         self.entrypoint = entrypoint
         self.environmentVars = environmentVars
+        self.exposedPorts = exposedPorts
         self.healthcheck = healthcheck
         self.hostname = hostname
         self.image = image

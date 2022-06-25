@@ -10,6 +10,12 @@ public struct IPAM: Codable {
     /// Driver-specific options
     public var options: [String:String]? = nil
     
+    public init(driver: String = "default", config: [IPAM.IPAMConfig], options: [String : String]? = nil) {
+        self.driver = driver
+        self.config = config
+        self.options = options
+    }
+    
     enum CodingKeys: String, CodingKey {
         case driver = "Driver"
         case config = "Config"

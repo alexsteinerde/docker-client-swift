@@ -2,6 +2,17 @@ import Foundation
 
 // MARK: - ServiceSpec
 public struct ServiceSpec: Codable {
+    public init(name: String, labels: [String : String] = [:], taskTemplate: ServiceSpec.TaskTemplate, mode: ServiceSpec.ServiceMode = .replicated(1), updateConfig: ServiceSpec.UpdateOrRollbackConfig? = nil, rollbackConfig: ServiceSpec.UpdateOrRollbackConfig? = nil, networks: [ServiceSpec.NetworkAttachmentConfig]? = nil, endpointSpec: ServiceEndpointSpec? = nil) {
+        self.name = name
+        self.labels = labels
+        self.taskTemplate = taskTemplate
+        self.mode = mode
+        self.updateConfig = updateConfig
+        self.rollbackConfig = rollbackConfig
+        self.networks = networks
+        self.endpointSpec = endpointSpec
+    }
+    
     /// Name of the service.
     public var name: String
     
@@ -39,6 +50,16 @@ public struct ServiceSpec: Codable {
     /// Note: `containerSpec`, `networkAttachmentSpec`, and `pluginSpec` are mutually exclusive.
     /// `pluginSpec` is only used when the `runtime` field is set to `plugin`. `networkAttachmentSpec` is used when the `runtime` field is set to `attachment`.
     public struct TaskTemplate: Codable {
+        public init(containerSpec: ServiceSpec.ContainerSpec, forceUpdate: UInt? = nil, runtime: ServiceSpec.TaskTemplate.Runtime? = .container, resources: ServiceSpec.TaskTemplate.Resources? = nil, restartPolicy: ServiceRestartPolicy? = nil, networks: [ServiceSpec.NetworkAttachmentConfig]? = nil, logDriver: DriverConfig? = nil) {
+            self.containerSpec = containerSpec
+            self.forceUpdate = forceUpdate
+            self.runtime = runtime
+            self.resources = resources
+            self.restartPolicy = restartPolicy
+            self.networks = networks
+            self.logDriver = logDriver
+        }
+        
         
         /// Onyl used when the Runtime field is set to attachment.
         // public var NetworkAttachmentSpec
@@ -85,6 +106,11 @@ public struct ServiceSpec: Codable {
         
         // MARK: - Resource
         public struct Resources: Codable {
+            internal init(limits: ServiceSpec.TaskTemplate.Resources.Limit? = nil, reservations: ServiceSpec.TaskTemplate.Resources.ResourceObject? = nil) {
+                self.limits = limits
+                self.reservations = reservations
+            }
+            
             public var limits: Limit? = nil
             public var reservations: ResourceObject? = nil
             
@@ -94,6 +120,12 @@ public struct ServiceSpec: Codable {
             }
             
             public struct Limit: Codable {
+                public init(nanoCPUs: UInt64? = 0, memoryBytes: UInt64? = 0, pids: UInt64? = 0) {
+                    self.nanoCPUs = nanoCPUs
+                    self.memoryBytes = memoryBytes
+                    self.pids = pids
+                }
+                
             
                 public var nanoCPUs: UInt64? = 0
                 
@@ -110,6 +142,12 @@ public struct ServiceSpec: Codable {
             }
             
             public struct ResourceObject: Codable {
+                public init(nanoCPUs: UInt64? = 0, memoryBytes: UInt64? = 0, genericResources: [GenericResource]? = []) {
+                    self.nanoCPUs = nanoCPUs
+                    self.memoryBytes = memoryBytes
+                    self.genericResources = genericResources
+                }
+                
                 public var nanoCPUs: UInt64? = 0
                 
                 public var memoryBytes: UInt64? = 0
@@ -126,6 +164,12 @@ public struct ServiceSpec: Codable {
     }
     
     public struct NetworkAttachmentConfig: Codable {
+        public init(target: String, aliases: [String]? = [], driverOpts: [String : String]? = [:]) {
+            self.target = target
+            self.aliases = aliases
+            self.driverOpts = driverOpts
+        }
+        
         /// The target network for attachment. Must be a network name or ID.
         public var target: String
         
@@ -227,6 +271,15 @@ public struct ServiceSpec: Codable {
     
     // MARK: - UpdateOrRollbaclConfig
     public struct UpdateOrRollbackConfig: Codable {
+        public init(parallelism: UInt64, delay: UInt64? = nil, failureAction: ServiceSpec.UpdateOrRollbackConfig.FailureAction, monitor: UInt64, maxFailureRatio: Float = 0, order: ServiceSpec.UpdateRollBackOrder) {
+            self.parallelism = parallelism
+            self.delay = delay
+            self.failureAction = failureAction
+            self.monitor = monitor
+            self.maxFailureRatio = maxFailureRatio
+            self.order = order
+        }
+        
         /// Maximum number of tasks to be updated in one iteration (0 means unlimited parallelism).
         public var parallelism: UInt64
         
@@ -267,6 +320,35 @@ public struct ServiceSpec: Codable {
     
     // MARK: - ContainerSpec
     public struct ContainerSpec: Codable {
+        public init(image: String, isolation: String = "default", labels: [String : String]? = [:], command: [String]? = [], args: [String]? = [], hostname: String? = nil, env: [String]? = [], workDir: String? = nil, user: String? = nil, groups: [String]? = nil, privileges: ServiceSpec.ContainerSpec.Privileges? = nil, tty: Bool? = false, openStdin: Bool? = false, readOnly: Bool? = false, mounts: [ContainerHostConfig.ContainerMount]? = nil, stopSignal: ContainerConfig.StopSignal? = .quit, stopGracePeriod: UInt64? = 0, healthCheck: ContainerConfig.HealthCheckConfig? = nil, dnsConfig: ServiceSpec.ContainerSpec.DNSConfig? = .init(), secrets: [ServiceSpec.ContainerSpec.Secret]? = [], configs: [ServiceSpec.ContainerSpec.Config]? = [], init: Bool? = nil, sysctls: [String : String]? = [:], capabilityAdd: [String]? = [], capabilityDrop: [String]? = [], ulimits: [ContainerHostConfig.Ulimit]? = []) {
+            self.image = image
+            self.isolation = isolation
+            self.labels = labels
+            self.command = command
+            self.args = args
+            self.hostname = hostname
+            self.env = env
+            self.workDir = workDir
+            self.user = user
+            self.groups = groups
+            self.privileges = privileges
+            self.tty = tty
+            self.openStdin = openStdin
+            self.readOnly = readOnly
+            self.mounts = mounts
+            self.stopSignal = stopSignal
+            self.stopGracePeriod = stopGracePeriod
+            self.healthCheck = healthCheck
+            self.dnsConfig = dnsConfig
+            self.secrets = secrets
+            self.configs = configs
+            self.`init` = `init`
+            self.sysctls = sysctls
+            self.capabilityAdd = capabilityAdd
+            self.capabilityDrop = capabilityDrop
+            self.ulimits = ulimits
+        }
+        
         /// The image name to use for the container
         public var image: String
         
@@ -378,6 +460,11 @@ public struct ServiceSpec: Codable {
             public var credentialSpec: CredentialSpec?
             public var seLinuxContext: SELinuxContext?
             
+            public init(credentialSpec: ServiceSpec.ContainerSpec.Privileges.CredentialSpec? = nil, seLinuxContext: ServiceSpec.ContainerSpec.Privileges.SELinuxContext? = nil) {
+                self.credentialSpec = credentialSpec
+                self.seLinuxContext = seLinuxContext
+            }
+            
             enum CodingKeys: String, CodingKey {
                 case credentialSpec = "CredentialSpec"
                 case seLinuxContext = "SELinuxContext"
@@ -398,6 +485,12 @@ public struct ServiceSpec: Codable {
                 /// NOTE: mutually exlusive with `file` and `config`
                 public var registry: String?
                 
+                public init(config: String? = nil, file: String? = nil, registry: String? = nil) {
+                    self.config = config
+                    self.file = file
+                    self.registry = registry
+                }
+                
                 enum CodingKeys: String, CodingKey {
                     case config = "Config"
                     case file = "File"
@@ -411,6 +504,14 @@ public struct ServiceSpec: Codable {
                 public var role: String?
                 public var type: String?
                 public var level: String?
+                
+                public init(disable: Bool? = nil, user: String? = nil, role: String? = nil, type: String? = nil, level: String? = nil) {
+                    self.disable = disable
+                    self.user = user
+                    self.role = role
+                    self.type = type
+                    self.level = level
+                }
                 
                 enum CodingKeys: String, CodingKey {
                     case disable = "Disable"
@@ -433,6 +534,12 @@ public struct ServiceSpec: Codable {
             /// A list of internal resolver variables to be modified (e.g., `debug`, `ndots:3`, etc.).
             public var options: [String]? = []
             
+            public init(nameservers: [String]? = [], search: [String]? = [], options: [String]? = []) {
+                self.nameservers = nameservers
+                self.search = search
+                self.options = options
+            }
+            
             enum CodingKeys: String, CodingKey {
                 case nameservers = "Nameservers"
                 case search = "Search"
@@ -452,6 +559,13 @@ public struct ServiceSpec: Codable {
             
             /// The FileMode of the file.
             public var mode: UInt32 = 0o444
+            
+            public init(name: String, uid: String = "0", gid: String = "0", mode: UInt32 = 0o444) {
+                self.name = name
+                self.uid = uid
+                self.gid = gid
+                self.mode = mode
+            }
             
             enum CodingKeys: String, CodingKey {
                 case name = "Name"
@@ -518,54 +632,5 @@ public struct ServiceSpec: Codable {
                 case configName = "ConfigName"
             }
         }
-        
-        /*public struct Mount: Codable {
-            
-            public var type: Container.ContainerMountType
-
-            /// Mount source (e.g. a volume name, a host path).
-            public var source: String
-
-            /// Container path.
-            public var target: String
-            
-            /// Whether the mount should be read-only.
-            public var readOnly: Bool = false
-            
-            /// The consistency requirement for the mount
-            public var consistency: MountConsistency = .default
-            
-            /// Optional configuration for the "bind" `type`.
-            public var bindOptions: ContainerHostConfig.BindOptions? = nil
-            
-            /// Optional configuration for the "volume" `type`.
-            public var volumeOptions: VolumeOptions? = nil
-            
-            /// Optional configuration for the "tmpfs" `type`.
-            public var tmpfsOptions: ContainerHostConfig.? = nil
-            
-            enum CodingKeys: String, CodingKey {
-                case `type` = "Type"
-                case source = "Source"
-                case target = "Target"
-                case readOnly = "ReadOnly"
-                case consistency = "Consistency"
-                case bindOptions = "BindOptions"
-                case volumeOptions = "VolumeOptions"
-                case tmpfsOptions = "TmpfsOptions"
-            }
-            
-            public enum MountConsistency: String, Codable {
-                case `default`, consistent, cached, delegated
-            }
-            
-            public struct VolumeOptions: Codable {
-                
-            }
-            
-            public struct TmpfsOptions: Codable{
-                
-            }
-        }*/
     }
 }

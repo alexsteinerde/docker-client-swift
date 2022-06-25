@@ -10,6 +10,11 @@ public struct ServiceEndpointSpec: Codable {
         case ports = "Ports"
     }
     
+    public init(mode: ServiceEndpointSpec.EndpointMode? = .vip, ports: [ServiceEndpointSpec.EndpointPortConfig]? = []) {
+        self.mode = mode
+        self.ports = ports
+    }
+    
     public enum EndpointMode: String, Codable {
         /// Uses the Docker routing mesh (port published on all nodes, transparent load-balancing)
         case vip
@@ -18,7 +23,6 @@ public struct ServiceEndpointSpec: Codable {
     }
     
     public struct EndpointPortConfig: Codable {
-        
         public var name: String
         
         public var `protocol`: ExposedPortSpec.PortProtocol = .tcp
@@ -33,6 +37,14 @@ public struct ServiceEndpointSpec: Codable {
         /// - `ingress` makes the target port accessible on every node, regardless of whether there is a task for the service running on that node or not.
         /// - `host` bypasses the routing mesh and publish the port directly on the swarm node where that service is running.
         public var publishMode: EndpointPortPublishMode = .ingress
+        
+        public init(name: String, protocol: ExposedPortSpec.PortProtocol = .tcp, targetPort: UInt16, publishedPort: UInt16, publishMode: ServiceEndpointSpec.EndpointPortConfig.EndpointPortPublishMode = .ingress) {
+            self.name = name
+            self.`protocol` = `protocol`
+            self.targetPort = targetPort
+            self.publishedPort = publishedPort
+            self.publishMode = publishMode
+        }
         
         enum CodingKeys: String, CodingKey {
             case name = "Name"

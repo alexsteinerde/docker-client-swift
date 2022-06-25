@@ -25,10 +25,10 @@ final class ContainerTests: XCTestCase {
         let _ = try await client.images.pull(byName: "alpine", tag: "latest")
         let spec = ContainerSpec(
             config: .init(
+                image: "alpine:latest",
                 attachStdin: true,
                 attachStdout: true,
                 attachStderr: true,
-                image: "alpine:latest",
                 openStdin: true
             )
         )
@@ -59,13 +59,13 @@ final class ContainerTests: XCTestCase {
         let cmd = ["/custom/command", "--option"]
         let spec = ContainerSpec(
             config: .init(
+                image: "hello-world:latest",
                 // Override the default command of the Image
                 command: cmd,
                 // Add new environment variables
                 environmentVars: ["HELLO=hi"],
                 // Expose port 80
                 exposedPorts: [.tcp(80)],
-                image: "hello-world:latest",
                 // Set custon container labels
                 labels: ["label1": "value1", "label2": "value2"]
             ),

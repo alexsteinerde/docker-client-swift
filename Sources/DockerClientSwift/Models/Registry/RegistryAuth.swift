@@ -16,4 +16,11 @@ public struct RegistryAuth: Codable {
     
     /// The token obtained after logging into the registry
     internal(set) public var token: String? = nil
+    
+    public init(username: String, email: String? = nil, password: String, serverAddress: URL = URL(string: "https://index.docker.io/v1/")!) {
+        self.username = username
+        self.email = email
+        self.password = password
+        self.serverAddress = serverAddress
+    }
 }

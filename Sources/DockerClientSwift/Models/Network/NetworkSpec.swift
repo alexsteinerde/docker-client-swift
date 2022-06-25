@@ -32,6 +32,19 @@ public struct NetworkSpec: Codable {
     /// User-defined key/value metadata.
     public var labels: [String:String]?
     
+    public init(name: String, checkDuplicate: Bool? = nil, driver: String = "bridge", internal: Bool = false, attachable: Bool = false, ingress: Bool = false, ipam: IPAM? = nil, enableIPv6: Bool? = nil, options: [String : String]? = nil, labels: [String : String]? = nil) {
+        self.name = name
+        self.checkDuplicate = checkDuplicate
+        self.driver = driver
+        self.`internal` = `internal`
+        self.attachable = attachable
+        self.ingress = ingress
+        self.ipam = ipam
+        self.enableIPv6 = enableIPv6
+        self.options = options
+        self.labels = labels
+    }
+    
     enum CodingKeys: String, CodingKey {
         case name = "Name"
         case checkDuplicate = "CheckDuplicate"

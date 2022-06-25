@@ -83,4 +83,30 @@ public struct BuildConfig: Codable {
     /// BuildKit output configuration
     public var outputs: String? = nil
     
+    public init(dockerfile: String = "Dockerfile", repoTags: [String]? = [], extraHosts: String? = nil, remote: URL? = nil, quiet: Bool = false, noCache: Bool = false, cacheFrom: [String] = [], pull: Bool = false, rm: Bool = true, forceRm: Bool = false, memory: UInt64 = 0, memorySwap: Int64 = -1, cpuShares: UInt64 = 0, cpusetCpus: String? = nil, cpuPeriod: UInt64 = 0, cpuQuota: UInt64 = 0, buildArgs: [String : String] = [:], shmSizeBytes: UInt64? = nil, squash: Bool = false, labels: [String : String] = [:], networkMode: String? = nil, platform: String? = nil, target: String? = nil, outputs: String? = nil) {
+        self.dockerfile = dockerfile
+        self.repoTags = repoTags
+        self.extraHosts = extraHosts
+        self.remote = remote
+        self.quiet = quiet
+        self.noCache = noCache
+        self.cacheFrom = cacheFrom
+        self.pull = pull
+        self.rm = rm
+        self.forceRm = forceRm
+        self.memory = memory
+        self.memorySwap = memorySwap
+        self.cpuShares = cpuShares
+        self.cpusetCpus = cpusetCpus
+        self.cpuPeriod = cpuPeriod
+        self.cpuQuota = cpuQuota
+        self.buildArgs = buildArgs
+        self.shmSizeBytes = shmSizeBytes
+        self.squash = squash
+        self.labels = labels
+        self.networkMode = networkMode
+        self.platform = platform
+        self.target = target
+        self.outputs = outputs
+    }
 }

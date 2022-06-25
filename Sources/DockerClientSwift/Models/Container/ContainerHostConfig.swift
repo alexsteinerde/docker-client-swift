@@ -198,8 +198,8 @@ public struct ContainerHostConfig: Codable {
     /// Mount the container's root filesystem as read only.
     public var readonlyRootfs: Bool = false
     
-    // let RestartPolicy
     // default when create: {\"Name\":\"no\",\"MaximumRetryCount\":0}
+    public var restartPolicy: RestartPolicy? = nil
     
     /// Runtime to use with this container.
     public var runtime: String? = nil
@@ -236,7 +236,7 @@ public struct ContainerHostConfig: Codable {
     /// A list of volumes to inherit from another container, specified in the form `<container name>[:<ro|rw>]`.
     public var volumesFrom: [String]? = nil
     
-    public init(autoRemove: Bool = false, binds: [String]? = nil, blkioWeight: UInt16 = 0, blkioWeightDevice: [ContainerHostConfig.BlkioWeight]? = [], blkioDeviceReadBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceReadIOps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteIOps: ContainerHostConfig.BlkioRateLimit? = nil, capabilityAdd: [String]? = nil, capabilityDrop: [String]? = nil, cgroup: String = "", cgroupNsMode: String = "", cgroupParent: String = "", containerIdFile: String = "", cpuCount: UInt8 = 0, cpuPercent: UInt8 = 0, cpuPeriod: UInt64 = 0, cpuQuota: UInt64 = 0, cpuRealtimePeriod: UInt64 = 0, cpuRealtimeRuntime: UInt64 = 0, cpusetCpus: String = "", cpusetMems: String = "", cpuShares: UInt = 0, devices: [ContainerHostConfig.DeviceMapping]? = [], deviceCgroupRules: [String]? = nil, dns: [String]? = [], dnsOptions: [String]? = [], dnsSearch: [String]? = [], extraHosts: [String]? = [], groupAdd: [String]? = nil, init: Bool? = false, ipcMode: String = "", isolation: String = "", kernelMemory: UInt64 = 0, kernelMemoryTcp: UInt64 = 0, links: [String]? = nil, maskedPaths: [String]? = nil, memoryLimit: UInt64 = 0, memoryReservation: UInt64 = 0, memorySwap: Int64 = 0, memorySwappiness: Int8? = -1, mounts: [ContainerHostConfig.ContainerMount]? = nil, nanoCpus: UInt64 = 0, networkMode: String = "default", oomKillDisable: Bool? = false, oomScoreAdj: Int = 0, pidsLimit: UInt64? = 0, pidMode: String = "", portBindings: [ExposedPortSpec:[PortBinding]?]? = [:], privileged: Bool = false, publishAllPorts: Bool = false, readonlyPaths: [String]? = nil, readonlyRootfs: Bool = false, runtime: String? = nil, securityOpt: [String]? = nil, shmSize: UInt = 0, storageOpt: [String : String]? = nil, sysctls: [String : String]? = nil, tmpfs: [String : String]? = nil, ulimits: [ContainerHostConfig.Ulimit]? = nil, userNsMode: String = "", utsMode: String = "", volumeDriver: String = "", volumesFrom: [String]? = nil) {
+    public init(autoRemove: Bool = false, binds: [String]? = nil, blkioWeight: UInt16 = 0, blkioWeightDevice: [ContainerHostConfig.BlkioWeight]? = [], blkioDeviceReadBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceReadIOps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteIOps: ContainerHostConfig.BlkioRateLimit? = nil, capabilityAdd: [String]? = nil, capabilityDrop: [String]? = nil, cgroup: String = "", cgroupNsMode: String = "", cgroupParent: String = "", containerIdFile: String = "", cpuCount: UInt8 = 0, cpuPercent: UInt8 = 0, cpuPeriod: UInt64 = 0, cpuQuota: UInt64 = 0, cpuRealtimePeriod: UInt64 = 0, cpuRealtimeRuntime: UInt64 = 0, cpusetCpus: String = "", cpusetMems: String = "", cpuShares: UInt = 0, devices: [ContainerHostConfig.DeviceMapping]? = [], deviceCgroupRules: [String]? = nil, dns: [String]? = [], dnsOptions: [String]? = [], dnsSearch: [String]? = [], extraHosts: [String]? = [], groupAdd: [String]? = nil, init: Bool? = false, ipcMode: String = "", isolation: String = "", kernelMemory: UInt64 = 0, kernelMemoryTcp: UInt64 = 0, links: [String]? = nil, maskedPaths: [String]? = nil, memoryLimit: UInt64 = 0, memoryReservation: UInt64 = 0, memorySwap: Int64 = 0, memorySwappiness: Int8? = -1, mounts: [ContainerHostConfig.ContainerMount]? = nil, nanoCpus: UInt64 = 0, networkMode: String = "default", oomKillDisable: Bool? = false, oomScoreAdj: Int = 0, pidsLimit: UInt64? = 0, pidMode: String = "", portBindings: [ExposedPortSpec:[PortBinding]?]? = [:], privileged: Bool = false, publishAllPorts: Bool = false, readonlyPaths: [String]? = nil, readonlyRootfs: Bool = false, restartPolicy: RestartPolicy? = nil, runtime: String? = nil, securityOpt: [String]? = nil, shmSize: UInt = 0, storageOpt: [String : String]? = nil, sysctls: [String : String]? = nil, tmpfs: [String : String]? = nil, ulimits: [ContainerHostConfig.Ulimit]? = nil, userNsMode: String = "", utsMode: String = "", volumeDriver: String = "", volumesFrom: [String]? = nil) {
         self.autoRemove = autoRemove
         self.binds = binds
         self.blkioWeight = blkioWeight
@@ -290,6 +290,7 @@ public struct ContainerHostConfig: Codable {
         self.publishAllPorts = publishAllPorts
         self.readonlyPaths = readonlyPaths
         self.readonlyRootfs = readonlyRootfs
+        self.restartPolicy = restartPolicy
         self.runtime = runtime
         self.securityOpt = securityOpt
         self.shmSize = shmSize
@@ -356,6 +357,7 @@ public struct ContainerHostConfig: Codable {
         case publishAllPorts = "PublishAllPorts"
         case readonlyPaths = "ReadonlyPaths"
         case readonlyRootfs = "ReadonlyRootfs"
+        case restartPolicy = "RestartPolicy"
         case runtime = "Runtime"
         case securityOpt = "SecurityOpt"
         case shmSize = "ShmSize"
@@ -374,6 +376,11 @@ public struct ContainerHostConfig: Codable {
         public var path: String
         public var weight: UInt
         
+        public init(path: String, weight: UInt) {
+            self.path = path
+            self.weight = weight
+        }
+        
         enum CodingKeys: String, CodingKey {
             case path = "Path"
             case weight = "Weight"
@@ -384,6 +391,11 @@ public struct ContainerHostConfig: Codable {
     public struct BlkioRateLimit: Codable {
         public var path: String
         public var rate: UInt
+        
+        public init(path: String, rate: UInt) {
+            self.path = path
+            self.rate = rate
+        }
         
         enum CodingKeys: String, CodingKey {
             case path = "Path"
@@ -396,6 +408,12 @@ public struct ContainerHostConfig: Codable {
         public let cgroupPermissions: String
         public let pathInContainer: String
         public let pathOnHost: String
+        
+        public init(cgroupPermissions: String, pathInContainer: String, pathOnHost: String) {
+            self.cgroupPermissions = cgroupPermissions
+            self.pathInContainer = pathInContainer
+            self.pathOnHost = pathOnHost
+        }
         
         enum CodingKeys: String, CodingKey {
             case cgroupPermissions = "CgroupPermissions"
@@ -548,7 +566,7 @@ public struct ContainerHostConfig: Codable {
             case hostPort = "HostPort"
         }
         
-        internal init(hostIp: String, hostPort: UInt16) {
+        public init(hostIp: String, hostPort: UInt16) {
             self.hostIp = hostIp
             self.hostPort = hostPort
         }
@@ -577,11 +595,22 @@ public struct ContainerHostConfig: Codable {
         }
     }
     
+    // MARK: - RestartPolicy
+    public struct RestartPolicy: Codable {
+        
+    }
+    
     // MARK: - Ulimit
     public struct Ulimit: Codable {
         public var name: String
         public var soft: UInt64
         public var hard: UInt64
+        
+        public init(name: String, soft: UInt64, hard: UInt64) {
+            self.name = name
+            self.soft = soft
+            self.hard = hard
+        }
         
         enum CodingKeys: String, CodingKey {
             case name = "Name"

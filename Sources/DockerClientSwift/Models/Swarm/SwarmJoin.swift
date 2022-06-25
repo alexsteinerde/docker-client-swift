@@ -2,6 +2,14 @@ import Foundation
 
 /// Configuration for a Docker daemon to join an exisiting Swarm as a node.
 public struct SwarmJoin: Codable {
+    public init(advertiseAddr: String? = nil, dataPathAddr: String? = nil, joinToken: String, listenAddr: String = "0.0.0.0", remoteAddrs: [String]) {
+        self.advertiseAddr = advertiseAddr
+        self.dataPathAddr = dataPathAddr
+        self.joinToken = joinToken
+        self.listenAddr = listenAddr
+        self.remoteAddrs = remoteAddrs
+    }
+    
     /// Externally reachable address advertised to other nodes. This can either be an address/port combination in the form 192.168.1.1:4567, or an interface followed by a port number, like eth0:4567.
     /// If the port number is omitted, the port number from the listen address is used. If `advertiseAddr` is not specified, it will be automatically detected when possible.
     public var advertiseAddr: String?

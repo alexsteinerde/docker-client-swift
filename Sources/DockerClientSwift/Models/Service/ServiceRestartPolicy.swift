@@ -13,6 +13,12 @@ public struct ServiceRestartPolicy: Codable {
     /// Time window used to evaluate the restart policy (default value is 0, which is unbounded).
     let window: UInt64? = 0
     
+    public init(condition: ServiceRestartPolicy.ServiceRestartCondition = .onFailure, delay: UInt64, maxAttempts: UInt64) {
+        self.condition = condition
+        self.delay = delay
+        self.maxAttempts = maxAttempts
+    }
+    
     enum CodingKeys: String, CodingKey {
         case condition = "Condition"
         case delay = "Delay"
