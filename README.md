@@ -749,7 +749,6 @@ let docker = DockerClient(
     
   let service = try await client.services.create(spec: spec)
   ```
-  TODO: add examples for specifying networks and volumes
 </details>
  
 <details>
