@@ -9,9 +9,9 @@ It fully uses the Swift concurrency features introduced with Swift 5.5 (`async`/
 
 
 ## Docker API version support
-This client library aims at implementing the Docker API version 1.41 (https://docs.docker.com/engine/api/v1.41/#)
+This client library aims at implementing the Docker API version 1.41 (https://docs.docker.com/engine/api/v1.41).
+This means that it will work with Docker >= 20.10.
 
-Currently no backwards compatibility is supported; previous versions of the Docker API may or may not work.
 
 ## Current implementation status
 

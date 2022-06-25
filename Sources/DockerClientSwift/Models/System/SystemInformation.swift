@@ -84,7 +84,7 @@ public struct SystemInformation: Codable {
     let nGoroutines: UInt
     
     /// Current system-time in RFC 3339 format with nano-seconds.
-    let systemTime: String
+    let systemTime: Date
     
     /// The logging driver to use as a default for new containers.
     let loggingDriver: String
@@ -94,7 +94,7 @@ public struct SystemInformation: Codable {
     let cgroupDriver: String
     
     /// The cgroup version
-    let cgroupVersion: String?
+    let cgroupVersion: String
     
     let nEventsListener: Int
     let kernelVersion, operatingSystem, osVersion, osType: String
@@ -102,7 +102,10 @@ public struct SystemInformation: Codable {
     /// Hardware architecture of the host, as returned by the Go runtime (GOARCH).
     let architecture: String
     
+    /// The number of logical CPUs usable by the daemon.
     let ncpu: UInt16
+    
+    /// Total amount of physical memory available on the host, in bytes.
     let memTotal: UInt64
     
     /// Address / URL of the index server that is used for image search, and as a default for user authentication for Docker Hub and Docker Cloud.
@@ -135,7 +138,7 @@ public struct SystemInformation: Codable {
     let experimentalBuild: Bool
     
     /// Version string of the daemon.
-    let serverVersion: String?
+    let serverVersion: String
     
     /// URL of the distributed storage backend.
     /// Deprecated: This field is only propagated when using standalone Swarm mode, and overlay networking using an external k/v store.

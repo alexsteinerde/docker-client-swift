@@ -20,7 +20,7 @@ final class NodeTests: XCTestCase {
         
         let _ = try await client.swarm.initSwarm(config: SwarmConfig())
         let nodes = try await client.nodes.list()
-        print("•••• NODES=\(nodes)")
+        XCTAssert(nodes.count > 0, "Ensure we have nodes")
         try? await client.swarm.leave(force: true)
     }
 }
