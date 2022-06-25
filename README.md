@@ -730,7 +730,6 @@ let docker = DockerClient(
   - requiring a Secret
   ```swift
   let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
-  let volume = try await client.volumes.create(spec: .init(name: name)
   let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
   let spec = ServiceSpec(
       name: "my-nginx",
