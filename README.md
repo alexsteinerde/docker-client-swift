@@ -743,7 +743,7 @@ let docker = DockerClient(
               secrets: [.init(secret)]
           ),
           resources: .init(
-              limits: .init(memoryBytes: .mb(64 * 1024))
+              limits: .init(memoryBytes: .mb(64))
           )
       ),
       mode: .replicated(1),
