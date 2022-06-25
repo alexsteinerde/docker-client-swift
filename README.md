@@ -765,7 +765,7 @@ let docker = DockerClient(
   let service = try await docker.services.get("nameOrId")
   var updatedSpec = service.spec
   updatedSpec.mode = .replicated(3)
-  try await docker.services.update(service: service, version: service.version.index, spec: updatedSpec)
+  try await docker.services.update("nameOrId", spec: updatedSpec)
   ```
 </details>
        
