@@ -131,6 +131,20 @@ extension DockerClient {
     }
 }
 
+/// Representation of an image digest.
+public struct Digest : Codable {
+    public var rawValue: String
+    
+    init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+extension Digest: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.rawValue = value
+    }
+}
 
 /*extension Image {
     /// Parses an image identifier to it's corresponding digest, name and tag.
