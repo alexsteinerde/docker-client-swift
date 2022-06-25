@@ -27,6 +27,10 @@ struct PullImageEndpoint: PipelineEndpoint {
         let digest: String
     }
     
+    struct Status: Codable {
+        let status: String
+    }
+    
     func map(data: String) throws -> PullImageResponse {
         if let message = try? MessageResponse.decode(from: data) {
             throw DockerError.message(message.message)

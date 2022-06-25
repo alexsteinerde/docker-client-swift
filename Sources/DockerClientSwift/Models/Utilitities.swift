@@ -1,15 +1,11 @@
 import Foundation
 
-struct Status: Codable {
-    let status: String
-}
-
 public struct MessageResponse: Codable {
     let message: String
 }
 
 /// Representation of an image digest.
-public struct Digest {
+/*public struct Digest {
     public var rawValue: String
 
     init(_ rawValue: String) {
@@ -21,7 +17,7 @@ extension Digest: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         self.rawValue = value
     }
-}
+}*/
 
 extension Digest: Codable {}
 
