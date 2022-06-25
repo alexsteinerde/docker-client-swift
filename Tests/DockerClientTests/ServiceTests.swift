@@ -8,10 +8,12 @@ final class ServiceTests: XCTestCase {
     
     override func setUp() async throws {
         client = DockerClient.testable()
-        async let image = try client.images.pull(byName: "nginx", tag: "latest")
+        if (try? await client.images.get("nginx:latest")) == nil {
+            _ = try await client.images.pull(byName: "nginx", tag: "latest")
+        }
+        
         try? await client.swarm.leave(force: true)
         let _ = try! await client.swarm.initSwarm(config: SwarmConfig())
-        let _ = try await image
     }
     
     override func tearDownWithError() throws {
@@ -57,6 +59,36 @@ final class ServiceTests: XCTestCase {
         XCTAssert(service.spec.taskTemplate.resources?.limits?.memoryBytes == 64 * 1024 * 1024, "Ensure memory limit is set")
         
         try await client.services.remove(service.id)
+    }
+    
+    func testCreateServiceWithNetandSecret() async throws {
+        let name = UUID().uuidString
+        let network = try await client.networks.create(spec: .init(name: name, driver: "overlay"))
+        let secret = try await client.secrets.create(spec: .init(name: name, value: "blublublu"))
+        let spec = ServiceSpec(
+            name: name,
+            taskTemplate: .init(
+                containerSpec: .init(
+                    image: "nginx:latest",
+                    secrets: [.init(secret)]
+                ),
+                resources: .init(
+                    limits: .init(memoryBytes: UInt64(64 * 1024 * 1024))
+                )
+            ),
+            mode: .replicated(1),
+            networks: [.init(target: network.id)],
+            endpointSpec: .init(ports: [.init(name: "HTTP", targetPort: 80, publishedPort: 8000)])
+        )
+        do {
+            let service = try await client.services.create(spec: spec)
+        
+            try await client.services.remove(service.id)
+        }
+        catch(let error) {
+            print("\n•••• BOOM! \(error)")
+            throw error
+        }
     }
     
     func testUpdateService() async throws {

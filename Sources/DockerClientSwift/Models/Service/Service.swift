@@ -54,7 +54,10 @@ public struct Service {
         }
         
         public struct EndpointVirtualIp: Codable {
+            /// The ID of the Docker Network
             public let networkId: String
+            
+            /// The IP address of the container endpoint on this Docker Network.
             public let address: String
             
             enum CodingKeys: String, CodingKey {

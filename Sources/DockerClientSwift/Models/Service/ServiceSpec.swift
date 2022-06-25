@@ -18,8 +18,10 @@ public struct ServiceSpec: Codable {
     
     public var rollbackConfig: UpdateOrRollbackConfig?
     
+    /// Configuration for the networks this service belongs to.
     public var networks: [NetworkAttachmentConfig]?
     
+    /// Configuration for the ports publshed by this service.
     public var endpointSpec: ServiceEndpointSpec?
     
     enum CodingKeys: String, CodingKey {
@@ -131,7 +133,7 @@ public struct ServiceSpec: Codable {
         public var aliases: [String]? = []
         
         /// Driver attachment options for the network target.
-        public var driverOpts: [String:String]
+        public var driverOpts: [String:String]? = [:]
         
         enum CodingKeys: String, CodingKey {
             case target = "Target"
@@ -444,13 +446,13 @@ public struct ServiceSpec: Codable {
             public var name: String
             
             /// The file UID.
-            public var uid: String
+            public var uid: String = "0"
             
             /// The file GID.
-            public var gid: String
+            public var gid: String = "0"
             
             /// The FileMode of the file.
-            public var mode: UInt32
+            public var mode: UInt32 = 0o444
             
             enum CodingKeys: String, CodingKey {
                 case name = "Name"
@@ -465,12 +467,24 @@ public struct ServiceSpec: Codable {
             /// Aa specific target that is backed by a file.
             public var file: ConfigOrSecretFile
             
-            /// The ID of the specific secret that we're referencing.
+            /// The ID of the specific Docker Secret that we're referencing.
             public var secretId: String
             
             /// SecretName is the name of the secret that this references, but this is just provided for lookup/display purposes.
             /// The secret in the reference will be identified by its ID.
             public var secretName: String
+            
+            public init(_ secret: DockerClientSwift.Secret) {
+                self.file = .init(name: secret.spec.name)
+                self.secretId = secret.id
+                self.secretName = secret.spec.name
+            }
+            
+            internal init(file: ServiceSpec.ContainerSpec.ConfigOrSecretFile, secretId: String, secretName: String) {
+                self.file = file
+                self.secretId = secretId
+                self.secretName = secretName
+            }
             
             enum CodingKeys: String, CodingKey {
                 case file = "File"
@@ -485,6 +499,18 @@ public struct ServiceSpec: Codable {
             //public var runtime: String?
             public var configId: String
             public var configName: String
+            
+            public init(_ config: DockerClientSwift.Config) {
+                self.file = .init(name: config.spec.name)
+                self.configId = config.id
+                self.configName = config.spec.name
+            }
+            
+            public init(file: ServiceSpec.ContainerSpec.ConfigOrSecretFile? = nil, configId: String, configName: String) {
+                self.file = file
+                self.configId = configId
+                self.configName = configName
+            }
             
             enum CodingKeys: String, CodingKey {
                 case file = "File"
