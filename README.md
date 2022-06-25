@@ -729,7 +729,7 @@ let docker = DockerClient(
   let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
   let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
   let spec = ServiceSpec(
-      name: name,
+      name: "my-nginx",
       taskTemplate: .init(
           containerSpec: .init(
               image: "nginx:latest",
