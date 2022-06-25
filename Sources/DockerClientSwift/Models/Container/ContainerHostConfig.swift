@@ -340,13 +340,28 @@ public struct ContainerHostConfig: Codable {
     
     // MARK: - ContainerMount
     public struct ContainerMount: Codable {
-        public var bindOptions: BindOptions? = nil
-        public var consistency: MountConsistency? = nil
-        public var readOnly: Bool
+        /// The type of mount point
+        public var `type`: Container.ContainerMountType
+        
+        /// Mount source (e.g. a volume name, a host path).
         public var source: String
+        
+        /// Container path.
         public var target: String
-        public var `type`: MountType
+        
+        /// Whether the mount should be read-only.
+        public var readOnly: Bool? = false
+        
+        /// The consistency requirement for the mount
+        public var consistency: MountConsistency? = nil
+        
+        /// Optional configuration for the "bind" `type`.
+        public var bindOptions: BindOptions? = nil
+        
+        /// Optional configuration for the "volume" `type`.
         public var volumeOptions: VolumeOptions? = nil
+        
+        /// Optional configuration for the "tmpfs" `type`.
         public var tmpFsOptions: TmpfsOptions? = nil
         
         enum CodingKeys: String, CodingKey {
@@ -358,10 +373,6 @@ public struct ContainerHostConfig: Codable {
             case type = "Type"
             case volumeOptions = "VolumeOptions"
             case tmpFsOptions = "TmpfsOptions"
-        }
-        
-        public enum MountType: String, Codable {
-            case bind, volume, tmpfs, npipe
         }
         
         public enum MountConsistency: String, Codable {

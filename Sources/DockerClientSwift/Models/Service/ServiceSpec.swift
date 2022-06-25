@@ -309,8 +309,7 @@ public struct ServiceSpec: Codable {
         /// Mount the container's root filesystem as read only.
         public var readOnly: Bool? = false
         
-        // TODO: implement
-        // public var mounts: [Mount]?
+        public var mounts: [ContainerHostConfig.ContainerMount]? = nil
         
         /// Signal to be sent to the container for stopping it.
         public var stopSignal: ContainerConfig.StopSignal? = .quit
@@ -360,7 +359,7 @@ public struct ServiceSpec: Codable {
             case tty = "TTY"
             case openStdin = "OpenStdin"
             case readOnly = "ReadOnly"
-            // case mounts = "Mounts"
+            case mounts = "Mounts"
             case stopSignal = "StopSignal"
             case stopGracePeriod = "StopGracePeriod"
             case healthCheck = "HealthCheck"
@@ -519,5 +518,54 @@ public struct ServiceSpec: Codable {
                 case configName = "ConfigName"
             }
         }
+        
+        /*public struct Mount: Codable {
+            
+            public var type: Container.ContainerMountType
+
+            /// Mount source (e.g. a volume name, a host path).
+            public var source: String
+
+            /// Container path.
+            public var target: String
+            
+            /// Whether the mount should be read-only.
+            public var readOnly: Bool = false
+            
+            /// The consistency requirement for the mount
+            public var consistency: MountConsistency = .default
+            
+            /// Optional configuration for the "bind" `type`.
+            public var bindOptions: ContainerHostConfig.BindOptions? = nil
+            
+            /// Optional configuration for the "volume" `type`.
+            public var volumeOptions: VolumeOptions? = nil
+            
+            /// Optional configuration for the "tmpfs" `type`.
+            public var tmpfsOptions: ContainerHostConfig.? = nil
+            
+            enum CodingKeys: String, CodingKey {
+                case `type` = "Type"
+                case source = "Source"
+                case target = "Target"
+                case readOnly = "ReadOnly"
+                case consistency = "Consistency"
+                case bindOptions = "BindOptions"
+                case volumeOptions = "VolumeOptions"
+                case tmpfsOptions = "TmpfsOptions"
+            }
+            
+            public enum MountConsistency: String, Codable {
+                case `default`, consistent, cached, delegated
+            }
+            
+            public struct VolumeOptions: Codable {
+                
+            }
+            
+            public struct TmpfsOptions: Codable{
+                
+            }
+        }*/
     }
 }

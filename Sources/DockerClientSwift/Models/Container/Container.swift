@@ -127,7 +127,17 @@ public struct Container: Codable {
     }
     
     public enum ContainerMountType: String, Codable {
-        case bind, volume, tmpft, npipe
+        /// Mounts a file or directory from the host into the container. Must exist prior to creating the container
+        case bind
+        
+        /// Mounts (and create if doesn't exist) a Docker Volume with the given name and options. Volumes are not removed when the container is removed
+        case volume
+        
+        /// Create a tmpfs with the given options. The mount source cannot be specified for tmpfs.
+        case tmpfs
+        
+        /// Mounts a named pipe from the host into the container. Must exist prior to creating the container.
+        case npipe
     }
     
     // MARK: - ContainerMountPoint

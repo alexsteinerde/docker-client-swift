@@ -724,15 +724,21 @@ let docker = DockerClient(
   let job = try await docker.services.create(spec: spec)
   ```
   
-  What if we want to use a specific Network and pass secrets to the service?
+  Let's create an advanced Service:
+  - connected to a custom Network
+  - storing data into a custom Volume, for each container
+  - requiring a Secret
   ```swift
   let network = try await client.networks.create(spec: .init(name: "myNet", driver: "overlay"))
+  let volume = try await client.volumes.create(spec: .init(name: name)
   let secret = try await client.secrets.create(spec: .init(name: "myPassword", value: "blublublu"))
   let spec = ServiceSpec(
       name: "my-nginx",
       taskTemplate: .init(
           containerSpec: .init(
               image: "nginx:latest",
+              // Create and mount a dedicated Volume named "myStorage" on each running container. 
+              mounts: [.init(type: .volume, source: "myStorage", target: "/mount")],
               // Add our Secret. Will appear as `/run/secrets/myPassword` in the containers.
               secrets: [.init(secret)]
           ),

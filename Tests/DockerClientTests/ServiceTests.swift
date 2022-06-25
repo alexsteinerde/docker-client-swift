@@ -64,12 +64,14 @@ final class ServiceTests: XCTestCase {
     func testCreateServiceWithNetandSecret() async throws {
         let name = UUID().uuidString
         let network = try await client.networks.create(spec: .init(name: name, driver: "overlay"))
+        //let volume = try await client.volumes.create(spec: .init(name: name))
         let secret = try await client.secrets.create(spec: .init(name: name, value: "blublublu"))
         let spec = ServiceSpec(
             name: name,
             taskTemplate: .init(
                 containerSpec: .init(
                     image: "nginx:latest",
+                    mounts: [.init(type: .volume, source: "myStorage", target: "/mount")],
                     secrets: [.init(secret)]
                 ),
                 resources: .init(
