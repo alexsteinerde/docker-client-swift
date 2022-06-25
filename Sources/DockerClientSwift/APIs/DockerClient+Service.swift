@@ -27,12 +27,13 @@ extension DockerClient {
         
         /// Updates a service.
         /// - Parameters:
-        ///   - service: Instance of a `Service` that should be updated.
+        ///   - nameOrId: Name or id of the Service that should be updated.
         ///   - spec: the `ServiceSpec` describing the new configuration of the service.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns the updated `Service`.
-        public func update(service: Service, version: UInt64, spec: ServiceSpec) async throws -> Service {
-            try await client.run(UpdateServiceEndpoint(nameOrId: service.id, version: version, spec: spec, rollback: false))
+        public func update(_ nameOrId: String, spec: ServiceSpec) async throws -> Service {
+            let service = try await get(nameOrId)
+            try await client.run(UpdateServiceEndpoint(nameOrId: service.id, version: service.version.index, spec: spec, rollback: false))
             return try await self.get(service.id)
         }
         

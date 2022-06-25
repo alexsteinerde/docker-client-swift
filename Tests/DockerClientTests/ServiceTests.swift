@@ -107,7 +107,7 @@ final class ServiceTests: XCTestCase {
         let service = try await client.services.create(spec: spec)
         
         spec.mode = .replicated(2)
-        let updated = try await client.services.update(service: service, version: service.version.index, spec: spec)
+        let updated = try await client.services.update(name, spec: spec)
         
         XCTAssertTrue(updated.version.index > service.version.index)
         XCTAssert(
