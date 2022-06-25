@@ -738,7 +738,7 @@ let docker = DockerClient(
           containerSpec: .init(
               image: "nginx:latest",
               // Create and mount a dedicated Volume named "myStorage" on each running container. 
-              mounts: [.init(type: .volume, source: "myStorage", target: "/mount")],
+              mounts: [.volume(name: "myVolume", to: "/mnt")],
               // Add our Secret. Will appear as `/run/secrets/myPassword` in the containers.
               secrets: [.init(secret)]
           ),

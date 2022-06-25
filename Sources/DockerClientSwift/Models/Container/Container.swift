@@ -137,6 +137,7 @@ public struct Container: Codable {
         case tmpfs
         
         /// Mounts a named pipe from the host into the container. Must exist prior to creating the container.
+        /// Windows containers only.
         case npipe
     }
     

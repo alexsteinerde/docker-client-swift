@@ -70,7 +70,10 @@ final class ServiceTests: XCTestCase {
             taskTemplate: .init(
                 containerSpec: .init(
                     image: "nginx:latest",
-                    mounts: [.init(type: .volume, source: "myStorage", target: "/mount")],
+                    mounts: [
+                        .volume(name: "myVolume", to: "/mnt"),
+                        .tmpFs(options: .init(sizeBytes: UInt64(64*1024*1024)))
+                    ],
                     secrets: [.init(secret)]
                 ),
                 resources: .init(

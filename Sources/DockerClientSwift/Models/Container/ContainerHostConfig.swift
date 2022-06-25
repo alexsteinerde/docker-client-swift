@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: - ContainerHostConfig
 public struct ContainerHostConfig: Codable {
-    
     /// Whether to automatically delete the container when it exits.
     public var autoRemove: Bool = false
     
@@ -237,6 +236,73 @@ public struct ContainerHostConfig: Codable {
     /// A list of volumes to inherit from another container, specified in the form `<container name>[:<ro|rw>]`.
     public var volumesFrom: [String]? = nil
     
+    public init(autoRemove: Bool = false, binds: [String]? = nil, blkioWeight: UInt16 = 0, blkioWeightDevice: [ContainerHostConfig.BlkioWeight]? = [], blkioDeviceReadBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteBps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceReadIOps: ContainerHostConfig.BlkioRateLimit? = nil, blkioDeviceWriteIOps: ContainerHostConfig.BlkioRateLimit? = nil, capabilityAdd: [String]? = nil, capabilityDrop: [String]? = nil, cgroup: String = "", cgroupNsMode: String = "", cgroupParent: String = "", containerIdFile: String = "", cpuCount: UInt8 = 0, cpuPercent: UInt8 = 0, cpuPeriod: UInt64 = 0, cpuQuota: UInt64 = 0, cpuRealtimePeriod: UInt64 = 0, cpuRealtimeRuntime: UInt64 = 0, cpusetCpus: String = "", cpusetMems: String = "", cpuShares: UInt = 0, devices: [ContainerHostConfig.DeviceMapping]? = [], deviceCgroupRules: [String]? = nil, dns: [String]? = [], dnsOptions: [String]? = [], dnsSearch: [String]? = [], extraHosts: [String]? = [], groupAdd: [String]? = nil, init: Bool? = false, ipcMode: String = "", isolation: String = "", kernelMemory: UInt64 = 0, kernelMemoryTcp: UInt64 = 0, links: [String]? = nil, maskedPaths: [String]? = nil, memoryLimit: UInt64 = 0, memoryReservation: UInt64 = 0, memorySwap: Int64 = 0, memorySwappiness: Int8? = -1, mounts: [ContainerHostConfig.ContainerMount]? = nil, nanoCpus: UInt64 = 0, networkMode: String = "default", oomKillDisable: Bool? = false, oomScoreAdj: Int = 0, pidsLimit: UInt64? = 0, pidMode: String = "", portBindings: [ExposedPortSpec:[PortBinding]?]? = [:], privileged: Bool = false, publishAllPorts: Bool = false, readonlyPaths: [String]? = nil, readonlyRootfs: Bool = false, runtime: String? = nil, securityOpt: [String]? = nil, shmSize: UInt = 0, storageOpt: [String : String]? = nil, sysctls: [String : String]? = nil, tmpfs: [String : String]? = nil, ulimits: [ContainerHostConfig.Ulimit]? = nil, userNsMode: String = "", utsMode: String = "", volumeDriver: String = "", volumesFrom: [String]? = nil) {
+        self.autoRemove = autoRemove
+        self.binds = binds
+        self.blkioWeight = blkioWeight
+        self.blkioWeightDevice = blkioWeightDevice
+        self.blkioDeviceReadBps = blkioDeviceReadBps
+        self.blkioDeviceWriteBps = blkioDeviceWriteBps
+        self.blkioDeviceReadIOps = blkioDeviceReadIOps
+        self.blkioDeviceWriteIOps = blkioDeviceWriteIOps
+        self.capabilityAdd = capabilityAdd
+        self.capabilityDrop = capabilityDrop
+        self.cgroup = cgroup
+        self.cgroupNsMode = cgroupNsMode
+        self.cgroupParent = cgroupParent
+        self.containerIdFile = containerIdFile
+        self.cpuCount = cpuCount
+        self.cpuPercent = cpuPercent
+        self.cpuPeriod = cpuPeriod
+        self.cpuQuota = cpuQuota
+        self.cpuRealtimePeriod = cpuRealtimePeriod
+        self.cpuRealtimeRuntime = cpuRealtimeRuntime
+        self.cpusetCpus = cpusetCpus
+        self.cpusetMems = cpusetMems
+        self.cpuShares = cpuShares
+        self.devices = devices
+        self.deviceCgroupRules = deviceCgroupRules
+        self.dns = dns
+        self.dnsOptions = dnsOptions
+        self.dnsSearch = dnsSearch
+        self.extraHosts = extraHosts
+        self.groupAdd = groupAdd
+        self.`init` = `init`
+        self.ipcMode = ipcMode
+        self.isolation = isolation
+        self.kernelMemory = kernelMemory
+        self.kernelMemoryTcp = kernelMemoryTcp
+        self.links = links
+        self.maskedPaths = maskedPaths
+        self.memoryLimit = memoryLimit
+        self.memoryReservation = memoryReservation
+        self.memorySwap = memorySwap
+        self.memorySwappiness = memorySwappiness
+        self.mounts = mounts
+        self.nanoCpus = nanoCpus
+        self.networkMode = networkMode
+        self.oomKillDisable = oomKillDisable
+        self.oomScoreAdj = oomScoreAdj
+        self.pidsLimit = pidsLimit
+        self.pidMode = pidMode
+        self.portBindings = portBindings
+        self.privileged = privileged
+        self.publishAllPorts = publishAllPorts
+        self.readonlyPaths = readonlyPaths
+        self.readonlyRootfs = readonlyRootfs
+        self.runtime = runtime
+        self.securityOpt = securityOpt
+        self.shmSize = shmSize
+        self.storageOpt = storageOpt
+        self.sysctls = sysctls
+        self.tmpfs = tmpfs
+        self.ulimits = ulimits
+        self.userNsMode = userNsMode
+        self.utsMode = utsMode
+        self.volumeDriver = volumeDriver
+        self.volumesFrom = volumesFrom
+    }
+    
     enum CodingKeys: String, CodingKey {
         case autoRemove = "AutoRemove"
         case binds = "Binds"
@@ -344,10 +410,10 @@ public struct ContainerHostConfig: Codable {
         public var `type`: Container.ContainerMountType
         
         /// Mount source (e.g. a volume name, a host path).
-        public var source: String
+        public var source: String?
         
         /// Container path.
-        public var target: String
+        public var target: String?
         
         /// Whether the mount should be read-only.
         public var readOnly: Bool? = false
@@ -375,20 +441,71 @@ public struct ContainerHostConfig: Codable {
             case tmpFsOptions = "TmpfsOptions"
         }
         
+        /// Mounts a file or directory from the Docker host (node) into the containers
+        public static func bind(from source: String, to target: String, readOnly: Bool? = false, consistency: MountConsistency? = .default, bindOptions: BindOptions? = .init()) -> ContainerMount {
+            return ContainerMount(type: .bind, source: source, target: target, readOnly: readOnly, consistency: consistency, bindOptions: bindOptions)
+            
+        }
+        
+        /// Creates or uses, and mounts, a Docker Volume into the containers
+        public static func volume(name: String? = nil, to target: String, readOnly: Bool? = false, options: VolumeOptions? = nil) -> ContainerMount {
+            return ContainerMount(type: .volume, source: name, target: target, readOnly: readOnly, volumeOptions: options)
+        }
+        
+        /// Creates a tmpfs for the containers
+        public static func tmpFs(options: TmpfsOptions? = nil) -> ContainerMount {
+            return ContainerMount(type: .tmpfs, tmpFsOptions: options)
+        }
+        
+        /// Consistency option for bind-mounts.
         public enum MountConsistency: String, Codable {
-            case cached, consistent, `default`, delegated
+            /// The host's view of the mount is authoritative. There may be delays before updates made on the host are visible within a container.
+            case cached
+            
+            /// Full consistency. The container runtime and the host maintain an identical view of the mount at all times.
+            case consistent
+            
+            /// Equivalent to `consistent`.
+            case `default`
+            
+            /// The container runtime's view of the mount is authoritative. There may be delays before updates made in a container are visible on the host.
+            case delegated
         }
         
         public struct BindOptions: Codable {
-            public var propagation: BindOptionsPropagation
+            public var propagation: BindOptionsPropagation = .rprivate
             public var nonRecursive: Bool = false
             
             enum CodingKeys: String, CodingKey {
                 case propagation = "Propagation"
                 case nonRecursive = "NonRecursive"
             }
+            
+            public init(propagation: ContainerHostConfig.ContainerMount.BindOptions.BindOptionsPropagation = .rprivate, nonRecursive: Bool = false) {
+                self.propagation = propagation
+                self.nonRecursive = nonRecursive
+            }
+            
             public enum BindOptionsPropagation: String, Codable {
-                case `private`, rprivate, shared, rshared, slave, rslave
+                /// The mount is private.
+                /// Sub-mounts within it are not exposed to replica mounts, and sub-mounts of replica mounts are not exposed to the original mount.
+                case `private`
+                
+                /// The default. The same as `private`, meaning that no mount points anywhere within the original or replica mount points propagate in either direction.
+                case rprivate
+                
+                /// Sub-mounts of the original mount are exposed to replica mounts, and sub-mounts of replica mounts are also propagated to the original mount.
+                case shared
+                
+                /// The same as `shared`, but the propagation also extends to and from mount points nested within any of the original or replica mount points.
+                case rshared
+                
+                /// Similar to a `shared` mount, but only in one direction.
+                /// If the original mount exposes a sub-mount, the replica mount can see it. However, if the replica mount exposes a sub-mount, the original mount cannot see it.
+                case slave
+                
+                /// The same as `slave`, but the propagation also extends to and from mount points nested within any of the original or replica mount points.
+                case rslave
             }
         }
         
@@ -405,8 +522,11 @@ public struct ContainerHostConfig: Codable {
         }
         
         public struct TmpfsOptions: Codable {
+            /// Size of the tmpfs, in bytes.
             public var sizeBytes: UInt64
-            public var mode: Int
+            
+            /// Permissions of the mounted tmpfs, example: `0x644`
+            public var mode: UInt32 = 0o1777
             
             enum CodingKeys: String, CodingKey {
                 case sizeBytes = "SizeBytes"
