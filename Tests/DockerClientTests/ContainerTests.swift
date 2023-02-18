@@ -45,18 +45,24 @@ final class ContainerTests: XCTestCase {
         let container = try client.containers.createContainer(image: image).wait()
         try container.start(on: client).wait()
         let output = try container.logs(on: client).wait()
-        
-        XCTAssertEqual(
-            output,
-            """
-
+        // Depending on CPU architecture, step 2 of the log output may by:
+        // 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+        //    (amd64)
+        // or
+        // 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+        //    (arm64v8)
+        //
+        // Just check the lines before and after this line
+        let expectedOutputPrefix = """
+            
             Hello from Docker!
             This message shows that your installation appears to be working correctly.
 
             To generate this message, Docker took the following steps:
              1. The Docker client contacted the Docker daemon.
              2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-                (amd64)
+            """
+        let expectedOutputSuffix = """
              3. The Docker daemon created a new container from that image which runs the
                 executable that produces the output you are currently reading.
              4. The Docker daemon streamed that output to the Docker client, which sent it
@@ -71,6 +77,23 @@ final class ContainerTests: XCTestCase {
             For more examples and ideas, visit:
              https://docs.docker.com/get-started/
 
+            """
+
+        
+        XCTAssertTrue(
+            output.hasPrefix(expectedOutputPrefix),
+            """
+            "\(output)"
+            did not start with
+            "\(expectedOutputPrefix)"
+            """
+        )
+        XCTAssertTrue(
+            output.hasSuffix(expectedOutputSuffix),
+            """
+            "\(output)"
+            did not end with
+            "\(expectedOutputSuffix)"
             """
         )
     }
