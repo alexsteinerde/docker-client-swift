@@ -10,10 +10,10 @@ struct CreateContainerEndpoint: Endpoint {
     private let imageName: String
     private let commands: [String]?
     
-    init(imageName: String, commands: [String]?=nil) {
+    init(imageName: String, commands: [String]?=nil, hostConfig: CreateContainerBody.HostConfig?=nil) {
         self.imageName = imageName
         self.commands = commands
-        self.body = .init(Image: imageName, Cmd: commands)
+        self.body = .init(Image: imageName, Cmd: commands, HostConfig: hostConfig)
     }
     
     var path: String {
@@ -23,6 +23,16 @@ struct CreateContainerEndpoint: Endpoint {
     struct CreateContainerBody: Codable {
         let Image: String
         let Cmd: [String]?
+        let HostConfig: HostConfig?
+        
+        struct HostConfig: Codable {
+            let PortBindings: [String: [PortBinding]?]
+            
+            struct PortBinding: Codable {
+                let HostIp: String?
+                let HostPort: String?
+            }
+        }
     }
     
     struct CreateContainerResponse: Codable {
