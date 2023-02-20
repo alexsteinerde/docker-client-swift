@@ -42,20 +42,26 @@ extension DockerClient {
         /// - Returns: Returns an `EventLoopFuture` of a `Container`.
         public func createContainer(image: Image, commands: [String]?=nil, portBindings: [PortBinding]=[]) throws -> EventLoopFuture<Container> {
             let hostConfig: CreateContainerEndpoint.CreateContainerBody.HostConfig?
+            let exposedPorts: [String: CreateContainerEndpoint.CreateContainerBody.Empty]?
             if portBindings.isEmpty {
+                exposedPorts = nil
                 hostConfig = nil
             } else {
+                var exposedPortsBuilder: [String: CreateContainerEndpoint.CreateContainerBody.Empty] = [:]
                 var portBindingsByContainerPort: [String: [CreateContainerEndpoint.CreateContainerBody.HostConfig.PortBinding]] = [:]
                 for portBinding in portBindings {
                     let containerPort: String = "\(portBinding.containerPort)/\(portBinding.networkProtocol)"
+                    
+                    exposedPortsBuilder[containerPort] = CreateContainerEndpoint.CreateContainerBody.Empty()
                     var hostAddresses = portBindingsByContainerPort[containerPort, default: []]
                     hostAddresses.append(
                         CreateContainerEndpoint.CreateContainerBody.HostConfig.PortBinding(HostIp: "\(portBinding.hostIP)", HostPort: "\(portBinding.hostPort)"))
                     portBindingsByContainerPort[containerPort] = hostAddresses
                 }
+                exposedPorts = exposedPortsBuilder
                 hostConfig = CreateContainerEndpoint.CreateContainerBody.HostConfig(PortBindings: portBindingsByContainerPort)
             }
-            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands, hostConfig: hostConfig))
+            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands, exposedPorts: exposedPorts, hostConfig: hostConfig))
                 .flatMap({ response in
                     try self.get(containerByNameOrId: response.Id)
                 })
@@ -147,7 +153,7 @@ extension DockerClient {
                         repositoryTag = repoTag
                     }
                     let image = Image(id: .init(response.Image), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
-                    return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: response.Config.Cmd.joined(separator: " "))
+                    return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: (response.Config.Cmd ?? []).joined(separator: " "))
                 }
         }
         
