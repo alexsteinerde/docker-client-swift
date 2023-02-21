@@ -1,6 +1,10 @@
 import XCTest
 @testable import DockerClientSwift
 import Logging
+import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 final class ContainerTests: XCTestCase {
     
