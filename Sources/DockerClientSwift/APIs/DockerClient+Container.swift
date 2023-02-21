@@ -1,4 +1,5 @@
 import Foundation
+import Network
 import NIO
 
 extension DockerClient {
@@ -36,10 +37,31 @@ extension DockerClient {
         /// - Parameters:
         ///   - image: Instance of an `Image`.
         ///   - commands: Override the default commands from the image. Default `nil`.
+        ///   - portBindings: Port bindings (forwardings). See ``PortBinding`` for details. Default `[]`.
         /// - Throws: Errors that can occur when executing the request.
         /// - Returns: Returns an `EventLoopFuture` of a `Container`.
-        public func createContainer(image: Image, commands: [String]?=nil) throws -> EventLoopFuture<Container> {
-            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands))
+        public func createContainer(image: Image, commands: [String]?=nil, portBindings: [PortBinding]=[]) throws -> EventLoopFuture<Container> {
+            let hostConfig: CreateContainerEndpoint.CreateContainerBody.HostConfig?
+            let exposedPorts: [String: CreateContainerEndpoint.CreateContainerBody.Empty]?
+            if portBindings.isEmpty {
+                exposedPorts = nil
+                hostConfig = nil
+            } else {
+                var exposedPortsBuilder: [String: CreateContainerEndpoint.CreateContainerBody.Empty] = [:]
+                var portBindingsByContainerPort: [String: [CreateContainerEndpoint.CreateContainerBody.HostConfig.PortBinding]] = [:]
+                for portBinding in portBindings {
+                    let containerPort: String = "\(portBinding.containerPort)/\(portBinding.networkProtocol)"
+                    
+                    exposedPortsBuilder[containerPort] = CreateContainerEndpoint.CreateContainerBody.Empty()
+                    var hostAddresses = portBindingsByContainerPort[containerPort, default: []]
+                    hostAddresses.append(
+                        CreateContainerEndpoint.CreateContainerBody.HostConfig.PortBinding(HostIp: "\(portBinding.hostIP)", HostPort: "\(portBinding.hostPort)"))
+                    portBindingsByContainerPort[containerPort] = hostAddresses
+                }
+                exposedPorts = exposedPortsBuilder
+                hostConfig = CreateContainerEndpoint.CreateContainerBody.HostConfig(PortBindings: portBindingsByContainerPort)
+            }
+            return try client.run(CreateContainerEndpoint(imageName: image.id.value, commands: commands, exposedPorts: exposedPorts, hostConfig: hostConfig))
                 .flatMap({ response in
                     try self.get(containerByNameOrId: response.Id)
                 })
@@ -48,10 +70,36 @@ extension DockerClient {
         /// Starts a container. Before starting it needs to be created.
         /// - Parameter container: Instance of a created `Container`.
         /// - Throws: Errors that can occur when executing the request.
-        /// - Returns: Returns an `EventLoopFuture` when the container is started.
-        public func start(container: Container) throws -> EventLoopFuture<Void> {
+        /// - Returns: Returns an `EventLoopFuture` of active actual `PortBinding`s when the container is started.
+        public func start(container: Container) throws -> EventLoopFuture<[PortBinding]> {
             return try client.run(StartContainerEndpoint(containerId: container.id.value))
-                .map({ _ in Void() })
+                .flatMap { _ in
+                    try client.run(InspectContainerEndpoint(nameOrId: container.id.value))
+                        .flatMapThrowing { response in
+                            try response.NetworkSettings.Ports.flatMap { (containerPortSpec, bindings) in
+                                let containerPortParts = containerPortSpec.split(separator: "/", maxSplits: 2)
+                                guard
+                                    let containerPort: UInt16 = UInt16(containerPortParts[0]),
+                                    let networkProtocol: NetworkProtocol = NetworkProtocol(rawValue: String(containerPortParts[1]))
+                                else { throw DockerError.message(#"unable to parse port/protocol from NetworkSettings.Ports key - "\#(containerPortSpec)""#) }
+                                
+                                return try (bindings ?? []).compactMap { binding in
+                                    guard
+                                        let hostIP: IPAddress = IPv4Address(binding.HostIp) ?? IPv6Address(binding.HostIp)
+                                    else {
+                                        throw DockerError.message(#"unable to parse IPAddress from NetworkSettings.Ports[].HostIp - "\#(binding.HostIp)""#)
+                                    }
+                                    guard
+                                        let hostPort = UInt16(binding.HostPort)
+                                    else {
+                                        throw DockerError.message(#"unable to parse port number from NetworkSettings.Ports[].HostPort - "\#(binding.HostPort)""#)
+                                    }
+
+                                    return PortBinding(hostIP: hostIP, hostPort: hostPort, containerPort: containerPort, networkProtocol: networkProtocol)
+                                }
+                            }
+                        }
+                }
         }
         
         /// Stops a container. Before stopping it needs to be created and started..
@@ -105,7 +153,7 @@ extension DockerClient {
                         repositoryTag = repoTag
                     }
                     let image = Image(id: .init(response.Image), digest: digest, repositoryTags: repositoryTag.map({ [$0]}), createdAt: nil)
-                    return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: response.Config.Cmd.joined(separator: " "))
+                    return Container(id: .init(response.Id), image: image, createdAt: Date.parseDockerDate(response.Created)!, names: [response.Name], state: response.State.Status, command: (response.Config.Cmd ?? []).joined(separator: " "))
                 }
         }
         
@@ -134,7 +182,7 @@ extension Container {
     /// - Parameter client: A `DockerClient` instance that is used to perform the request.
     /// - Throws: Errors that can occur when executing the request.
     /// - Returns: Returns an `EventLoopFuture` when the container is started.
-    public func start(on client: DockerClient) throws -> EventLoopFuture<Void> {
+    public func start(on client: DockerClient) throws -> EventLoopFuture<[PortBinding]> {
         try client.containers.start(container: self)
     }
     

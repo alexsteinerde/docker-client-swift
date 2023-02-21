@@ -43,7 +43,7 @@ final class ContainerTests: XCTestCase {
     func testStartingContainerAndRetrievingLogs() throws {
         let image = try client.images.pullImage(byName: "hello-world", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
-        try container.start(on: client).wait()
+        _ = try container.start(on: client).wait()
         let output = try container.logs(on: client).wait()
         // Depending on CPU architecture, step 2 of the log output may by:
         // 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
@@ -97,10 +97,49 @@ final class ContainerTests: XCTestCase {
         )
     }
     
+    func testStartingContainerForwardingToSpecificPort() throws {
+        let image = try client.images.pullImage(byName: "nginxdemos/hello", tag: "plain-text").wait()
+        let container = try client.containers.createContainer(image: image, portBindings: [PortBinding(hostPort: 8080, containerPort: 80)]).wait()
+        _ = try container.start(on: client).wait()
+        
+        let sem: DispatchSemaphore = DispatchSemaphore(value: 0)
+        let task = URLSession.shared.dataTask(with: URL(string: "http://localhost:8080")!) { (data, response, _) in
+            let httpResponse = response as? HTTPURLResponse
+            XCTAssertEqual(httpResponse?.statusCode, 200)
+            XCTAssertEqual(httpResponse?.value(forHTTPHeaderField: "Content-Type"), "text/plain")
+            XCTAssertTrue(String(data: data!, encoding: .utf8)!.hasPrefix("Server address"))
+            
+            sem.signal()
+        }
+        task.resume()
+        sem.wait()
+        try container.stop(on: client).wait()
+    }
+    
+    func testStartingContainerForwardingToRandomPort() throws {
+        let image = try client.images.pullImage(byName: "nginxdemos/hello", tag: "plain-text").wait()
+        let container = try client.containers.createContainer(image: image, portBindings: [PortBinding(containerPort: 80)]).wait()
+        let portBindings = try container.start(on: client).wait()
+        let randomPort = portBindings[0].hostPort
+        
+        let sem: DispatchSemaphore = DispatchSemaphore(value: 0)
+        let task = URLSession.shared.dataTask(with: URL(string: "http://localhost:\(randomPort)")!) { (data, response, _) in
+            let httpResponse = response as? HTTPURLResponse
+            XCTAssertEqual(httpResponse?.statusCode, 200)
+            XCTAssertEqual(httpResponse?.value(forHTTPHeaderField: "Content-Type"), "text/plain")
+            XCTAssertTrue(String(data: data!, encoding: .utf8)!.hasPrefix("Server address"))
+            
+            sem.signal()
+        }
+        task.resume()
+        sem.wait()
+        try container.stop(on: client).wait()
+    }
+    
     func testPruneContainers() throws {
         let image = try client.images.pullImage(byName: "nginx", tag: "latest").wait()
         let container = try client.containers.createContainer(image: image).wait()
-        try container.start(on: client).wait()
+        _ = try container.start(on: client).wait()
         try container.stop(on: client).wait()
         
         let pruned = try client.containers.prune().wait()

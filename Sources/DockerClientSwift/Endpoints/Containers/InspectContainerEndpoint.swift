@@ -22,6 +22,7 @@ struct InspectContainerEndpoint: Endpoint {
         let Image: String
         let Created: String
         let State: StateResponse
+        let NetworkSettings: NetworkSettings
         // TODO: Add additional fields
         
         struct StateResponse: Codable {
@@ -30,7 +31,16 @@ struct InspectContainerEndpoint: Endpoint {
         }
         
         struct ConfigResponse: Codable {
-            let Cmd: [String]
+            let Cmd: [String]?
+        }
+        
+        struct NetworkSettings: Codable {
+            let Ports: [String: [PortBinding]?]
+            
+            struct PortBinding: Codable {
+                let HostIp: String
+                let HostPort: String
+            }
         }
     }
 }
