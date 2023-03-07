@@ -1,5 +1,4 @@
 import Foundation
-import Network
 import NIO
 
 extension DockerClient {
@@ -85,17 +84,12 @@ extension DockerClient {
                                 
                                 return try (bindings ?? []).compactMap { binding in
                                     guard
-                                        let hostIP: IPAddress = IPv4Address(binding.HostIp) ?? IPv6Address(binding.HostIp)
-                                    else {
-                                        throw DockerError.message(#"unable to parse IPAddress from NetworkSettings.Ports[].HostIp - "\#(binding.HostIp)""#)
-                                    }
-                                    guard
                                         let hostPort = UInt16(binding.HostPort)
                                     else {
                                         throw DockerError.message(#"unable to parse port number from NetworkSettings.Ports[].HostPort - "\#(binding.HostPort)""#)
                                     }
 
-                                    return PortBinding(hostIP: hostIP, hostPort: hostPort, containerPort: containerPort, networkProtocol: networkProtocol)
+                                    return PortBinding(hostIP: binding.HostIp, hostPort: hostPort, containerPort: containerPort, networkProtocol: networkProtocol)
                                 }
                             }
                         }
